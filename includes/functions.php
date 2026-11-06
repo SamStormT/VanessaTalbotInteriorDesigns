@@ -24,6 +24,28 @@ function asset(string $path): string
     return url('assets/' . ltrim($path, '/'));
 }
 
+/**
+ * Brand logo.
+ *
+ * Uses the official logo file when it exists in /assets/images
+ * (logo.svg for light backgrounds, logo-white.svg for dark ones).
+ * Until then, renders a typographic lockup that mirrors the logo layout:
+ * "Vanessa / Talbot" with "INTERIOR DESIGNS" set beside the second line.
+ */
+function brand_logo(string $variant = 'dark'): string
+{
+    $file = $variant === 'light' ? 'images/logo-white.svg' : 'images/logo.svg';
+
+    if (is_file(ROOT_PATH . '/assets/' . $file)) {
+        return '<img class="brand__logo" src="' . e(asset($file)) . '" alt="' . e(SITE_NAME) . '" width="220" height="72">';
+    }
+
+    return '<span class="brand__lockup brand__lockup--' . e($variant) . '">'
+         . '<span class="brand__line">Vanessa</span>'
+         . '<span class="brand__line">Talbot <span class="brand__sub">Interior <span>Designs</span></span></span>'
+         . '</span>';
+}
+
 /** Current request path relative to BASE_URL, e.g. "services/workshops.php". */
 function current_path(): string
 {

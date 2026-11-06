@@ -33,7 +33,7 @@ $fullTitle = $pageTitle !== '' ? $pageTitle . ' | ' . SITE_NAME : SITE_NAME . ' 
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Allura&family=Great+Vibes&family=Open+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Allison&family=Gilda+Display&family=Open+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
 
     <link rel="stylesheet" href="<?= e(asset('css/style.css')) ?>">
 <?php if ($layout === 'admin'): ?>

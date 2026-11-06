@@ -90,10 +90,10 @@ require_once INCLUDES_PATH . '/header.php';
 <?php endforeach; ?>
 
     <!-- Process -->
-    <section class="section section--green" aria-labelledby="process-title">
+    <section class="section section--white" aria-labelledby="process-title">
         <div class="container">
             <header class="section-header">
-                <p class="eyebrow eyebrow--light">How it works</p>
+                <p class="eyebrow">How it works</p>
                 <h2 id="process-title">A simple, collaborative process</h2>
             </header>
             <ol class="process">

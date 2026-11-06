@@ -13,8 +13,8 @@ if ($layout === 'admin'): ?>
 <footer class="site-footer">
     <div class="container site-footer__inner">
         <div class="site-footer__brand">
-            <p class="brand__name"><?= e(SITE_NAME) ?></p>
-            <p class="brand__tagline"><?= e(SITE_TAGLINE) ?></p>
+            <p class="brand"><?= brand_logo('light') ?></p>
+            <p class="tagline site-footer__tagline"><?= e(SITE_TAGLINE) ?></p>
             <p class="site-footer__about">
                 Biophilic interior design, colour psychology and photography for homes,
                 workspaces, wellness centres, boutiques and events.
@@ -45,7 +45,7 @@ if ($layout === 'admin'): ?>
         <div class="site-footer__col">
             <h2 class="site-footer__heading">Get in touch</h2>
             <p>Ready to bring nature into your space? Let's talk about what you have in mind.</p>
-            <a class="btn btn--primary btn--small" href="<?= e(url('contact.php')) ?>">Contact Vanessa</a>
+            <a class="btn btn--light btn--small" href="<?= e(url('contact.php')) ?>">Contact Vanessa</a>
         </div>
     </div>
 

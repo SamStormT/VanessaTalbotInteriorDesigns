@@ -120,14 +120,24 @@ Admin page: the same, plus `require_once INCLUDES_PATH . '/auth.php'; require_ad
 
 | Purpose | Brand font | Variable / selector | Web stand-in |
 |---|---|---|---|
-| Cover / hero title | John Mayer Fancy Ligature | `--font-display`, `.display-title` | Great Vibes |
-| Quotes & taglines | Bayshore | `--font-script`, `.tagline`, `blockquote` | Allura |
-| Main section headings | Helvetica Bold | `--font-heading`, `h1`, `h2` | Arial (where Helvetica is missing) |
+| Logo, page titles (`h1`), hero | John Mayer (elegant serif) | `--font-display`, `.display-title` | Gilda Display |
+| Quotes & taglines | Bayshore (signature script) | `--font-script`, `.tagline` | Allison |
+| Main section headings | Helvetica Bold | `--font-heading`, `h2` | Arial (where Helvetica is missing) |
+| Labels, nav, buttons | Helvetica, spaced capitals (as "INTERIOR DESIGNS" in the logo) | `.eyebrow`, `.btn`, nav links | Arial |
 | Subheadings | Open Sans SemiBold | `--font-subheading`, `h3`–`h6` | n/a |
-| Body text | Open Sans | `--font-body` | n/a |
-| Forms & worksheets | Open Sans | `input`, `select`, `textarea`, `label` | n/a |
+| Body text, forms | Open Sans | `--font-body` | n/a |
 
-John Mayer Fancy Ligature and Bayshore need web-licensed `.woff2` files. Put them in `assets/fonts/` as `john-mayer-fancy-ligature.woff2` and `bayshore.woff2`, then uncomment the `@font-face` block in `style.css`. Until then the stand-ins load from Google Fonts.
+John Mayer and Bayshore need web-licensed `.woff2` files. Put them in `assets/fonts/` as `john-mayer.woff2` and `bayshore.woff2`, then uncomment the `@font-face` block in `style.css`.
+
+## Logo
+
+`brand_logo()` in `functions.php` uses `assets/images/logo.svg` (header) and `assets/images/logo-white.svg` (footer) automatically when those files exist. Until then it renders a text lockup in the same layout as the official logo.
+
+## Colour usage
+
+- **White and Soft Peach** are the main page backgrounds, alternating between sections.
+- **Forest Green** is reserved for the footer, buttons, navigation text, highlights and dividers.
+- **Golden Yellow and Earthy Brown-Gold** are accents: rules, icons, tags, labels and decorative frames.
 
 ## Notes
 

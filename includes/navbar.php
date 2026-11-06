@@ -28,9 +28,8 @@ $navItems = [
 ?>
 <header class="site-header">
     <div class="container site-header__inner">
-        <a class="brand" href="<?= e(url('index.php')) ?>">
-            <span class="brand__name"><?= e(SITE_NAME) ?></span>
-            <span class="brand__tagline"><?= e(SITE_TAGLINE) ?></span>
+        <a class="brand" href="<?= e(url('index.php')) ?>" aria-label="<?= e(SITE_NAME) ?>, home">
+            <?= brand_logo('dark') ?>
         </a>
 
         <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="primary-nav">

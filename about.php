@@ -42,7 +42,7 @@ require_once INCLUDES_PATH . '/header.php';
     <section class="section" aria-labelledby="story-title">
         <div class="container split">
             <div class="split__media">
-                <div class="art-frame art-frame--portrait art-frame--peach" aria-hidden="true">
+                <div class="art-frame art-frame--portrait art-frame--arch art-frame--peach" aria-hidden="true">
                     <?= botanical('botanical art-frame__botanical') ?>
                 </div>
             </div>
@@ -115,9 +115,9 @@ require_once INCLUDES_PATH . '/header.php';
             <div class="split__media">
                 <figure class="quote-panel">
                     <blockquote>
-                        <p>&ldquo;<?= e(SITE_TAGLINE) ?>.&rdquo;</p>
+                        <p>&ldquo;Nature remains our magic well: the more we draw from its nourishing waters, the more we sustain the human body, mind and spirit.&rdquo;</p>
                     </blockquote>
-                    <figcaption><?= e(SITE_NAME) ?></figcaption>
+                    <figcaption><span class="tagline">Stephen R. Kellert</span></figcaption>
                 </figure>
             </div>
             <div class="split__content">
@@ -140,10 +140,10 @@ require_once INCLUDES_PATH . '/header.php';
     </section>
 
     <!-- Values -->
-    <section class="section section--green" aria-labelledby="values-title">
+    <section class="section section--peach" aria-labelledby="values-title">
         <div class="container">
             <header class="section-header">
-                <p class="eyebrow eyebrow--light">Values</p>
+                <p class="eyebrow">Values</p>
                 <h2 id="values-title">What guides every project</h2>
             </header>
             <ul class="values-grid">

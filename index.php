@@ -17,18 +17,25 @@ require_once INCLUDES_PATH . '/header.php';
 
     <!-- Hero -->
     <section class="hero" aria-labelledby="hero-title">
-        <?= botanical('botanical hero__botanical') ?>
         <div class="container hero__inner">
-            <p class="eyebrow eyebrow--light">Biophilic Interior Design &middot; Colour Psychology &middot; Photography</p>
-            <h1 id="hero-title" class="display-title hero__title">Vanessa Talbot</h1>
-            <p class="tagline hero__tagline"><?= e(SITE_TAGLINE) ?></p>
-            <p class="hero__lead">
-                Interiors designed around the way people are meant to live: connected to light, colour
-                and the natural world. Grounded in science, shaped by art, inspired by nature.
-            </p>
-            <div class="btn-group">
-                <a class="btn btn--primary" href="<?= e(url('services/consultations.php')) ?>">Book a consultation</a>
-                <a class="btn btn--outline-light" href="<?= e(url('services.php')) ?>">Explore services</a>
+            <div class="hero__content">
+                <p class="eyebrow">Biophilic Interior Design &middot; Colour Psychology &middot; Photography</p>
+                <h1 id="hero-title" class="display-title hero__title">Vanessa Talbot</h1>
+                <p class="tagline hero__tagline"><?= e(SITE_TAGLINE) ?></p>
+                <p class="hero__lead">
+                    Interiors designed around the way people are meant to live: connected to light, colour
+                    and the natural world. Grounded in science, shaped by art, inspired by nature.
+                </p>
+                <div class="btn-group">
+                    <a class="btn btn--primary" href="<?= e(url('services/consultations.php')) ?>">Book a consultation</a>
+                    <a class="btn btn--outline" href="<?= e(url('services.php')) ?>">Explore services</a>
+                </div>
+            </div>
+            <div class="hero__media" aria-hidden="true">
+                <div class="art-frame art-frame--arch art-frame--peach">
+                    <?= botanical('botanical art-frame__botanical') ?>
+                </div>
+                <span class="hero__accent"></span>
             </div>
         </div>
     </section>
@@ -56,7 +63,7 @@ require_once INCLUDES_PATH . '/header.php';
     <section class="section" aria-labelledby="intro-title">
         <div class="container split">
             <div class="split__media">
-                <div class="art-frame art-frame--portrait art-frame--green" aria-hidden="true">
+                <div class="art-frame art-frame--portrait art-frame--arch art-frame--light" aria-hidden="true">
                     <?= botanical('botanical art-frame__botanical') ?>
                 </div>
             </div>
@@ -80,6 +87,19 @@ require_once INCLUDES_PATH . '/header.php';
                 </ul>
                 <a class="text-link" href="<?= e(url('about.php')) ?>">Read Vanessa's story <?= icon('arrow', 'icon icon--inline') ?></a>
             </div>
+        </div>
+    </section>
+
+    <!-- Brand quote -->
+    <section class="quote-band" aria-label="Quote">
+        <div class="container">
+            <span class="divider" aria-hidden="true"><?= icon('leaf') ?></span>
+            <figure class="quote-band__figure">
+                <blockquote>
+                    <p>Nature remains our magic well: the more we draw from its nourishing waters, the more we sustain the human body, mind and spirit.</p>
+                </blockquote>
+                <figcaption><span class="tagline">Stephen R. Kellert</span></figcaption>
+            </figure>
         </div>
     </section>
 
@@ -146,7 +166,7 @@ require_once INCLUDES_PATH . '/header.php';
     </section>
 
     <!-- Latest blog -->
-    <section class="section section--white" aria-labelledby="blog-title">
+    <section class="section section--peach" aria-labelledby="blog-title">
         <div class="container">
             <header class="section-header">
                 <p class="eyebrow">From the blog</p>
@@ -185,10 +205,10 @@ require_once INCLUDES_PATH . '/header.php';
     </section>
 
     <!-- Newsletter -->
-    <section id="newsletter" class="section section--green newsletter" aria-labelledby="newsletter-title">
+    <section id="newsletter" class="section newsletter" aria-labelledby="newsletter-title">
         <div class="container newsletter__inner">
             <div class="newsletter__text">
-                <p class="eyebrow eyebrow--light">Newsletter</p>
+                <p class="eyebrow">Newsletter</p>
                 <h2 id="newsletter-title">Nature-inspired ideas, delivered to your inbox</h2>
                 <p>
                     Seasonal inspiration, colour and design tips, new photography prints, and first news
