@@ -1,0 +1,305 @@
+/* ==========================================================================
+   Vanessa Talbot Interior Designs — Main stylesheet (placeholder)
+   "The Balance of Art, Science and Nature in Spaces"
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   1. Design tokens
+   -------------------------------------------------------------------------- */
+:root {
+    /* Brand colours */
+    --color-forest-green:   #243A39;
+    --color-golden-yellow:  #CDA02D;
+    --color-soft-peach:     #F6E2D4;
+    --color-earthy-gold:    #9D7F3C;
+
+    /* Neutrals */
+    --color-white:          #FFFFFF;
+    --color-off-white:      #FBF7F3;
+    --color-text:           #243A39;
+    --color-text-muted:     #5B6B6A;
+    --color-border:         #E6D6C9;
+
+    /* Semantic roles */
+    --color-primary:        var(--color-forest-green);
+    --color-accent:         var(--color-golden-yellow);
+    --color-accent-dark:    var(--color-earthy-gold);
+    --color-surface:        var(--color-soft-peach);
+    --color-background:     var(--color-off-white);
+
+    /* Typography (brand font guide)
+       Cover / hero titles  → John Mayer Fancy Ligature (stand-in: Great Vibes)
+       Quotes & taglines    → Bayshore                  (stand-in: Allura)
+       Section headings     → Helvetica Bold
+       Subheadings          → Open Sans SemiBold
+       Body, forms          → Open Sans                                     */
+    --font-display:    'John Mayer', 'Great Vibes', cursive;
+    --font-script:     'Bayshore', 'Allura', cursive;
+    --font-heading:    'Helvetica Neue', Helvetica, Arial, sans-serif;
+    --font-subheading: 'Open Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    --font-body:       'Open Sans', system-ui, -apple-system, 'Segoe UI', Arial, sans-serif;
+
+    --fs-base:  1rem;
+    --fs-sm:    0.875rem;
+    --fs-lg:    1.125rem;
+    --fs-h1:    clamp(2.25rem, 5vw, 3.5rem);
+    --fs-h2:    clamp(1.75rem, 4vw, 2.5rem);
+    --fs-h3:    1.5rem;
+    --lh-body:  1.7;
+    --lh-heading: 1.2;
+
+    /* Spacing */
+    --space-xs: 0.25rem;
+    --space-sm: 0.5rem;
+    --space-md: 1rem;
+    --space-lg: 2rem;
+    --space-xl: 4rem;
+
+    /* Layout */
+    --container-width: 1200px;
+    --radius:   4px;
+    --shadow:   0 4px 20px rgba(36, 58, 57, 0.08);
+    --transition: 0.25s ease;
+}
+
+/* --------------------------------------------------------------------------
+   1b. Licensed brand fonts
+   John Mayer Fancy Ligature and Bayshore are not on Google Fonts. Once the
+   web-licensed .woff2 files are placed in /assets/fonts/, uncomment these
+   rules. Until then the Google Fonts stand-ins in --font-display and
+   --font-script are used automatically.
+   -------------------------------------------------------------------------- */
+/*
+@font-face {
+    font-family: 'John Mayer';
+    src: url('../fonts/john-mayer-fancy-ligature.woff2') format('woff2');
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+}
+@font-face {
+    font-family: 'Bayshore';
+    src: url('../fonts/bayshore.woff2') format('woff2');
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+}
+*/
+
+/* --------------------------------------------------------------------------
+   2. Base
+   -------------------------------------------------------------------------- */
+*,
+*::before,
+*::after { box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+    margin: 0;
+    font-family: var(--font-body);
+    font-size: var(--fs-base);
+    line-height: var(--lh-body);
+    color: var(--color-text);
+    background: var(--color-background);
+}
+
+h1, h2, h3, h4, h5, h6 {
+    line-height: var(--lh-heading);
+    color: var(--color-primary);
+    margin: 0 0 var(--space-md);
+}
+
+/* Main section headings: Helvetica Bold */
+h1, h2 {
+    font-family: var(--font-heading);
+    font-weight: 700;
+}
+h1 { font-size: var(--fs-h1); }
+h2 { font-size: var(--fs-h2); }
+
+/* Subheadings: Open Sans SemiBold */
+h3, h4, h5, h6 {
+    font-family: var(--font-subheading);
+    font-weight: 600;
+}
+h3 { font-size: var(--fs-h3); }
+
+/* Cover / hero title: John Mayer Fancy Ligature */
+.display-title {
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: clamp(3rem, 8vw, 5.5rem);
+    line-height: 1.1;
+    font-feature-settings: "liga" 1, "dlig" 1;
+}
+
+/* Quotes & taglines: Bayshore */
+.tagline,
+blockquote,
+.quote {
+    font-family: var(--font-script);
+    font-size: clamp(1.5rem, 3vw, 2.25rem);
+    line-height: 1.3;
+    color: var(--color-accent-dark);
+}
+blockquote { margin: var(--space-lg) 0; }
+
+p { margin: 0 0 var(--space-md); }
+
+/* Forms & worksheets: Open Sans */
+input,
+select,
+textarea,
+button,
+label {
+    font-family: var(--font-body);
+    font-size: var(--fs-base);
+}
+
+a {
+    color: var(--color-accent-dark);
+    transition: color var(--transition);
+}
+a:hover,
+a:focus-visible { color: var(--color-accent); }
+
+img { max-width: 100%; height: auto; display: block; }
+
+.container {
+    width: 100%;
+    max-width: var(--container-width);
+    margin-inline: auto;
+    padding-inline: var(--space-md);
+}
+
+.section { padding-block: var(--space-xl); }
+
+.visually-hidden {
+    position: absolute !important;
+    width: 1px; height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+}
+
+.skip-link {
+    position: absolute;
+    left: var(--space-md);
+    top: -100px;
+    padding: var(--space-sm) var(--space-md);
+    background: var(--color-primary);
+    color: var(--color-white);
+    z-index: 1000;
+}
+.skip-link:focus { top: var(--space-md); }
+
+.placeholder-note {
+    color: var(--color-text-muted);
+    font-style: italic;
+}
+
+/* --------------------------------------------------------------------------
+   3. Header & navigation
+   -------------------------------------------------------------------------- */
+.site-header {
+    background: var(--color-primary);
+    color: var(--color-soft-peach);
+}
+.site-header__inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-lg);
+    padding-block: var(--space-md);
+}
+
+.brand { text-decoration: none; display: flex; flex-direction: column; }
+.brand__name {
+    font-family: var(--font-heading);
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--color-golden-yellow);
+    margin: 0;
+}
+.brand__tagline {
+    font-family: var(--font-script);
+    font-size: 1.125rem;
+    color: var(--color-soft-peach);
+    margin: 0;
+}
+
+.primary-nav__list,
+.dropdown {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+.primary-nav__list { display: flex; gap: var(--space-md); }
+.primary-nav__item { position: relative; }
+.primary-nav__link {
+    color: var(--color-soft-peach);
+    text-decoration: none;
+    font-weight: 600;
+    font-size: var(--fs-sm);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+}
+.primary-nav__link.is-active,
+.primary-nav__link:hover { color: var(--color-golden-yellow); }
+
+.dropdown {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    min-width: 240px;
+    padding: var(--space-sm) 0;
+    background: var(--color-white);
+    box-shadow: var(--shadow);
+    z-index: 100;
+}
+.has-dropdown:hover > .dropdown,
+.has-dropdown:focus-within > .dropdown { display: block; }
+.dropdown__link {
+    display: block;
+    padding: var(--space-sm) var(--space-md);
+    color: var(--color-primary);
+    text-decoration: none;
+}
+.dropdown__link:hover,
+.dropdown__link.is-active { background: var(--color-soft-peach); color: var(--color-primary); }
+
+.nav-toggle { display: none; }
+
+/* --------------------------------------------------------------------------
+   4. Footer
+   -------------------------------------------------------------------------- */
+.site-footer {
+    background: var(--color-primary);
+    color: var(--color-soft-peach);
+    margin-top: var(--space-xl);
+}
+.site-footer__inner {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-lg);
+    padding-block: var(--space-xl);
+}
+.site-footer ul { list-style: none; margin: 0; padding: 0; }
+.site-footer a { color: var(--color-soft-peach); text-decoration: none; }
+.site-footer a:hover { color: var(--color-golden-yellow); }
+
+.site-footer__legal {
+    border-top: 1px solid rgba(246, 226, 212, 0.15);
+    padding-block: var(--space-md);
+    font-size: var(--fs-sm);
+}
+.site-footer__legal .container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: var(--space-md);
+}
+.site-footer__legal p { margin: 0; }
+.site-footer__legal ul { display: flex; gap: var(--space-md); }
