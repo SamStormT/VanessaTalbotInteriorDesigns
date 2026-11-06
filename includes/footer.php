@@ -15,20 +15,37 @@ if ($layout === 'admin'): ?>
         <div class="site-footer__brand">
             <p class="brand__name"><?= e(SITE_NAME) ?></p>
             <p class="brand__tagline"><?= e(SITE_TAGLINE) ?></p>
+            <p class="site-footer__about">
+                Biophilic interior design, colour psychology and photography for homes,
+                workspaces, wellness centres, boutiques and events.
+            </p>
         </div>
 
-        <nav class="site-footer__nav" aria-label="Footer navigation">
+        <nav class="site-footer__col" aria-labelledby="footer-explore">
+            <h2 id="footer-explore" class="site-footer__heading">Explore</h2>
             <ul>
-                <li><a href="<?= e(url('services.php')) ?>">Services</a></li>
+                <li><a href="<?= e(url('about.php')) ?>">About Vanessa</a></li>
                 <li><a href="<?= e(url('portfolio.php')) ?>">Portfolio</a></li>
                 <li><a href="<?= e(url('photography.php')) ?>">Photography</a></li>
                 <li><a href="<?= e(url('blog.php')) ?>">Blog</a></li>
-                <li><a href="<?= e(url('contact.php')) ?>">Contact</a></li>
+                <li><a href="<?= e(url('speaking.php')) ?>">Speaking</a></li>
             </ul>
         </nav>
 
-        <div class="site-footer__newsletter">
-            <!-- Phase 2+: newsletter subscription form -->
+        <nav class="site-footer__col" aria-labelledby="footer-services">
+            <h2 id="footer-services" class="site-footer__heading">Services</h2>
+            <ul>
+                <li><a href="<?= e(url('services/biophilic-design.php')) ?>">Biophilic Design</a></li>
+                <li><a href="<?= e(url('services/colour-psychology.php')) ?>">Colour Psychology</a></li>
+                <li><a href="<?= e(url('services/workshops.php')) ?>">Workshops</a></li>
+                <li><a href="<?= e(url('services/consultations.php')) ?>">Consultations</a></li>
+            </ul>
+        </nav>
+
+        <div class="site-footer__col">
+            <h2 class="site-footer__heading">Get in touch</h2>
+            <p>Ready to bring nature into your space? Let's talk about what you have in mind.</p>
+            <a class="btn btn--primary btn--small" href="<?= e(url('contact.php')) ?>">Contact Vanessa</a>
         </div>
     </div>
 

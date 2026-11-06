@@ -68,3 +68,4 @@ define('PAYFAST_MERCHANT_KEY', '');
 define('PAYFAST_PASSPHRASE', '');
 
 require_once INCLUDES_PATH . '/functions.php';
+require_once INCLUDES_PATH . '/icons.php';

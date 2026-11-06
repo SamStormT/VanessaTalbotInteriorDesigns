@@ -4,7 +4,7 @@
 
 Stack: HTML5, CSS3, JavaScript, PHP 8, MariaDB, PHPMailer, PayFast. Hosted on Xneelo Standard Hosting.
 
-> **Status: Phase 1, structure only.** Every page is a placeholder. The database, email, payments and authentication are not built yet.
+> **Status: Phase 2.** Home, About and Services are built. Other pages are still placeholders. The database, email, payments and authentication are not built yet.
 
 ## Folder layout
 
@@ -69,6 +69,8 @@ Stack: HTML5, CSS3, JavaScript, PHP 8, MariaDB, PHPMailer, PayFast. Hosted on Xn
 ├── includes/
 │   ├── config.php             Constants, environment, paths; loads functions.php
 │   ├── functions.php          e(), url(), asset(), is_active()
+│   ├── icons.php              icon() inline SVG icons, botanical() decoration
+│   ├── site-data.php          Shared content: services, values, target markets, portfolio categories
 │   ├── database.php           PDO / MariaDB (placeholder)
 │   ├── auth.php               Sessions, require_admin() (placeholder, always denies)
 │   ├── mail.php               PHPMailer (placeholder)
@@ -112,7 +114,8 @@ Admin page: the same, plus `require_once INCLUDES_PATH . '/auth.php'; require_ad
 | `--color-forest-green` | `#243A39` | Primary: header, footer, headings |
 | `--color-golden-yellow` | `#CDA02D` | Accent: logo, hover, highlights |
 | `--color-soft-peach` | `#F6E2D4` | Surface: light sections, text on green |
-| `--color-earthy-gold` | `#9D7F3C` | Dark accent: links |
+| `--color-earthy-gold` | `#9D7F3C` | Decorative accent: borders, frames |
+| `--color-gold-text` | `#7A6230` | Earthy gold darkened for text and links on light backgrounds (WCAG AA) |
 ## Typography
 
 | Purpose | Brand font | Variable / selector | Web stand-in |

@@ -21,8 +21,14 @@ $fullTitle = $pageTitle !== '' ? $pageTitle . ' | ' . SITE_NAME : SITE_NAME . ' 
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= e($fullTitle) ?></title>
     <meta name="description" content="<?= e($pageDescription) ?>">
+    <meta name="theme-color" content="#243A39">
 <?php if ($layout === 'admin'): ?>
     <meta name="robots" content="noindex, nofollow">
+<?php else: ?>
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="<?= e(SITE_NAME) ?>">
+    <meta property="og:title" content="<?= e($fullTitle) ?>">
+    <meta property="og:description" content="<?= e($pageDescription) ?>">
 <?php endif; ?>
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
