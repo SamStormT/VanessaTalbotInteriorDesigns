@@ -204,7 +204,7 @@ Menu items a role cannot use are hidden, and each page also checks permission on
 | Homepage Content | V E | V E | V E |
 | About Content | V E | V E | V E |
 | About Values and Qualifications | V C E P A D | V C E P A D | V C E |
-| Site Pages (legal) | V C E P A | V C E P A | V |
+| Site Pages (legal) | V E P | V E P | V |
 | Services | V C E P A D | V C E P A | V E |
 | Portfolio Projects and Images | V C E P A D | V C E P A D | V C E |
 | Collaborators | V C E P A D | V C E P A D | V C E |

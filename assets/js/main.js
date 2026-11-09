@@ -42,6 +42,18 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // Contact form: not connected yet, so it validates and says so plainly.
+    document.querySelectorAll('[data-contact-form]').forEach((form) => {
+        const status = form.querySelector('.form-status');
+
+        form.addEventListener('submit', (event) => {
+            event.preventDefault();
+            status.textContent = form.checkValidity()
+                ? status.dataset.notice
+                : 'Please complete the required fields.';
+        });
+    });
+
     // Newsletter form.
     // Sign-ups are not stored until the subscriber database is built (Phase 3),
     // so the form validates the email and tells the visitor honestly.

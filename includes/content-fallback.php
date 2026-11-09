@@ -1011,4 +1011,1256 @@ Health & wellness centres',
       ),
     ),
   ),
+  'sections_contact' => 
+  array (
+    'page-header' => 
+    array (
+      'PageKey' => 'contact',
+      'SectionKey' => 'page-header',
+      'Eyebrow' => NULL,
+      'Heading' => 'Contact',
+      'Introduction' => 'Whether it\'s your home, your workspace, a wellness centre, a boutique or an event, Vanessa would love to hear what you have in mind.',
+      'Body' => NULL,
+      'ButtonText' => NULL,
+      'ButtonLink' => NULL,
+      'SecondaryButtonText' => NULL,
+      'SecondaryButtonLink' => NULL,
+      'Image' => NULL,
+      'ImageAlt' => NULL,
+      'DisplayOrder' => 10,
+      'items' => 
+      array (
+      ),
+    ),
+    'details' => 
+    array (
+      'PageKey' => 'contact',
+      'SectionKey' => 'details',
+      'Eyebrow' => 'Get in touch',
+      'Heading' => 'Contact details',
+      'Introduction' => 'The easiest way to start is with a phone call or an email.',
+      'Body' => NULL,
+      'ButtonText' => NULL,
+      'ButtonLink' => NULL,
+      'SecondaryButtonText' => NULL,
+      'SecondaryButtonLink' => NULL,
+      'Image' => NULL,
+      'ImageAlt' => NULL,
+      'DisplayOrder' => 20,
+      'items' => 
+      array (
+      ),
+    ),
+    'location' => 
+    array (
+      'PageKey' => 'contact',
+      'SectionKey' => 'location',
+      'Eyebrow' => 'Location',
+      'Heading' => 'Where Vanessa is based',
+      'Introduction' => 'Visits are by appointment. Get in touch to discuss your location and project.',
+      'Body' => NULL,
+      'ButtonText' => NULL,
+      'ButtonLink' => NULL,
+      'SecondaryButtonText' => NULL,
+      'SecondaryButtonLink' => NULL,
+      'Image' => NULL,
+      'ImageAlt' => NULL,
+      'DisplayOrder' => 30,
+      'items' => 
+      array (
+      ),
+    ),
+    'form' => 
+    array (
+      'PageKey' => 'contact',
+      'SectionKey' => 'form',
+      'Eyebrow' => 'Enquiries',
+      'Heading' => 'Send a message',
+      'Introduction' => 'Tell us a little about your space and what you have in mind.',
+      'Body' => NULL,
+      'ButtonText' => NULL,
+      'ButtonLink' => NULL,
+      'SecondaryButtonText' => NULL,
+      'SecondaryButtonLink' => NULL,
+      'Image' => NULL,
+      'ImageAlt' => NULL,
+      'DisplayOrder' => 40,
+      'items' => 
+      array (
+      ),
+    ),
+    'faq' => 
+    array (
+      'PageKey' => 'contact',
+      'SectionKey' => 'faq',
+      'Eyebrow' => 'Questions',
+      'Heading' => 'Frequently asked questions',
+      'Introduction' => NULL,
+      'Body' => NULL,
+      'ButtonText' => NULL,
+      'ButtonLink' => NULL,
+      'SecondaryButtonText' => NULL,
+      'SecondaryButtonLink' => NULL,
+      'Image' => NULL,
+      'ImageAlt' => NULL,
+      'DisplayOrder' => 50,
+      'items' => 
+      array (
+        0 => 
+        array (
+          'ItemKey' => 'what-is-biophilic',
+          'Title' => 'What is biophilic design?',
+          'Text' => 'Biophilic design brings the natural world into the spaces where we live and work, through light, plants, water, natural materials and organic form, to support health and wellbeing.',
+          'Icon' => NULL,
+          'Link' => NULL,
+          'Image' => NULL,
+          'ImageAlt' => NULL,
+          'DisplayOrder' => 10,
+        ),
+        1 => 
+        array (
+          'ItemKey' => 'who',
+          'Title' => 'What kinds of spaces do you work with?',
+          'Text' => 'Vanessa works with homes, workspaces, health and wellness centres, boutiques, and events and functions.',
+          'Icon' => NULL,
+          'Link' => NULL,
+          'Image' => NULL,
+          'ImageAlt' => NULL,
+          'DisplayOrder' => 20,
+        ),
+        2 => 
+        array (
+          'ItemKey' => 'included',
+          'Title' => 'What does a design project include?',
+          'Text' => 'Projects can include consultation, layouts, plans, mood boards, and the sourcing of local and sustainable materials, furniture, plants and accessories. The scope is agreed with you at the start.',
+          'Icon' => NULL,
+          'Link' => NULL,
+          'Image' => NULL,
+          'ImageAlt' => NULL,
+          'DisplayOrder' => 30,
+        ),
+        3 => 
+        array (
+          'ItemKey' => 'full-redesign',
+          'Title' => 'Do I need a full redesign?',
+          'Text' => 'Not at all. A consultation can give you clear, practical direction to carry out yourself, or be the first step in a larger project.',
+          'Icon' => NULL,
+          'Link' => NULL,
+          'Image' => NULL,
+          'ImageAlt' => NULL,
+          'DisplayOrder' => 40,
+        ),
+        4 => 
+        array (
+          'ItemKey' => 'budget',
+          'Title' => 'Can you work within my budget?',
+          'Text' => 'Yes. Every project starts with a realistic budget, agreed with you before any work begins.',
+          'Icon' => NULL,
+          'Link' => NULL,
+          'Image' => NULL,
+          'ImageAlt' => NULL,
+          'DisplayOrder' => 50,
+        ),
+        5 => 
+        array (
+          'ItemKey' => 'events',
+          'Title' => 'Do you help with events?',
+          'Text' => 'Yes. Vanessa offers event layouts, table settings and décor for private and business functions.',
+          'Icon' => NULL,
+          'Link' => NULL,
+          'Image' => NULL,
+          'ImageAlt' => NULL,
+          'DisplayOrder' => 60,
+        ),
+      ),
+    ),
+  ),
+  'sections_portfolio' => 
+  array (
+    'page-header' => 
+    array (
+      'PageKey' => 'portfolio',
+      'SectionKey' => 'page-header',
+      'Eyebrow' => NULL,
+      'Heading' => 'Portfolio',
+      'Introduction' => 'Explore Vanessa\'s work across biophilic interiors, colour-led design and photography.',
+      'Body' => NULL,
+      'ButtonText' => NULL,
+      'ButtonLink' => NULL,
+      'SecondaryButtonText' => NULL,
+      'SecondaryButtonLink' => NULL,
+      'Image' => NULL,
+      'ImageAlt' => NULL,
+      'DisplayOrder' => 10,
+      'items' => 
+      array (
+      ),
+    ),
+    'categories' => 
+    array (
+      'PageKey' => 'portfolio',
+      'SectionKey' => 'categories',
+      'Eyebrow' => 'Explore',
+      'Heading' => 'Spaces with a sense of place',
+      'Introduction' => NULL,
+      'Body' => NULL,
+      'ButtonText' => NULL,
+      'ButtonLink' => NULL,
+      'SecondaryButtonText' => NULL,
+      'SecondaryButtonLink' => NULL,
+      'Image' => NULL,
+      'ImageAlt' => NULL,
+      'DisplayOrder' => 20,
+      'items' => 
+      array (
+        0 => 
+        array (
+          'ItemKey' => 'biophilic',
+          'Title' => 'Biophilic Interior Design',
+          'Text' => 'Interiors brought to life with natural light, planting and organic materials.',
+          'Icon' => 'leaf',
+          'Link' => 'portfolio/biophilic-interior-design.php',
+          'Image' => NULL,
+          'ImageAlt' => NULL,
+          'DisplayOrder' => 10,
+        ),
+        1 => 
+        array (
+          'ItemKey' => 'colour',
+          'Title' => 'Colour & Design Psychology',
+          'Text' => 'Spaces designed around how people want to feel in them.',
+          'Icon' => 'palette',
+          'Link' => 'portfolio/colour-psychology.php',
+          'Image' => NULL,
+          'ImageAlt' => NULL,
+          'DisplayOrder' => 20,
+        ),
+        2 => 
+        array (
+          'ItemKey' => 'photography',
+          'Title' => 'Photography',
+          'Text' => 'Nature, botanical detail and interiors seen through Vanessa\'s lens.',
+          'Icon' => 'camera',
+          'Link' => 'portfolio/photography-gallery.php',
+          'Image' => NULL,
+          'ImageAlt' => NULL,
+          'DisplayOrder' => 30,
+        ),
+        3 => 
+        array (
+          'ItemKey' => 'collaborators',
+          'Title' => 'Collaborators',
+          'Text' => 'The people and businesses Vanessa works alongside.',
+          'Icon' => 'group',
+          'Link' => 'portfolio/collaborators.php',
+          'Image' => NULL,
+          'ImageAlt' => NULL,
+          'DisplayOrder' => 40,
+        ),
+      ),
+    ),
+    'featured' => 
+    array (
+      'PageKey' => 'portfolio',
+      'SectionKey' => 'featured',
+      'Eyebrow' => 'Featured',
+      'Heading' => 'Selected projects',
+      'Introduction' => NULL,
+      'Body' => NULL,
+      'ButtonText' => NULL,
+      'ButtonLink' => NULL,
+      'SecondaryButtonText' => NULL,
+      'SecondaryButtonLink' => NULL,
+      'Image' => NULL,
+      'ImageAlt' => NULL,
+      'DisplayOrder' => 30,
+      'items' => 
+      array (
+      ),
+    ),
+    'closing' => 
+    array (
+      'PageKey' => 'portfolio',
+      'SectionKey' => 'closing',
+      'Eyebrow' => NULL,
+      'Heading' => 'Have a space in mind?',
+      'Introduction' => 'Tell Vanessa about your home, workspace or event, and how you would like it to feel.',
+      'Body' => NULL,
+      'ButtonText' => 'Get in touch',
+      'ButtonLink' => 'contact.php',
+      'SecondaryButtonText' => 'Explore services',
+      'SecondaryButtonLink' => 'services.php',
+      'Image' => NULL,
+      'ImageAlt' => NULL,
+      'DisplayOrder' => 90,
+      'items' => 
+      array (
+      ),
+    ),
+  ),
+  'sections_portfolio-biophilic-interior-design' => 
+  array (
+    'page-header' => 
+    array (
+      'PageKey' => 'portfolio-biophilic-interior-design',
+      'SectionKey' => 'page-header',
+      'Eyebrow' => NULL,
+      'Heading' => 'Biophilic Interior Design',
+      'Introduction' => 'Homes, workspaces and wellness spaces reconnected with the natural world.',
+      'Body' => NULL,
+      'ButtonText' => NULL,
+      'ButtonLink' => NULL,
+      'SecondaryButtonText' => NULL,
+      'SecondaryButtonLink' => NULL,
+      'Image' => NULL,
+      'ImageAlt' => NULL,
+      'DisplayOrder' => 10,
+      'items' => 
+      array (
+      ),
+    ),
+    'intro' => 
+    array (
+      'PageKey' => 'portfolio-biophilic-interior-design',
+      'SectionKey' => 'intro',
+      'Eyebrow' => 'The work',
+      'Heading' => 'Designing with nature',
+      'Introduction' => 'Natural light, planting, water and organic materials, brought together in personal and functional spaces.',
+      'Body' => NULL,
+      'ButtonText' => NULL,
+      'ButtonLink' => NULL,
+      'SecondaryButtonText' => NULL,
+      'SecondaryButtonLink' => NULL,
+      'Image' => NULL,
+      'ImageAlt' => NULL,
+      'DisplayOrder' => 20,
+      'items' => 
+      array (
+      ),
+    ),
+    'empty' => 
+    array (
+      'PageKey' => 'portfolio-biophilic-interior-design',
+      'SectionKey' => 'empty',
+      'Eyebrow' => NULL,
+      'Heading' => 'Projects coming soon',
+      'Introduction' => 'Vanessa\'s project stories are being prepared and will appear here soon.',
+      'Body' => NULL,
+      'ButtonText' => NULL,
+      'ButtonLink' => NULL,
+      'SecondaryButtonText' => NULL,
+      'SecondaryButtonLink' => NULL,
+      'Image' => NULL,
+      'ImageAlt' => NULL,
+      'DisplayOrder' => 30,
+      'items' => 
+      array (
+      ),
+    ),
+    'closing' => 
+    array (
+      'PageKey' => 'portfolio-biophilic-interior-design',
+      'SectionKey' => 'closing',
+      'Eyebrow' => NULL,
+      'Heading' => 'Have a space in mind?',
+      'Introduction' => 'Tell Vanessa about your home, workspace or event, and how you would like it to feel.',
+      'Body' => NULL,
+      'ButtonText' => 'Get in touch',
+      'ButtonLink' => 'contact.php',
+      'SecondaryButtonText' => 'Explore services',
+      'SecondaryButtonLink' => 'services.php',
+      'Image' => NULL,
+      'ImageAlt' => NULL,
+      'DisplayOrder' => 90,
+      'items' => 
+      array (
+      ),
+    ),
+  ),
+  'sections_portfolio-colour-psychology' => 
+  array (
+    'page-header' => 
+    array (
+      'PageKey' => 'portfolio-colour-psychology',
+      'SectionKey' => 'page-header',
+      'Eyebrow' => NULL,
+      'Heading' => 'Colour & Design Psychology',
+      'Introduction' => 'Spaces designed around how people want to feel in them.',
+      'Body' => NULL,
+      'ButtonText' => NULL,
+      'ButtonLink' => NULL,
+      'SecondaryButtonText' => NULL,
+      'SecondaryButtonLink' => NULL,
+      'Image' => NULL,
+      'ImageAlt' => NULL,
+      'DisplayOrder' => 10,
+      'items' => 
+      array (
+      ),
+    ),
+    'intro' => 
+    array (
+      'PageKey' => 'portfolio-colour-psychology',
+      'SectionKey' => 'intro',
+      'Eyebrow' => 'The work',
+      'Heading' => 'Colour and design with purpose',
+      'Introduction' => 'Palettes, textures and layouts chosen to match the emotional and physical needs of the people who use each space.',
+      'Body' => NULL,
+      'ButtonText' => NULL,
+      'ButtonLink' => NULL,
+      'SecondaryButtonText' => NULL,
+      'SecondaryButtonLink' => NULL,
+      'Image' => NULL,
+      'ImageAlt' => NULL,
+      'DisplayOrder' => 20,
+      'items' => 
+      array (
+      ),
+    ),
+    'empty' => 
+    array (
+      'PageKey' => 'portfolio-colour-psychology',
+      'SectionKey' => 'empty',
+      'Eyebrow' => NULL,
+      'Heading' => 'Projects coming soon',
+      'Introduction' => 'Vanessa\'s project stories are being prepared and will appear here soon.',
+      'Body' => NULL,
+      'ButtonText' => NULL,
+      'ButtonLink' => NULL,
+      'SecondaryButtonText' => NULL,
+      'SecondaryButtonLink' => NULL,
+      'Image' => NULL,
+      'ImageAlt' => NULL,
+      'DisplayOrder' => 30,
+      'items' => 
+      array (
+      ),
+    ),
+    'closing' => 
+    array (
+      'PageKey' => 'portfolio-colour-psychology',
+      'SectionKey' => 'closing',
+      'Eyebrow' => NULL,
+      'Heading' => 'Have a space in mind?',
+      'Introduction' => 'Tell Vanessa about your home, workspace or event, and how you would like it to feel.',
+      'Body' => NULL,
+      'ButtonText' => 'Get in touch',
+      'ButtonLink' => 'contact.php',
+      'SecondaryButtonText' => 'Explore services',
+      'SecondaryButtonLink' => 'services.php',
+      'Image' => NULL,
+      'ImageAlt' => NULL,
+      'DisplayOrder' => 90,
+      'items' => 
+      array (
+      ),
+    ),
+  ),
+  'sections_portfolio-photography-gallery' => 
+  array (
+    'page-header' => 
+    array (
+      'PageKey' => 'portfolio-photography-gallery',
+      'SectionKey' => 'page-header',
+      'Eyebrow' => NULL,
+      'Heading' => 'Photography',
+      'Introduction' => 'Nature, botanical detail and interiors seen through Vanessa\'s lens.',
+      'Body' => NULL,
+      'ButtonText' => NULL,
+      'ButtonLink' => NULL,
+      'SecondaryButtonText' => NULL,
+      'SecondaryButtonLink' => NULL,
+      'Image' => NULL,
+      'ImageAlt' => NULL,
+      'DisplayOrder' => 10,
+      'items' => 
+      array (
+      ),
+    ),
+    'intro' => 
+    array (
+      'PageKey' => 'portfolio-photography-gallery',
+      'SectionKey' => 'intro',
+      'Eyebrow' => 'The work',
+      'Heading' => 'Light, texture and atmosphere',
+      'Introduction' => 'Images that invite you to connect with colour, shape and form in the natural world.',
+      'Body' => NULL,
+      'ButtonText' => NULL,
+      'ButtonLink' => NULL,
+      'SecondaryButtonText' => NULL,
+      'SecondaryButtonLink' => NULL,
+      'Image' => NULL,
+      'ImageAlt' => NULL,
+      'DisplayOrder' => 20,
+      'items' => 
+      array (
+      ),
+    ),
+    'empty' => 
+    array (
+      'PageKey' => 'portfolio-photography-gallery',
+      'SectionKey' => 'empty',
+      'Eyebrow' => NULL,
+      'Heading' => 'Gallery coming soon',
+      'Introduction' => 'A selection of Vanessa\'s photographs will appear here soon.',
+      'Body' => NULL,
+      'ButtonText' => NULL,
+      'ButtonLink' => NULL,
+      'SecondaryButtonText' => NULL,
+      'SecondaryButtonLink' => NULL,
+      'Image' => NULL,
+      'ImageAlt' => NULL,
+      'DisplayOrder' => 30,
+      'items' => 
+      array (
+      ),
+    ),
+    'closing' => 
+    array (
+      'PageKey' => 'portfolio-photography-gallery',
+      'SectionKey' => 'closing',
+      'Eyebrow' => NULL,
+      'Heading' => 'Have a space in mind?',
+      'Introduction' => 'Tell Vanessa about your home, workspace or event, and how you would like it to feel.',
+      'Body' => NULL,
+      'ButtonText' => 'Get in touch',
+      'ButtonLink' => 'contact.php',
+      'SecondaryButtonText' => 'Explore services',
+      'SecondaryButtonLink' => 'services.php',
+      'Image' => NULL,
+      'ImageAlt' => NULL,
+      'DisplayOrder' => 90,
+      'items' => 
+      array (
+      ),
+    ),
+  ),
+  'sections_portfolio-collaborators' => 
+  array (
+    'page-header' => 
+    array (
+      'PageKey' => 'portfolio-collaborators',
+      'SectionKey' => 'page-header',
+      'Eyebrow' => NULL,
+      'Heading' => 'Collaborators',
+      'Introduction' => 'The people and businesses Vanessa works alongside.',
+      'Body' => NULL,
+      'ButtonText' => NULL,
+      'ButtonLink' => NULL,
+      'SecondaryButtonText' => NULL,
+      'SecondaryButtonLink' => NULL,
+      'Image' => NULL,
+      'ImageAlt' => NULL,
+      'DisplayOrder' => 10,
+      'items' => 
+      array (
+      ),
+    ),
+    'intro' => 
+    array (
+      'PageKey' => 'portfolio-collaborators',
+      'SectionKey' => 'intro',
+      'Eyebrow' => 'Working together',
+      'Heading' => 'Better spaces, made together',
+      'Introduction' => 'Good design depends on good partnerships, from local makers and suppliers to fellow creatives.',
+      'Body' => NULL,
+      'ButtonText' => NULL,
+      'ButtonLink' => NULL,
+      'SecondaryButtonText' => NULL,
+      'SecondaryButtonLink' => NULL,
+      'Image' => NULL,
+      'ImageAlt' => NULL,
+      'DisplayOrder' => 20,
+      'items' => 
+      array (
+      ),
+    ),
+    'empty' => 
+    array (
+      'PageKey' => 'portfolio-collaborators',
+      'SectionKey' => 'empty',
+      'Eyebrow' => NULL,
+      'Heading' => 'Collaborators coming soon',
+      'Introduction' => 'The people and businesses Vanessa works with will be introduced here soon.',
+      'Body' => NULL,
+      'ButtonText' => NULL,
+      'ButtonLink' => NULL,
+      'SecondaryButtonText' => NULL,
+      'SecondaryButtonLink' => NULL,
+      'Image' => NULL,
+      'ImageAlt' => NULL,
+      'DisplayOrder' => 30,
+      'items' => 
+      array (
+      ),
+    ),
+    'closing' => 
+    array (
+      'PageKey' => 'portfolio-collaborators',
+      'SectionKey' => 'closing',
+      'Eyebrow' => NULL,
+      'Heading' => 'Interested in working together?',
+      'Introduction' => 'Vanessa would be glad to hear from makers, suppliers and fellow creatives.',
+      'Body' => NULL,
+      'ButtonText' => 'Get in touch',
+      'ButtonLink' => 'contact.php',
+      'SecondaryButtonText' => 'View the portfolio',
+      'SecondaryButtonLink' => 'portfolio.php',
+      'Image' => NULL,
+      'ImageAlt' => NULL,
+      'DisplayOrder' => 90,
+      'items' => 
+      array (
+      ),
+    ),
+  ),
+  'sections_service-biophilic-design' => 
+  array (
+    'approach' => 
+    array (
+      'PageKey' => 'service-biophilic-design',
+      'SectionKey' => 'approach',
+      'Eyebrow' => 'How it works',
+      'Heading' => 'From first conversation to finished space',
+      'Introduction' => 'Every project is personal, and shaped around the way you live or work.',
+      'Body' => NULL,
+      'ButtonText' => NULL,
+      'ButtonLink' => NULL,
+      'SecondaryButtonText' => NULL,
+      'SecondaryButtonLink' => NULL,
+      'Image' => NULL,
+      'ImageAlt' => NULL,
+      'DisplayOrder' => 10,
+      'items' => 
+      array (
+        0 => 
+        array (
+          'ItemKey' => 'consultation',
+          'Title' => 'Consultation',
+          'Text' => 'We talk through your space, your lifestyle and what you need the space to do for you.',
+          'Icon' => 'chat',
+          'Link' => NULL,
+          'Image' => NULL,
+          'ImageAlt' => NULL,
+          'DisplayOrder' => 10,
+        ),
+        1 => 
+        array (
+          'ItemKey' => 'plans',
+          'Title' => 'Layouts, plans and mood boards',
+          'Text' => 'Your ideas take shape in layouts, plans and mood boards, so you can see the direction before anything changes.',
+          'Icon' => 'pen',
+          'Link' => NULL,
+          'Image' => NULL,
+          'ImageAlt' => NULL,
+          'DisplayOrder' => 20,
+        ),
+        2 => 
+        array (
+          'ItemKey' => 'sourcing',
+          'Title' => 'Sourcing',
+          'Text' => 'Local and sustainable materials, fabrics, furniture, flooring and natural textures, chosen to suit your space and a realistic budget.',
+          'Icon' => 'leaf',
+          'Link' => NULL,
+          'Image' => NULL,
+          'ImageAlt' => NULL,
+          'DisplayOrder' => 30,
+        ),
+        3 => 
+        array (
+          'ItemKey' => 'nature',
+          'Title' => 'Bringing nature in',
+          'Text' => 'Plants, water features, natural lighting and ventilation, art and accessories that reconnect the space with the natural world.',
+          'Icon' => 'sprout',
+          'Link' => NULL,
+          'Image' => NULL,
+          'ImageAlt' => NULL,
+          'DisplayOrder' => 40,
+        ),
+      ),
+    ),
+    'specialised' => 
+    array (
+      'PageKey' => 'service-biophilic-design',
+      'SectionKey' => 'specialised',
+      'Eyebrow' => 'Specialised services',
+      'Heading' => 'Sanctuaries and special occasions',
+      'Introduction' => NULL,
+      'Body' => NULL,
+      'ButtonText' => NULL,
+      'ButtonLink' => NULL,
+      'SecondaryButtonText' => NULL,
+      'SecondaryButtonLink' => NULL,
+      'Image' => NULL,
+      'ImageAlt' => NULL,
+      'DisplayOrder' => 20,
+      'items' => 
+      array (
+        0 => 
+        array (
+          'ItemKey' => 'sanctuaries',
+          'Title' => 'Peaceful sanctuaries',
+          'Text' => 'Quiet, restorative places within your home or workspace, created around what helps you feel at ease.',
+          'Icon' => 'sprout',
+          'Link' => NULL,
+          'Image' => NULL,
+          'ImageAlt' => NULL,
+          'DisplayOrder' => 10,
+        ),
+        1 => 
+        array (
+          'ItemKey' => 'events',
+          'Title' => 'Events and functions',
+          'Text' => 'Considered layouts for private and business functions that bring a sense of nature to the occasion.',
+          'Icon' => 'group',
+          'Link' => NULL,
+          'Image' => NULL,
+          'ImageAlt' => NULL,
+          'DisplayOrder' => 20,
+        ),
+        2 => 
+        array (
+          'ItemKey' => 'table-settings',
+          'Title' => 'Table settings and décor',
+          'Text' => 'Natural textures, colour and detail that give every table and room a sense of occasion.',
+          'Icon' => 'brush',
+          'Link' => NULL,
+          'Image' => NULL,
+          'ImageAlt' => NULL,
+          'DisplayOrder' => 30,
+        ),
+      ),
+    ),
+    'closing' => 
+    array (
+      'PageKey' => 'service-biophilic-design',
+      'SectionKey' => 'closing',
+      'Eyebrow' => NULL,
+      'Heading' => 'Bring nature into your space',
+      'Introduction' => 'Tell Vanessa about your space and how you would like it to feel.',
+      'Body' => NULL,
+      'ButtonText' => 'Enquire about this service',
+      'ButtonLink' => 'contact.php?service=biophilic-design',
+      'SecondaryButtonText' => 'View all services',
+      'SecondaryButtonLink' => 'services.php',
+      'Image' => NULL,
+      'ImageAlt' => NULL,
+      'DisplayOrder' => 90,
+      'items' => 
+      array (
+      ),
+    ),
+  ),
+  'sections_service-colour-psychology' => 
+  array (
+    'approach' => 
+    array (
+      'PageKey' => 'service-colour-psychology',
+      'SectionKey' => 'approach',
+      'Eyebrow' => 'How it works',
+      'Heading' => 'Design that responds to how you feel',
+      'Introduction' => 'A space works best when it matches both your emotional and your physical needs.',
+      'Body' => NULL,
+      'ButtonText' => NULL,
+      'ButtonLink' => NULL,
+      'SecondaryButtonText' => NULL,
+      'SecondaryButtonLink' => NULL,
+      'Image' => NULL,
+      'ImageAlt' => NULL,
+      'DisplayOrder' => 10,
+      'items' => 
+      array (
+        0 => 
+        array (
+          'ItemKey' => 'understanding',
+          'Title' => 'Understanding you',
+          'Text' => 'We begin with how you want to feel in the space and what it needs to do for the people who use it.',
+          'Icon' => 'person',
+          'Link' => NULL,
+          'Image' => NULL,
+          'ImageAlt' => NULL,
+          'DisplayOrder' => 10,
+        ),
+        1 => 
+        array (
+          'ItemKey' => 'colour-light',
+          'Title' => 'Colour and light',
+          'Text' => 'Palettes are built around the way natural and artificial light changes through the day.',
+          'Icon' => 'palette',
+          'Link' => NULL,
+          'Image' => NULL,
+          'ImageAlt' => NULL,
+          'DisplayOrder' => 20,
+        ),
+        2 => 
+        array (
+          'ItemKey' => 'form',
+          'Title' => 'Form, texture and layout',
+          'Text' => 'Shape, texture and the arrangement of a room influence how it feels just as much as colour does.',
+          'Icon' => 'brush',
+          'Link' => NULL,
+          'Image' => NULL,
+          'ImageAlt' => NULL,
+          'DisplayOrder' => 30,
+        ),
+        3 => 
+        array (
+          'ItemKey' => 'plan',
+          'Title' => 'A clear plan',
+          'Text' => 'You receive considered recommendations that bring beauty, comfort and purpose together.',
+          'Icon' => 'check',
+          'Link' => NULL,
+          'Image' => NULL,
+          'ImageAlt' => NULL,
+          'DisplayOrder' => 40,
+        ),
+      ),
+    ),
+    'closing' => 
+    array (
+      'PageKey' => 'service-colour-psychology',
+      'SectionKey' => 'closing',
+      'Eyebrow' => NULL,
+      'Heading' => 'Find the right palette for your space',
+      'Introduction' => 'Tell Vanessa what the space is for and how you would like it to feel.',
+      'Body' => NULL,
+      'ButtonText' => 'Enquire about this service',
+      'ButtonLink' => 'contact.php?service=colour-psychology',
+      'SecondaryButtonText' => 'View all services',
+      'SecondaryButtonLink' => 'services.php',
+      'Image' => NULL,
+      'ImageAlt' => NULL,
+      'DisplayOrder' => 90,
+      'items' => 
+      array (
+      ),
+    ),
+  ),
+  'sections_service-photography-services' => 
+  array (
+    'approach' => 
+    array (
+      'PageKey' => 'service-photography-services',
+      'SectionKey' => 'approach',
+      'Eyebrow' => 'Areas of work',
+      'Heading' => 'A way of seeing',
+      'Introduction' => 'Photography is about noticing: the light, the texture and the mood of a place.',
+      'Body' => NULL,
+      'ButtonText' => NULL,
+      'ButtonLink' => NULL,
+      'SecondaryButtonText' => NULL,
+      'SecondaryButtonLink' => NULL,
+      'Image' => NULL,
+      'ImageAlt' => NULL,
+      'DisplayOrder' => 10,
+      'items' => 
+      array (
+        0 => 
+        array (
+          'ItemKey' => 'nature',
+          'Title' => 'Nature and botanical detail',
+          'Text' => 'Close, quiet studies of the natural world, from the pattern in a leaf to the colours of a landscape.',
+          'Icon' => 'leaf',
+          'Link' => NULL,
+          'Image' => NULL,
+          'ImageAlt' => NULL,
+          'DisplayOrder' => 10,
+        ),
+        1 => 
+        array (
+          'ItemKey' => 'interiors',
+          'Title' => 'Interiors',
+          'Text' => 'Photographs that show a finished space at its best, with its light, texture and atmosphere intact.',
+          'Icon' => 'camera',
+          'Link' => NULL,
+          'Image' => NULL,
+          'ImageAlt' => NULL,
+          'DisplayOrder' => 20,
+        ),
+        2 => 
+        array (
+          'ItemKey' => 'brands',
+          'Title' => 'Imagery for your business',
+          'Text' => 'Photography for designers, boutiques and wellness brands that want to share their spaces.',
+          'Icon' => 'eye',
+          'Link' => NULL,
+          'Image' => NULL,
+          'ImageAlt' => NULL,
+          'DisplayOrder' => 30,
+        ),
+      ),
+    ),
+    'closing' => 
+    array (
+      'PageKey' => 'service-photography-services',
+      'SectionKey' => 'closing',
+      'Eyebrow' => NULL,
+      'Heading' => 'Talk to Vanessa about photography',
+      'Introduction' => 'Share what you would like to capture and where the images will be used.',
+      'Body' => NULL,
+      'ButtonText' => 'Enquire about this service',
+      'ButtonLink' => 'contact.php?service=photography-services',
+      'SecondaryButtonText' => 'View all services',
+      'SecondaryButtonLink' => 'services.php',
+      'Image' => NULL,
+      'ImageAlt' => NULL,
+      'DisplayOrder' => 90,
+      'items' => 
+      array (
+      ),
+    ),
+  ),
+  'sections_service-workshops' => 
+  array (
+    'approach' => 
+    array (
+      'PageKey' => 'service-workshops',
+      'SectionKey' => 'approach',
+      'Eyebrow' => 'How it works',
+      'Heading' => 'Learn by doing',
+      'Introduction' => 'Sessions are interactive, practical and tailored to the group.',
+      'Body' => NULL,
+      'ButtonText' => NULL,
+      'ButtonLink' => NULL,
+      'SecondaryButtonText' => NULL,
+      'SecondaryButtonLink' => NULL,
+      'Image' => NULL,
+      'ImageAlt' => NULL,
+      'DisplayOrder' => 10,
+      'items' => 
+      array (
+        0 => 
+        array (
+          'ItemKey' => 'explore',
+          'Title' => 'Explore',
+          'Text' => 'Participants look at how their surroundings affect the way they feel and work.',
+          'Icon' => 'eye',
+          'Link' => NULL,
+          'Image' => NULL,
+          'ImageAlt' => NULL,
+          'DisplayOrder' => 10,
+        ),
+        1 => 
+        array (
+          'ItemKey' => 'try',
+          'Title' => 'Try it',
+          'Text' => 'Hands-on activities turn the principles of biophilic design and colour & design psychology into something tangible.',
+          'Icon' => 'brush',
+          'Link' => NULL,
+          'Image' => NULL,
+          'ImageAlt' => NULL,
+          'DisplayOrder' => 20,
+        ),
+        2 => 
+        array (
+          'ItemKey' => 'take-home',
+          'Title' => 'Take it home',
+          'Text' => 'Everyone leaves with simple, achievable changes to make at home or at work.',
+          'Icon' => 'sprout',
+          'Link' => NULL,
+          'Image' => NULL,
+          'ImageAlt' => NULL,
+          'DisplayOrder' => 30,
+        ),
+      ),
+    ),
+    'closing' => 
+    array (
+      'PageKey' => 'service-workshops',
+      'SectionKey' => 'closing',
+      'Eyebrow' => NULL,
+      'Heading' => 'Plan a workshop',
+      'Introduction' => 'Tell Vanessa about your group and what you would like them to take away.',
+      'Body' => NULL,
+      'ButtonText' => 'Enquire about this service',
+      'ButtonLink' => 'contact.php?service=workshops',
+      'SecondaryButtonText' => 'View all services',
+      'SecondaryButtonLink' => 'services.php',
+      'Image' => NULL,
+      'ImageAlt' => NULL,
+      'DisplayOrder' => 90,
+      'items' => 
+      array (
+      ),
+    ),
+  ),
+  'sections_service-speaking-engagements' => 
+  array (
+    'approach' => 
+    array (
+      'PageKey' => 'service-speaking-engagements',
+      'SectionKey' => 'approach',
+      'Eyebrow' => 'Audiences',
+      'Heading' => 'Talks shaped around your audience',
+      'Introduction' => 'Each talk is tailored to the people in the room and what will be most useful to them.',
+      'Body' => NULL,
+      'ButtonText' => NULL,
+      'ButtonLink' => NULL,
+      'SecondaryButtonText' => NULL,
+      'SecondaryButtonLink' => NULL,
+      'Image' => NULL,
+      'ImageAlt' => NULL,
+      'DisplayOrder' => 10,
+      'items' => 
+      array (
+        0 => 
+        array (
+          'ItemKey' => 'conferences',
+          'Title' => 'Conferences and industry events',
+          'Text' => 'Ideas on designing with nature for design, property and business audiences.',
+          'Icon' => 'mic',
+          'Link' => NULL,
+          'Image' => NULL,
+          'ImageAlt' => NULL,
+          'DisplayOrder' => 10,
+        ),
+        1 => 
+        array (
+          'ItemKey' => 'wellness',
+          'Title' => 'Corporate wellness days',
+          'Text' => 'Why surroundings matter to wellbeing, and what teams can change straight away.',
+          'Icon' => 'leaf',
+          'Link' => NULL,
+          'Image' => NULL,
+          'ImageAlt' => NULL,
+          'DisplayOrder' => 20,
+        ),
+        2 => 
+        array (
+          'ItemKey' => 'community',
+          'Title' => 'Community groups',
+          'Text' => 'Accessible, practical conversations about bringing nature, colour and calm into everyday life.',
+          'Icon' => 'group',
+          'Link' => NULL,
+          'Image' => NULL,
+          'ImageAlt' => NULL,
+          'DisplayOrder' => 30,
+        ),
+      ),
+    ),
+    'closing' => 
+    array (
+      'PageKey' => 'service-speaking-engagements',
+      'SectionKey' => 'closing',
+      'Eyebrow' => NULL,
+      'Heading' => 'Invite Vanessa to speak',
+      'Introduction' => 'Share your event, your audience and the date you have in mind.',
+      'Body' => NULL,
+      'ButtonText' => 'Enquire about this service',
+      'ButtonLink' => 'contact.php?service=speaking-engagements',
+      'SecondaryButtonText' => 'View all services',
+      'SecondaryButtonLink' => 'services.php',
+      'Image' => NULL,
+      'ImageAlt' => NULL,
+      'DisplayOrder' => 90,
+      'items' => 
+      array (
+      ),
+    ),
+  ),
+  'sections_service-consultations' => 
+  array (
+    'approach' => 
+    array (
+      'PageKey' => 'service-consultations',
+      'SectionKey' => 'approach',
+      'Eyebrow' => 'What to expect',
+      'Heading' => 'A focused conversation about your space',
+      'Introduction' => 'A consultation can be the start of a larger project, or expert direction you carry out yourself.',
+      'Body' => NULL,
+      'ButtonText' => NULL,
+      'ButtonLink' => NULL,
+      'SecondaryButtonText' => NULL,
+      'SecondaryButtonLink' => NULL,
+      'Image' => NULL,
+      'ImageAlt' => NULL,
+      'DisplayOrder' => 10,
+      'items' => 
+      array (
+        0 => 
+        array (
+          'ItemKey' => 'before',
+          'Title' => 'Before we meet',
+          'Text' => 'Tell Vanessa a little about your space, how you use it and what is not working.',
+          'Icon' => 'chat',
+          'Link' => NULL,
+          'Image' => NULL,
+          'ImageAlt' => NULL,
+          'DisplayOrder' => 10,
+        ),
+        1 => 
+        array (
+          'ItemKey' => 'together',
+          'Title' => 'Together in your space',
+          'Text' => 'We look at light, colour, layout and your connection to the outdoors.',
+          'Icon' => 'eye',
+          'Link' => NULL,
+          'Image' => NULL,
+          'ImageAlt' => NULL,
+          'DisplayOrder' => 20,
+        ),
+        2 => 
+        array (
+          'ItemKey' => 'next',
+          'Title' => 'Clear next steps',
+          'Text' => 'You leave with practical, prioritised recommendations that are specific to you.',
+          'Icon' => 'check',
+          'Link' => NULL,
+          'Image' => NULL,
+          'ImageAlt' => NULL,
+          'DisplayOrder' => 30,
+        ),
+      ),
+    ),
+    'closing' => 
+    array (
+      'PageKey' => 'service-consultations',
+      'SectionKey' => 'closing',
+      'Eyebrow' => NULL,
+      'Heading' => 'Book a consultation',
+      'Introduction' => 'Tell Vanessa about your space and we will arrange a time.',
+      'Body' => NULL,
+      'ButtonText' => 'Enquire about this service',
+      'ButtonLink' => 'contact.php?service=consultations',
+      'SecondaryButtonText' => 'View all services',
+      'SecondaryButtonLink' => 'services.php',
+      'Image' => NULL,
+      'ImageAlt' => NULL,
+      'DisplayOrder' => 90,
+      'items' => 
+      array (
+      ),
+    ),
+  ),
+  'page_privacy-policy' => 
+  array (
+    'Slug' => 'privacy-policy',
+    'Title' => 'Privacy Policy',
+    'Content' => 'Vanessa Talbot Interior Designs respects your privacy and is committed to protecting your personal information in line with the Protection of Personal Information Act, 2013 (POPIA).
+
+## Who is responsible for your information
+
+Vanessa Talbot Interior Designs is the responsible party for personal information collected through this website. Vanessa Talbot is the Information Officer. You can reach her using the details on our Contact page.
+
+## What we collect
+
+We only collect personal information that you choose to give us, or that is needed to run this website:
+
+- Your name, email address and phone number, if you contact us
+- Details of your enquiry or project
+- Technical information sent by your browser, such as your IP address, which our hosting provider records for security
+
+## How we use your information
+
+We use your information to:
+
+- Respond to your enquiry and provide the services you ask for
+- Send you marketing, only if you have agreed to receive it
+- Keep this website secure and working properly
+- Meet our legal obligations
+
+## Sharing your information
+
+We do not sell your personal information. We only share it with service providers who help us run this website and our business, such as our hosting provider, and only as far as is needed, or where the law requires it.
+
+This website uses Google Fonts. When a page loads, your browser connects to Google to fetch the fonts, which shares your IP address with Google.
+
+## Keeping your information safe
+
+We take reasonable technical and organisational steps to protect your personal information against loss, misuse and unauthorised access.
+
+## How long we keep it
+
+We keep personal information only for as long as we need it for the purposes above, or as the law requires.
+
+## Cookies
+
+This website uses a cookie only for administrators who sign in. It does not use cookies to track visitors. If that changes, we will update this policy and ask for your consent where required.
+
+## Your rights
+
+Under POPIA you may ask to see the personal information we hold about you, ask us to correct or delete it, and object to its use, including for marketing. You may unsubscribe from marketing at any time.
+
+If you are not satisfied with how we have handled your information, you may complain to the Information Regulator of South Africa.
+
+## Changes to this policy
+
+We may update this policy from time to time. The latest version will always be on this page.',
+    'MetaTitle' => NULL,
+    'MetaDescription' => 'How Vanessa Talbot Interior Designs collects, uses and protects personal information.',
+  ),
+  'page_terms-and-conditions' => 
+  array (
+    'Slug' => 'terms-and-conditions',
+    'Title' => 'Terms and Conditions',
+    'Content' => 'By using this website you agree to these terms. If you do not agree, please do not use the website.
+
+## About this website
+
+This website is operated by Vanessa Talbot Interior Designs in South Africa. It provides general information about our services, work and ideas.
+
+## Information on this website
+
+We take care to keep this website accurate and up to date, but its content is general information and not professional advice for your particular circumstances. Please contact us before relying on it for a project.
+
+## Our services
+
+Design services, workshops, speaking engagements and consultations are subject to a separate quotation or agreement, which sets out the scope, fees and terms for that work.
+
+## Your use of this website
+
+You agree not to:
+
+- Use this website in any way that is unlawful or harmful
+- Attempt to gain unauthorised access to the website or its systems
+- Copy or reuse its content except as allowed in our Copyright Notice
+
+## Links to other websites
+
+This website may link to other websites. We are not responsible for their content or privacy practices.
+
+## Limitation of liability
+
+To the extent permitted by law, Vanessa Talbot Interior Designs is not liable for any loss arising from your use of this website or from relying on its content. Nothing in these terms limits any rights you have under the Consumer Protection Act, 2008.
+
+## Governing law
+
+These terms are governed by the laws of the Republic of South Africa.
+
+## Changes to these terms
+
+We may update these terms from time to time. The latest version will always be on this page.',
+    'MetaTitle' => NULL,
+    'MetaDescription' => 'The terms that apply to your use of this website.',
+  ),
+  'page_copyright' => 
+  array (
+    'Slug' => 'copyright',
+    'Title' => 'Copyright Notice',
+    'Content' => 'All content on this website is the property of Vanessa Talbot Interior Designs or is used with permission, and is protected by copyright law.
+
+## What is protected
+
+This includes:
+
+- Text and written content
+- Photographs, images and graphics
+- Logos and branding
+- Designs, mood boards and project material
+- The design of the website itself
+
+## What you may do
+
+You may view this website and share links to its pages.
+
+## What you may not do
+
+Without our prior written permission, you may not copy, reproduce, modify, distribute, publish, sell or otherwise use any part of this website or its content.
+
+## Requesting permission
+
+To ask about using our content, please get in touch through our Contact page.',
+    'MetaTitle' => NULL,
+    'MetaDescription' => 'Copyright information for the content of this website.',
+  ),
 );

@@ -8,7 +8,7 @@
  *
  * Field types: text, textarea, lines, email, tel, url, link, path, slug, int,
  * select, checkbox, date. Optional keys: label, group, required, max, help,
- * options, nullable, auto_from (build a slug from another field), permission
+ * options, option_labels, nullable, auto_from (build a slug from another field), permission
  * (a stricter permission needed to change the field).
  */
 
@@ -33,8 +33,11 @@ function cms_modules(): array
                 'Tagline'         => ['label' => 'Tagline', 'type' => 'text', 'max' => 255, 'group' => 'Business'],
                 'Phone'           => ['label' => 'Phone', 'type' => 'tel', 'max' => 30, 'group' => 'Contact'],
                 'Email'           => ['label' => 'Email', 'type' => 'email', 'max' => 254, 'group' => 'Contact'],
+                'AddressLine1'    => ['label' => 'Street address', 'type' => 'text', 'max' => 150, 'group' => 'Location', 'help' => 'Only shown if the setting below is switched on.'],
+                'AddressLine2'    => ['label' => 'Address line 2', 'type' => 'text', 'max' => 150, 'group' => 'Location'],
                 'City'            => ['label' => 'City', 'type' => 'text', 'max' => 100, 'group' => 'Location'],
                 'Province'        => ['label' => 'Province', 'type' => 'text', 'max' => 100, 'group' => 'Location'],
+                'PostalCode'      => ['label' => 'Postal code', 'type' => 'text', 'max' => 10, 'group' => 'Location'],
                 'Country'         => ['label' => 'Country', 'type' => 'text', 'max' => 100, 'group' => 'Location'],
                 'ShowAddress'     => ['label' => 'Show the full street address on the website', 'type' => 'checkbox', 'group' => 'Location', 'help' => 'Leave off to keep the street address private. City and province can still be shown.'],
                 'Facebook'        => ['label' => 'Facebook', 'type' => 'url', 'max' => 500, 'group' => 'Social media'],
@@ -213,6 +216,92 @@ function cms_modules(): array
                 'Status'       => ['label' => 'Status', 'type' => 'select', 'required' => true, 'options' => ['Draft', 'Published', 'Archived'], 'permission' => 'page_sections.publish'],
             ],
         ],
+
+        'portfolio' => [
+            'title'      => 'Portfolio Projects',
+            'table'      => 'PortfolioProjects',
+            'key'        => 'ProjectID',
+            'label'      => 'Title',
+            'permission' => 'portfolio',
+            'list_page'  => 'admin/portfolio-projects.php',
+            'edit_page'  => 'admin/project-edit.php',
+            'order'      => 't.DisplayOrder, t.Title',
+            'list'       => ['Title', 'PortfolioCategory', 'ProjectType', 'Status'],
+            'empty'      => 'Add a project once the client has agreed to it being shown.',
+            'publish_requires' => ['ClientPermission', 'Tick this to confirm the client has agreed before publishing.'],
+            'fields'     => [
+                'Title'             => ['label' => 'Project title', 'type' => 'text', 'required' => true, 'max' => 255, 'group' => 'Project'],
+                'Slug'              => ['label' => 'Web address', 'type' => 'slug', 'auto_from' => 'Title', 'max' => 200, 'group' => 'Project', 'help' => 'Leave blank to create one from the title.'],
+                'PortfolioCategory' => ['label' => 'Portfolio page', 'type' => 'select', 'required' => true, 'options' => ['Biophilic Interior Design', 'Colour Psychology', 'Photography Gallery'], 'option_labels' => ['Colour Psychology' => 'Colour & Design Psychology'], 'group' => 'Project'],
+                'ProjectType'       => ['label' => 'Project type', 'type' => 'select', 'required' => true, 'options' => ['Residential', 'Commercial', 'Concept', 'Personal', 'Photography'], 'group' => 'Project'],
+                'Location'          => ['label' => 'Location', 'type' => 'text', 'max' => 150, 'group' => 'Project', 'help' => 'Leave blank if the client prefers not to show it.'],
+                'Description'       => ['label' => 'Description', 'type' => 'textarea', 'max' => 50000, 'group' => 'Project'],
+                'FeaturedImage'     => ['label' => 'Main image path', 'type' => 'path', 'max' => 500, 'group' => 'Main image'],
+                'FeaturedImageAlt'  => ['label' => 'Image description (alt text)', 'type' => 'text', 'max' => 255, 'group' => 'Main image'],
+                'ClientPermission'  => ['label' => 'The client has agreed to this project being shown online', 'type' => 'checkbox', 'group' => 'Publishing'],
+                'IsFeatured'        => ['label' => 'Feature on the Portfolio page', 'type' => 'checkbox', 'group' => 'Publishing'],
+                'DisplayOrder'      => ['label' => 'Display order', 'type' => 'int', 'group' => 'Publishing', 'help' => 'Lower numbers appear first.'],
+                'Status'            => ['label' => 'Status', 'type' => 'select', 'required' => true, 'options' => ['Draft', 'Published', 'Archived'], 'group' => 'Publishing', 'permission' => 'portfolio.publish'],
+            ] + $meta,
+        ],
+
+        'project_images' => [
+            'title'      => 'Project Image',
+            'table'      => 'ProjectImages',
+            'key'        => 'ImageID',
+            'permission' => 'portfolio',
+            'fields'     => [
+                'ImagePath'    => ['label' => 'Image path', 'type' => 'path', 'required' => true, 'max' => 500, 'help' => 'For example uploads/portfolio/room-1.jpg'],
+                'AltText'      => ['label' => 'Image description (alt text)', 'type' => 'text', 'max' => 255],
+                'Caption'      => ['label' => 'Caption', 'type' => 'text', 'max' => 500],
+                'DisplayOrder' => ['label' => 'Display order', 'type' => 'int', 'help' => 'Lower numbers appear first.'],
+            ],
+        ],
+
+        'collaborators' => [
+            'title'      => 'Collaborators',
+            'table'      => 'Collaborators',
+            'key'        => 'CollaboratorID',
+            'label'      => 'Name',
+            'permission' => 'collaborators',
+            'list_page'  => 'admin/collaborators.php',
+            'edit_page'  => 'admin/collaborator-edit.php',
+            'order'      => 't.DisplayOrder, t.Name',
+            'list'       => ['Name', 'RoleTitle', 'ConsentDate', 'Status'],
+            'empty'      => 'Add people and businesses once they have agreed to be listed.',
+            'publish_requires' => ['ConsentDate', 'Enter the date they agreed to be listed before publishing.'],
+            'fields'     => [
+                'Name'         => ['label' => 'Name', 'type' => 'text', 'required' => true, 'max' => 200],
+                'Slug'         => ['label' => 'Web address', 'type' => 'slug', 'auto_from' => 'Name', 'max' => 200, 'help' => 'Leave blank to create one from the name.'],
+                'RoleTitle'    => ['label' => 'What they do', 'type' => 'text', 'max' => 150],
+                'Description'  => ['label' => 'Description', 'type' => 'textarea', 'max' => 5000],
+                'Logo'         => ['label' => 'Logo or photo path', 'type' => 'path', 'max' => 500],
+                'LogoAlt'      => ['label' => 'Image description (alt text)', 'type' => 'text', 'max' => 255],
+                'WebsiteLink'  => ['label' => 'Website', 'type' => 'url', 'max' => 500],
+                'ConsentDate'  => ['label' => 'Date they agreed to be listed', 'type' => 'date'],
+                'DisplayOrder' => ['label' => 'Display order', 'type' => 'int', 'help' => 'Lower numbers appear first.'],
+                'Status'       => ['label' => 'Status', 'type' => 'select', 'required' => true, 'options' => ['Draft', 'Published', 'Archived'], 'permission' => 'collaborators.publish'],
+            ],
+        ],
+
+        'site_pages' => [
+            'title'      => 'Legal Pages',
+            'table'      => 'SitePages',
+            'key'        => 'PageID',
+            'label'      => 'Title',
+            'permission' => 'site_pages',
+            'list_page'  => 'admin/site-pages.php',
+            'edit_page'  => 'admin/site-page-edit.php',
+            'order'      => 't.Title',
+            'list'       => ['Title', 'Status'],
+            'fields'     => [
+                'Title'           => ['label' => 'Page title', 'type' => 'text', 'required' => true, 'max' => 255, 'group' => 'Page'],
+                'Content'         => ['label' => 'Page wording', 'type' => 'textarea', 'max' => 200000, 'group' => 'Page', 'help' => 'Leave a blank line between paragraphs. Start a line with ## for a heading, and with - for a list item.'],
+                'Status'          => ['label' => 'Status', 'type' => 'select', 'required' => true, 'options' => ['Draft', 'Published', 'Archived'], 'group' => 'Page', 'permission' => 'site_pages.publish', 'help' => 'Only Published pages appear on the website.'],
+                'MetaTitle'       => ['label' => 'Search result title', 'type' => 'text', 'max' => 255, 'group' => 'Search engines'],
+                'MetaDescription' => ['label' => 'Search result description', 'type' => 'textarea', 'max' => 500, 'group' => 'Search engines'],
+            ],
+        ],
     ];
 }
 
@@ -223,7 +312,19 @@ function cms_icon_options(): array
 
 function cms_page_label(string $page): string
 {
-    return ['home' => 'Home', 'about' => 'About', 'services' => 'Services', 'global' => 'All pages'][$page] ?? ucfirst($page);
+    return [
+        'home' => 'Home', 'about' => 'About', 'services' => 'Services', 'global' => 'All pages', 'contact' => 'Contact', 'portfolio' => 'Portfolio',
+        'service-biophilic-design' => 'Service: Biophilic Design',
+        'service-colour-psychology' => 'Service: Colour & Design Psychology',
+        'service-photography-services' => 'Service: Photography',
+        'service-workshops' => 'Service: Workshops',
+        'service-speaking-engagements' => 'Service: Speaking Engagements',
+        'service-consultations' => 'Service: Consultations',
+        'portfolio-biophilic-interior-design' => 'Portfolio: Biophilic Interior Design',
+        'portfolio-colour-psychology' => 'Portfolio: Colour & Design Psychology',
+        'portfolio-photography-gallery' => 'Portfolio: Photography',
+        'portfolio-collaborators' => 'Portfolio: Collaborators',
+    ][$page] ?? ucfirst($page);
 }
 
 function cms_section_label(string $section): string

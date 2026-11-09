@@ -33,7 +33,7 @@ function cms_load(array $module, int $id): ?array
 }
 
 /** Check submitted values. Returns [clean data, errors keyed by field name]. */
-function cms_validate(array $module, array $input): array
+function cms_validate(array $module, array $input, array $existing = []): array
 {
     $data   = [];
     $errors = [];
@@ -91,6 +91,16 @@ function cms_validate(array $module, array $input): array
         }
     }
 
+    // Some records need permission on file before they can be published.
+    if (isset($module['publish_requires'])) {
+        [$field, $message] = $module['publish_requires'];
+        $status = $data['Status'] ?? ($existing['Status'] ?? 'Draft');
+        $value  = array_key_exists($field, $data) ? $data[$field] : ($existing[$field] ?? null);
+        if ($status === 'Published' && empty($value)) {
+            $errors[$field] = $message;
+        }
+    }
+
     return [$data, $errors];
 }
 
@@ -136,7 +146,7 @@ function cms_save(array $module, int $id, array $data, array $existing): array
  */
 function cms_handle_post(array $module, int $id, array $existing, string $redirect): array
 {
-    [$data, $errors] = cms_validate($module, $_POST);
+    [$data, $errors] = cms_validate($module, $_POST, $existing);
 
     if ($errors === []) {
         try {
@@ -254,7 +264,7 @@ function cms_render_control(string $name, array $field, string $value, ?string $
             $control .= '<option value="">None</option>';
         }
         foreach ($field['options'] as $option) {
-            $control .= '<option value="' . e($option) . '"' . ($option === $value ? ' selected' : '') . '>' . e($option) . '</option>';
+            $control .= '<option value="' . e($option) . '"' . ($option === $value ? ' selected' : '') . '>' . e($field['option_labels'][$option] ?? $option) . '</option>';
         }
         $control .= '</select>';
     } elseif (in_array($field['type'], ['textarea', 'lines'], true)) {

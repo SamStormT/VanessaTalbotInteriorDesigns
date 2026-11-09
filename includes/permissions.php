@@ -25,6 +25,8 @@ function permission_map(): array
         'about_items'  => $content,
         'page_sections' => $content,
         'portfolio'    => $content,
+        'collaborators' => $content,
+        'site_pages'   => ['actions' => ['view', 'edit', 'publish'], 'Admin' => ['view', 'edit', 'publish'], 'Editor' => ['view']],
         'speaking'     => $content,
         'testimonials' => $content,
         'blogs'        => $content,

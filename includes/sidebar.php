@@ -17,9 +17,11 @@ $adminNav = [
         ['label' => 'Services',             'path' => 'admin/services.php',             'can' => 'services.view'],
         ['label' => 'Speaking Engagements', 'path' => 'admin/speaking-engagements.php', 'can' => 'speaking.view'],
         ['label' => 'Testimonials',         'path' => 'admin/testimonials.php',         'can' => 'testimonials.view'],
+        ['label' => 'Legal Pages',          'path' => 'admin/site-pages.php',           'can' => 'site_pages.view'],
     ],
     'Portfolio & Blog' => [
         ['label' => 'Portfolio Projects', 'path' => 'admin/portfolio-projects.php', 'can' => 'portfolio.view'],
+        ['label' => 'Collaborators',      'path' => 'admin/collaborators.php',      'can' => 'collaborators.view'],
         ['label' => 'Blogs',              'path' => 'admin/blogs.php',              'can' => 'blogs.view'],
     ],
     'Photography' => [

@@ -86,6 +86,9 @@ function cms_list_cell(array $field, mixed $value): string
     if ($field['type'] === 'select' && in_array($text, ['Draft', 'Published', 'Archived'], true)) {
         return '<span class="admin-badge admin-badge--' . e(strtolower($text)) . '">' . e($text) . '</span>';
     }
+    if (isset($field['option_labels'][$text])) {
+        return e($field['option_labels'][$text]);
+    }
     if ($field['type'] === 'date') {
         return e(date('j M Y', strtotime($text)));
     }
@@ -150,7 +153,7 @@ function cms_last_edited_cell(array $row): string
 }
 
 /** Create and edit screen for a module with many records. */
-function cms_record_edit_page(string $key): void
+function cms_record_edit_page(string $key, ?callable $below = null): void
 {
     $module   = cms_module($key);
     $id       = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT) ?: 0;
@@ -191,6 +194,9 @@ function cms_record_edit_page(string $key): void
     echo cms_render_form($module, $row, $errors, $list, $posted);
     if (!$creating && can($module['permission'] . '.delete')) {
         echo cms_delete_form((string) $row[$module['label']]);
+    }
+    if (!$creating && $below !== null) {
+        $below($row);
     }
     echo '</main>';
     require INCLUDES_PATH . '/footer.php';

@@ -1052,6 +1052,46 @@ label {
 .site-footer__legal a:not(.btn) { font-size: 0.8125rem; }
 
 /* --------------------------------------------------------------------------
+   17b. Service, portfolio, contact and legal pages
+   -------------------------------------------------------------------------- */
+.journey--2 { grid-template-columns: repeat(2, 1fr); }
+.section:not(.section--peach) .journey__step { background: var(--color-peach-light); }
+.portfolio-grid--4 { grid-template-columns: repeat(4, 1fr); }
+.content-narrow { max-width: 680px; margin-inline: auto; }
+.content-document { max-width: 760px; margin-inline: auto; }
+.content-document h2 { margin-top: var(--space-xl); }
+.content-document h2:first-child { margin-top: 0; }
+.content-document ul { margin: 0 0 var(--space-md); padding-left: 1.25rem; }
+.collaborator-logo { max-height: 72px; width: auto; margin-bottom: var(--space-md); }
+.contact-layout { align-items: start; grid-template-columns: 1fr 1fr; }
+.contact-list { display: grid; gap: var(--space-md); margin: var(--space-lg) 0; }
+.contact-list li { display: flex; gap: 0.875rem; align-items: flex-start; }
+.contact-list .icon { color: var(--color-earthy-gold); margin-top: 0.2rem; }
+.contact-list strong { display: block; }
+.contact-layout > * { min-width: 0; }
+.contact-list a { overflow-wrap: anywhere; }
+.contact-location { margin-top: var(--space-xl); padding-top: var(--space-lg); border-top: 1px solid var(--color-border); }
+.contact-location address { font-style: normal; color: var(--color-primary); }
+.tag-list a { color: inherit; text-decoration: none; }
+.contact-form-wrap .newsletter__form { margin-top: var(--space-lg); }
+.form-field select,
+.form-field textarea {
+    width: 100%;
+    min-height: 48px;
+    padding: 0.625rem 0.875rem;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
+    background: var(--color-white);
+    color: var(--color-text);
+}
+.form-check { display: flex; align-items: center; gap: 0.625rem; color: var(--color-primary); }
+.form-check input { width: 18px; height: 18px; accent-color: var(--color-primary); }
+.faq { max-width: 760px; margin-inline: auto; }
+.faq__item { padding: 1.25rem 1.5rem; background: var(--color-white); border-bottom: 1px solid var(--color-border); }
+.faq__item summary { font-weight: 600; color: var(--color-primary); cursor: pointer; }
+.faq__item p { margin-top: var(--space-sm); }
+
+/* --------------------------------------------------------------------------
    18. Reduced motion
    -------------------------------------------------------------------------- */
 @media (prefers-reduced-motion: reduce) {

@@ -20,9 +20,8 @@ $navItems = [
         ['label' => 'Photography Gallery',       'path' => 'portfolio/photography-gallery.php'],
         ['label' => 'Collaborators',             'path' => 'portfolio/collaborators.php'],
     ]],
-    ['label' => 'Photography', 'path' => 'photography.php'],
-    ['label' => 'Blog',        'path' => 'blog.php'],
-    ['label' => 'Speaking',    'path' => 'speaking.php'],
+    ['label' => 'Photography', 'path' => 'portfolio/photography-gallery.php'],
+    ['label' => 'Speaking',    'path' => 'services/speaking-engagements.php'],
     ['label' => 'Contact',     'path' => 'contact.php'],
 ];
 ?>

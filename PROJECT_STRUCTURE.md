@@ -4,7 +4,7 @@
 
 Stack: HTML5, CSS3, JavaScript, PHP 8, MariaDB, PHPMailer, PayFast. Hosted on Xneelo Standard Hosting.
 
-> **Status: Phase 5 (first stage).** Home, About, Services and the footer read from the CMS. Admin can edit Website Settings, Homepage, About, values, qualifications, Page Sections, Services and Speaking Engagements. Other public pages and admin screens are placeholders. Email, payments and public forms are not built yet.
+> **Status: Phase 6.** Every page in the public menus reads from the CMS. The contact form is interface only. Blog, photography store, email and payments are not built yet.
 
 ## Folder layout
 
@@ -79,6 +79,9 @@ Stack: HTML5, CSS3, JavaScript, PHP 8, MariaDB, PHPMailer, PayFast. Hosted on Xn
 │   ├── cms-records.php        CMS list, create, edit and delete for multi-record modules
 │   ├── content.php            Public page content from the database, with rendering helpers
 │   ├── content-fallback.php   Snapshot of the wording, used only if the database is unreachable
+│   ├── page-service.php       Layout for individual service pages
+│   ├── page-portfolio-category.php  Layout for portfolio categories
+│   ├── page-legal.php         Layout for legal pages
 │   ├── mail.php               PHPMailer (placeholder)
 │   ├── payfast.php            PayFast payments + ITN (placeholder)
 │   ├── header.php             <head>, fonts, CSS; opens public or admin layout

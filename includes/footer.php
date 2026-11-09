@@ -28,9 +28,8 @@ if ($layout === 'admin'): ?>
             <ul>
                 <li><a href="<?= e(url('about.php')) ?>">About Vanessa</a></li>
                 <li><a href="<?= e(url('portfolio.php')) ?>">Portfolio</a></li>
-                <li><a href="<?= e(url('photography.php')) ?>">Photography</a></li>
-                <li><a href="<?= e(url('blog.php')) ?>">Blog</a></li>
-                <li><a href="<?= e(url('speaking.php')) ?>">Speaking</a></li>
+                <li><a href="<?= e(url('portfolio/photography-gallery.php')) ?>">Photography</a></li>
+                <li><a href="<?= e(url('services/speaking-engagements.php')) ?>">Speaking</a></li>
             </ul>
         </nav>
 

@@ -1,8 +1,8 @@
 <?php
 /**
- * New Project: placeholder until its screens are built.
+ * Adding a project uses the shared project form.
  */
 require_once __DIR__ . '/../includes/config.php';
-require_once INCLUDES_PATH . '/cms.php';
 
-cms_placeholder_page('portfolio.create', 'New Project', 'PortfolioProjects', 'projects', 'leaf');
+header('Location: ' . url('admin/project-edit.php'));
+exit;

@@ -70,6 +70,66 @@ function site_engagements(): array
     return content_fetch('engagements', static fn() => db_all("SELECT * FROM SpeakingEngagements WHERE Status = 'Published' ORDER BY EventDate DESC, Title"));
 }
 
+/** Contact details and social links for public pages. Empty if the database is down. */
+function site_settings(): array
+{
+    return content_fetch('settings', static fn() => db_row(
+        'SELECT Tagline, Phone, Email, AddressLine1, AddressLine2, City, Province, PostalCode, Country, ShowAddress,
+                Facebook, Instagram, LinkedIn, Pinterest FROM WebsiteSettings WHERE SettingID = 1'
+    ));
+}
+
+/** One published service, or null. */
+function site_service(string $slug): ?array
+{
+    foreach (site_services() as $service) {
+        if ($service['Slug'] === $slug) {
+            return $service;
+        }
+    }
+    return null;
+}
+
+/** One published site page, or null. */
+function site_page(string $slug): ?array
+{
+    $page = content_fetch('page_' . $slug, static fn() => db_row("SELECT * FROM SitePages WHERE Slug = ? AND Status = 'Published'", [$slug]) ?? []);
+    return empty($page) ? null : $page;
+}
+
+/** Published projects with client permission, by category and/or featured. */
+function site_projects(?string $category, bool $featuredOnly = false): array
+{
+    return content_fetch('projects', static function () use ($category, $featuredOnly): array {
+        $sql    = "SELECT * FROM PortfolioProjects WHERE Status = 'Published' AND ClientPermission = 1";
+        $params = [];
+        if ($category !== null) {
+            $sql .= ' AND PortfolioCategory = ?';
+            $params[] = $category;
+        }
+        if ($featuredOnly) {
+            $sql .= ' AND IsFeatured = 1';
+        }
+        return db_all($sql . ' ORDER BY DisplayOrder, Title', $params);
+    });
+}
+
+function site_project(string $slug): ?array
+{
+    $project = content_fetch('projects', static fn() => db_row("SELECT * FROM PortfolioProjects WHERE Slug = ? AND Status = 'Published' AND ClientPermission = 1", [$slug]) ?? []);
+    return empty($project) ? null : $project;
+}
+
+function site_project_images(int $projectId): array
+{
+    return content_fetch('projects', static fn() => db_all('SELECT * FROM ProjectImages WHERE ProjectID = ? ORDER BY DisplayOrder, ImageID', [$projectId]));
+}
+
+function site_collaborators(): array
+{
+    return content_fetch('collaborators', static fn() => db_all("SELECT * FROM Collaborators WHERE Status = 'Published' AND ConsentDate IS NOT NULL ORDER BY DisplayOrder, Name"));
+}
+
 /** Published sections of a page, keyed by SectionKey, each with its published items. */
 function site_sections(string $page): array
 {
@@ -172,4 +232,113 @@ function content_frame(string $class, ?string $image, ?string $alt, string $deco
         return '<div class="' . e($class) . '" aria-hidden="true">' . $decoration . '</div>';
     }
     return '<div class="' . e($class) . '"><img src="' . e(content_url($image)) . '" alt="' . e($alt) . '" loading="lazy"></div>';
+}
+
+/** Inner page heading with breadcrumb. $crumbs is a list of [label, path] between Home and this page. */
+function content_page_hero(array $header, array $crumbs): string
+{
+    $trail = '<li><a href="' . e(url('index.php')) . '">Home</a></li>';
+    foreach ($crumbs as [$label, $path]) {
+        $trail .= '<li><a href="' . e(url($path)) . '">' . e($label) . '</a></li>';
+    }
+    $heading = (string) ($header['Heading'] ?? '');
+    $intro   = trim((string) ($header['Introduction'] ?? ''));
+
+    return '<section class="page-hero" aria-labelledby="page-title">' . botanical('botanical page-hero__botanical')
+         . '<div class="container"><nav class="breadcrumb" aria-label="Breadcrumb"><ol>' . $trail
+         . '<li aria-current="page">' . e($heading) . '</li></ol></nav>'
+         . '<h1 id="page-title">' . e($heading) . '</h1>'
+         . ($intro === '' ? '' : '<p class="page-hero__lead">' . e($intro) . '</p>')
+         . '</div></section>';
+}
+
+/** A section heading followed by its items as cards. Used for any extra section on a page. */
+function content_items_section(array $section, string $id, bool $peach): string
+{
+    $count = count($section['items']);
+    $html  = '<section class="section' . ($peach ? ' section--peach' : '') . '"' . content_labelled($section, $id) . '><div class="container">'
+           . content_section_header($section, $id);
+
+    if ($count > 0) {
+        $html .= '<ul class="journey' . ($count % 2 === 0 ? ' journey--2' : '') . '">';
+        foreach ($section['items'] as $item) {
+            $html .= '<li class="journey__step">'
+                   . (empty($item['Icon']) ? '' : '<span class="journey__icon">' . icon((string) $item['Icon']) . '</span>')
+                   . '<h3>' . e($item['Title']) . '</h3>' . content_paragraphs($item['Text']) . '</li>';
+        }
+        $html .= '</ul>';
+    }
+
+    return $html . '</div></section>';
+}
+
+/** Closing call-to-action banner. */
+function content_closing(array $section, string $id): string
+{
+    return '<section class="section cta-banner"' . content_labelled($section, $id) . '><div class="container cta-banner__inner">'
+         . content_heading($section, $id) . content_paragraphs($section['Introduction'] ?? '')
+         . '<div class="btn-group btn-group--centred">'
+         . content_link($section['ButtonText'] ?? '', $section['ButtonLink'] ?? '', 'btn btn--primary')
+         . content_link($section['SecondaryButtonText'] ?? '', $section['SecondaryButtonLink'] ?? '', 'btn btn--outline')
+         . '</div></div></section>';
+}
+
+function content_empty_state(array $section): string
+{
+    return '<div class="empty-state"><span class="empty-state__icon">' . icon('leaf') . '</span>'
+         . '<p class="empty-state__title">' . e($section['Heading'] ?? '') . '</p>'
+         . content_paragraphs($section['Introduction'] ?? '') . '</div>';
+}
+
+function content_project_tile(array $project, int $index): string
+{
+    $tones = ['green', 'gold', 'peach'];
+    return '<li class="portfolio-tile">'
+         . content_frame('art-frame art-frame--' . $tones[$index % 3], $project['FeaturedImage'] ?? '', $project['FeaturedImageAlt'] ?? '', icon('leaf', 'icon art-frame__icon'))
+         . '<div class="portfolio-tile__body"><h3 class="portfolio-tile__title">'
+         . '<a class="card__link" href="' . e(url('portfolio/project.php?slug=' . urlencode((string) $project['Slug']))) . '">' . e($project['Title']) . '</a></h3>'
+         . (empty($project['Location']) ? '' : '<p>' . e($project['Location']) . '</p>')
+         . '</div></li>';
+}
+
+/**
+ * Plain text as a document: a block starting "## " is a heading, a block of
+ * lines starting "- " is a list, anything else is a paragraph.
+ */
+function content_document(?string $text): string
+{
+    $html = '';
+    foreach (preg_split('/\n\s*\n/', trim((string) $text)) ?: [] as $block) {
+        $block = trim($block);
+        if ($block === '') {
+            continue;
+        }
+        if (str_starts_with($block, '## ')) {
+            $html .= '<h2>' . e(substr($block, 3)) . '</h2>';
+        } elseif (str_starts_with($block, '- ')) {
+            $html .= '<ul>';
+            foreach (explode("\n", $block) as $line) {
+                $html .= '<li>' . e(ltrim(trim($line), '- ')) . '</li>';
+            }
+            $html .= '</ul>';
+        } else {
+            $html .= '<p>' . nl2br(e($block), false) . '</p>';
+        }
+    }
+    return $html;
+}
+
+/** Stop with a page-not-found response, in the normal site layout. */
+function content_not_found(): never
+{
+    http_response_code(404);
+    $pageTitle       = 'Page not found';
+    $pageDescription = SITE_TAGLINE;
+    $noindex         = true;
+    require INCLUDES_PATH . '/header.php';
+    echo '<main id="main-content">', content_page_hero(['Heading' => 'Page not found'], []),
+         '<section class="section"><div class="container"><div class="content-narrow"><p>Sorry, that page is not available.</p>',
+         '<a class="text-link" href="', e(url('index.php')), '">Back to the home page</a></div></div></section></main>';
+    require INCLUDES_PATH . '/footer.php';
+    exit;
 }

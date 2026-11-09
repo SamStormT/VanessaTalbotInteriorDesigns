@@ -200,3 +200,32 @@ A comparison of the live pages with the database confirmed that these are the on
 - Before connecting, the Home, About, Services and Contact page output was captured.
 - After connecting, on a clean install, all four are identical, apart from whitespace and HTML comments, both from the database and in fallback mode with the database unreachable.
 - The local database now matches as well, including the corrected hero heading.
+
+
+## 8. Service, portfolio, contact and legal pages
+
+Page keys follow `PageSections.PageKey`. Sections are listed in the admin area under Page Sections.
+
+| Page | Section | Content block | Database table | Record | Field(s) |
+|---|---|---|---|---|---|
+| Each service page | Heading | Title and opening sentence | `Services` | Each service | `ServiceName`, `Lead` |
+| Each service page | Main | Description, included list, ideal for, image | `Services` | Each service | `FullDescription`, `IncludedItems`, `IdealFor`, `FeaturedImage`, `FeaturedImageAlt` |
+| Each service page | How it works | Heading and steps | `PageSections`, `PageSectionItems` | `service-{slug}/approach` | Heading fields; item `Title`, `Text`, `Icon` |
+| Biophilic Design | Specialised services | Heading and items | `PageSections`, `PageSectionItems` | `service-biophilic-design/specialised` | Heading fields; item `Title`, `Text`, `Icon` |
+| Each service page | Closing | Heading, text, buttons | `PageSections` | `service-{slug}/closing` | `Heading`, `Introduction`, button fields |
+| Portfolio | Heading | Title and text | `PageSections` | `portfolio/page-header` | `Heading`, `Introduction` |
+| Portfolio | Categories | Four tiles | `PageSections`, `PageSectionItems` | `portfolio/categories` | Heading fields; item `Title`, `Text`, `Icon`, `Link`, `Image` |
+| Portfolio | Featured | Heading and projects | `PageSections`, `PortfolioProjects` | `portfolio/featured`; `IsFeatured` projects | Heading fields; project fields |
+| Portfolio categories | Heading, intro, empty notice, closing | Wording | `PageSections` | `portfolio-{category}/page-header`, `intro`, `empty`, `closing` | Heading and button fields |
+| Portfolio categories | Projects | Project tiles | `PortfolioProjects` | By `PortfolioCategory` | `Title`, `Slug`, `Location`, `FeaturedImage` |
+| Single project | Whole page | Details and gallery | `PortfolioProjects`, `ProjectImages` | By `Slug` | Project fields; `ImagePath`, `AltText`, `Caption` |
+| Collaborators | Wording | Heading, intro, empty notice, closing | `PageSections` | `portfolio-collaborators/*` | Heading and button fields |
+| Collaborators | People | Cards | `Collaborators` | One row each | `Name`, `RoleTitle`, `Description`, `Logo`, `WebsiteLink` |
+| Contact | Heading | Title and text | `PageSections` | `contact/page-header` | `Heading`, `Introduction` |
+| Contact | Details | Heading and text | `PageSections` | `contact/details` | Heading fields |
+| Contact | Details | Phone, email, social links | `WebsiteSettings` | Row 1 | `Phone`, `Email`, `Facebook`, `Instagram`, `LinkedIn`, `Pinterest` |
+| Contact | Location | Heading and text | `PageSections` | `contact/location` | Heading fields |
+| Contact | Location | Town and address | `WebsiteSettings` | Row 1 | `City`, `Province`, `Country`; street lines only if `ShowAddress` is on |
+| Contact | Form | Heading and text | `PageSections` | `contact/form` | Heading fields (form labels stay in code) |
+| Contact | FAQ | Questions and answers | `PageSections`, `PageSectionItems` | `contact/faq` | Item `Title` (question), `Text` (answer) |
+| Legal pages | Whole page | Title and wording | `SitePages` | By `Slug` | `Title`, `Content`, `MetaDescription` |
