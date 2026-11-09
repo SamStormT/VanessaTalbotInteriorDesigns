@@ -57,6 +57,7 @@ This lists everything still outstanding after Phase 4, in build order. Permissio
 | B8 | Blog Categories | Low | A1 | `BlogCategories` | Blog category pages |
 | B9 | Blog Posts: editor, slug generator, preview, scheduling by date | Medium | A1, A3, B8 | `BlogPosts`, `AdminUsers` | Blog, home latest posts |
 | B10 | Activity Log screen with filters | Low | A1 | `ActivityLog`, `AdminUsers` | None |
+| B11 | Page Sections editor: sections and their items for any page (required before Stage C, because moved text is not editable until then) | Medium | A1, A3 | `PageSections`, `PageSectionItems` | All section headings, introductions, buttons and repeating blocks |
 
 ## 5. Stage C: Public pages read from the database
 
@@ -65,9 +66,9 @@ The public site changes in this stage, so each step keeps the fixed text as a fa
 | # | Module | Complexity | Depends on | Database tables | Public-facing effect |
 |---|---|---|---|---|---|
 | C1 | Site-wide settings: business name, tagline, contact details, social links, copyright, `ShowAddress` | Low | Phase 4 | `WebsiteSettings` | Header, footer, all pages |
-| C2 | Home page, seeded with today's wording | Medium | B1, B4, B7, B9 | `HomePageContent`, `Services`, `PortfolioProjects`, `BlogPosts`, `Testimonials` | Home page |
-| C3 | About page, seeded with today's wording | Low | B2, B5 | `AboutContent`, `AboutValues`, `AboutQualifications` | About page |
-| C4 | Services page and the six service detail pages | Medium | B1 | `Services` | `services.php`, `services/*.php` |
+| C2 | Home page, seeded with today's wording | Medium | B1, B4, B7, B9, B11 | `HomePageContent`, `PageSections`, `PageSectionItems`, `Services`, `PortfolioProjects`, `BlogPosts`, `Testimonials` | Home page |
+| C3 | About page, seeded with today's wording | Low | B2, B5, B11 | `AboutContent`, `PageSections`, `PageSectionItems`, `AboutValues`, `AboutQualifications` | About page |
+| C4 | Services page and the six service detail pages | Medium | B1, B11 | `Services`, `PageSections`, `PageSectionItems` | `services.php`, `services/*.php` |
 | C5 | Legal pages | Low | B3 | `SitePages` | Privacy, Terms, Copyright |
 | C6 | Portfolio overview, category, single project, collaborators | Medium | B6, B7 | `PortfolioProjects`, `ProjectImages`, `Collaborators`, `Testimonials` | `portfolio.php`, `portfolio/*.php` |
 | C7 | Blog listing, single post, category, archive, search | Medium | B8, B9 | `BlogPosts`, `BlogCategories`, `AdminUsers` | `blog.php`, `blog/*.php` |

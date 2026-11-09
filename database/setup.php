@@ -67,11 +67,14 @@ if (in_array('--print-admin-sql', $argv, true)) {
 run_sql_file(__DIR__ . '/schema.sql');
 run_sql_file(__DIR__ . '/migrations.sql');
 
-// COALESCE keeps anything already saved in the admin area.
-db_query(
-    'UPDATE WebsiteSettings SET Phone = COALESCE(Phone, NULLIF(?, \'\')), Email = COALESCE(Email, NULLIF(?, \'\')) WHERE SettingID = 1',
-    [env_value('SEED_PHONE'), env_value('SEED_EMAIL')]
-);
+// Runs once and keeps anything saved, so a number deliberately removed stays removed.
+if ((int) db_value("SELECT COUNT(*) FROM SchemaMigrations WHERE MigrationName = 'seed_settings_from_env'") === 0) {
+    db_query(
+        'UPDATE WebsiteSettings SET Phone = COALESCE(Phone, NULLIF(?, \'\')), Email = COALESCE(Email, NULLIF(?, \'\')) WHERE SettingID = 1',
+        [env_value('SEED_PHONE'), env_value('SEED_EMAIL')]
+    );
+    db_query("INSERT INTO SchemaMigrations (MigrationName) VALUES ('seed_settings_from_env')");
+}
 echo 'Website Settings defaults checked', PHP_EOL;
 
 if ((int) db_value("SELECT COUNT(*) FROM AdminUsers WHERE Role = 'SuperAdmin'") === 0) {

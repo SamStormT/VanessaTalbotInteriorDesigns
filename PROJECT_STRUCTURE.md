@@ -93,8 +93,8 @@ Stack: HTML5, CSS3, JavaScript, PHP 8, MariaDB, PHPMailer, PayFast. Hosted on Xn
 │   └── images/
 │
 └── database/
-    ├── schema.sql             All 29 tables; safe to re-run
-    ├── migrations.sql         Later changes and seed data; safe to re-run
+    ├── schema.sql             29 core tables; safe to re-run
+    ├── migrations.sql         Page sections, later changes and seed data; safe to re-run
     ├── setup.php              Command-line install: applies both files, creates first SuperAdmin
     └── CMS_ARCHITECTURE.md    ERD, CRUD plan, permissions, recommendations
 ```

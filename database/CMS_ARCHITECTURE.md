@@ -1,6 +1,6 @@
 # CMS Architecture
 
-**Status: foundation implemented (Phase 4).** `database/schema.sql` has 29 tables, and `database/migrations.sql` adds `LastEditedBy` and `LastEditedDate` to every editable content table. Install with `php database/setup.php`. Sign-in, permissions, Website Settings, Homepage, About and Services editing are built; the other screens below are still to come.
+**Status: foundation implemented (Phase 4).** `database/schema.sql` has 29 tables. `database/migrations.sql` adds `LastEditedBy` and `LastEditedDate` to every editable content table, and two more tables, `PageSections` and `PageSectionItems`, making 31. Install with `php database/setup.php`. Sign-in, permissions, Website Settings, Homepage, About and Services editing are built; the other screens below are still to come.
 
 The schema was tested on a throwaway MariaDB 10.11 database: it loads cleanly, re-running it preserves existing data, and the delete rules, uniqueness rules and subscriber rule below were tested and held.
 
@@ -35,6 +35,7 @@ erDiagram
     PhotographyOrders ||--o{ PaymentTransactions : "paid by"
     NewsletterCampaigns ||--o{ CampaignRecipients : "sent to"
     Subscribers ||--o{ CampaignRecipients : "receives"
+    PageSections ||--o{ PageSectionItems : "contains"
 ```
 
 **Connected groups**
@@ -72,6 +73,7 @@ Image columns store a file path and are not foreign keys to `MediaLibrary`, so t
 | `PaymentTransactions.OrderID` | `PhotographyOrders` | Yes | **Blocked:** payment history is permanent |
 | `CampaignRecipients.CampaignID` | `NewsletterCampaigns` | Yes | **Blocked** |
 | `CampaignRecipients.SubscriberID` | `Subscribers` | Yes | **Cascade:** so a POPIA erasure is complete |
+| `PageSectionItems.SectionID` | `PageSections` | Yes | **Cascade:** items are removed with their section |
 
 **Other rules enforced by the database:** unique, case-insensitive email on `AdminUsers` and `Subscribers`; unique slugs on every table that has one; unique `OrderNumber`, `PaymentReference`, `DownloadToken` and `UnsubscribeToken`; one person per campaign; one `PaymentTransactions` row per gateway reference and status, so a repeated PayFast notification cannot be recorded twice; prices cannot be negative and quantities must be above zero.
 
