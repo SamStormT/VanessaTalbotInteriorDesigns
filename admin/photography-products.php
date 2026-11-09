@@ -1,17 +1,8 @@
 <?php
 /**
- * Admin: Photography Products (placeholder)
+ * Photography Products: placeholder until its screens are built.
  */
 require_once __DIR__ . '/../includes/config.php';
-require_once INCLUDES_PATH . '/auth.php';
-require_admin();
+require_once INCLUDES_PATH . '/cms.php';
 
-$pageTitle = 'Photography Products';
-$layout    = 'admin';
-
-require_once INCLUDES_PATH . '/header.php';
-?>
-<main id="main-content" class="admin-content admin-page--photography-products">
-    <p class="placeholder-note">Placeholder: Photography Products management coming in a later phase.</p>
-</main>
-<?php require_once INCLUDES_PATH . '/footer.php'; ?>
+cms_placeholder_page('products.view', 'Photography Products', 'PhotographyProducts', 'products', 'camera');

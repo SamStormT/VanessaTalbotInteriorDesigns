@@ -1,0 +1,9 @@
+# Vanessa Talbot Interior Designs: web server protection (Apache)
+
+Options -Indexes
+
+# Hide dot files such as .env and .git, but allow .well-known for SSL.
+RedirectMatch 404 "/\.(?!well-known)"
+
+# Hide folders that are only ever used by PHP on the server.
+RedirectMatch 404 "/(database|includes|logs|vendor)(/|$)"

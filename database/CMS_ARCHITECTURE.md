@@ -1,6 +1,6 @@
 # CMS Architecture
 
-**Status: proposed, awaiting approval before implementation.** `database/schema.sql` now has 29 tables: the 18 originally specified plus all approved enhancements. No admin screens, forms, PayFast or email have been built.
+**Status: foundation implemented (Phase 4).** `database/schema.sql` has 29 tables, and `database/migrations.sql` adds `LastEditedBy` and `LastEditedDate` to every editable content table. Install with `php database/setup.php`. Sign-in, permissions, Website Settings, Homepage, About and Services editing are built; the other screens below are still to come.
 
 The schema was tested on a throwaway MariaDB 10.11 database: it loads cleanly, re-running it preserves existing data, and the delete rules, uniqueness rules and subscriber rule below were tested and held.
 
@@ -223,13 +223,15 @@ Menu items a role cannot use are hidden, and each page also checks permission on
 
 Editors are kept away from subscribers, messages and orders because those hold personal data, which POPIA requires us to limit. Editors can prepare work, but an Admin publishes it.
 
+Permissions are defined in `includes/permissions.php`. Modules are added to that map as their screens are built, and anything not listed is refused for every role.
+
 **Rules:** the last active SuperAdmin cannot be demoted or deactivated, users cannot change their own role, and permissions live in one PHP map checked by `can('module.action')`.
 
 ## 7. Before implementation
 
 - **Table-name case.** XAMPP on Windows stores `AdminUsers` as `adminusers` (confirmed in testing), while Linux hosting is normally case-sensitive. Set `lower_case_table_names=2` in XAMPP's `my.ini` before creating the local database, and run `schema.sql` directly on the server rather than importing a local export.
 - **Confirm the MariaDB version** on Xneelo is 10.2.1 or newer; older versions ignore the `CHECK` rules.
-- **First SuperAdmin:** create it with a one-time script on the server. No credentials belong in a public repository.
+- **First SuperAdmin:** `php database/setup.php` creates it. On a host with no command line, `php database/setup.php --print-admin-sql` prints an INSERT to paste into phpMyAdmin. No credentials belong in a public repository.
 - **Xneelo limits:** check outbound email limits and cron access before promising bulk newsletter sending from the site.
 - **Retention:** decide how long to keep `LoginAttempts`, `ActivityLog` and the IP addresses on messages and subscribers. These are personal data under POPIA.
 - **Google Analytics:** store only the Measurement ID, and add a cookie notice.

@@ -4,7 +4,7 @@
 
 Stack: HTML5, CSS3, JavaScript, PHP 8, MariaDB, PHPMailer, PayFast. Hosted on Xneelo Standard Hosting.
 
-> **Status: Phase 2.** Home, About and Services are built. Other pages are still placeholders. The database, email, payments and authentication are not built yet.
+> **Status: Phase 4.** The public site is built but still uses fixed content. The admin area has working sign-in, permissions, Website Settings, Homepage, About and Services editing; other admin screens are placeholders. Email, payments and public forms are not built yet.
 
 ## Folder layout
 
@@ -71,8 +71,11 @@ Stack: HTML5, CSS3, JavaScript, PHP 8, MariaDB, PHPMailer, PayFast. Hosted on Xn
 │   ├── functions.php          e(), url(), asset(), is_active()
 │   ├── icons.php              icon() inline SVG icons, botanical() decoration
 │   ├── site-data.php          Shared content: services, values, target markets, portfolio categories
-│   ├── database.php           PDO / MariaDB (placeholder)
-│   ├── auth.php               Sessions, require_admin() (placeholder, always denies)
+│   ├── database.php           Central PDO connection and query helpers
+│   ├── auth.php               Sessions, sign-in, CSRF, activity log, admin_guard(), password resets
+│   ├── permissions.php        Role and permission map
+│   ├── cms.php                CMS framework: view, form, validation, save, audit
+│   ├── cms-modules.php        Field definitions for each editable module
 │   ├── mail.php               PHPMailer (placeholder)
 │   ├── payfast.php            PayFast payments + ITN (placeholder)
 │   ├── header.php             <head>, fonts, CSS; opens public or admin layout
@@ -91,6 +94,8 @@ Stack: HTML5, CSS3, JavaScript, PHP 8, MariaDB, PHPMailer, PayFast. Hosted on Xn
 │
 └── database/
     ├── schema.sql             All 29 tables; safe to re-run
+    ├── migrations.sql         Later changes and seed data; safe to re-run
+    ├── setup.php              Command-line install: applies both files, creates first SuperAdmin
     └── CMS_ARCHITECTURE.md    ERD, CRUD plan, permissions, recommendations
 ```
 

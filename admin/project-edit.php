@@ -1,17 +1,8 @@
 <?php
 /**
- * Admin: Edit Project (placeholder)
+ * Edit Project: placeholder until its screens are built.
  */
 require_once __DIR__ . '/../includes/config.php';
-require_once INCLUDES_PATH . '/auth.php';
-require_admin();
+require_once INCLUDES_PATH . '/cms.php';
 
-$pageTitle = 'Edit Project';
-$layout    = 'admin';
-
-require_once INCLUDES_PATH . '/header.php';
-?>
-<main id="main-content" class="admin-content admin-page--project-edit">
-    <p class="placeholder-note">Placeholder: Edit Project management coming in a later phase.</p>
-</main>
-<?php require_once INCLUDES_PATH . '/footer.php'; ?>
+cms_placeholder_page('portfolio.edit', 'Edit Project', 'PortfolioProjects', 'projects', 'leaf');

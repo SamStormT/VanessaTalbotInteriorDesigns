@@ -1,17 +1,8 @@
 <?php
 /**
- * Admin: Portfolio Projects (placeholder)
+ * Portfolio Projects: placeholder until its screens are built.
  */
 require_once __DIR__ . '/../includes/config.php';
-require_once INCLUDES_PATH . '/auth.php';
-require_admin();
+require_once INCLUDES_PATH . '/cms.php';
 
-$pageTitle = 'Portfolio Projects';
-$layout    = 'admin';
-
-require_once INCLUDES_PATH . '/header.php';
-?>
-<main id="main-content" class="admin-content admin-page--portfolio-projects">
-    <p class="placeholder-note">Placeholder: Portfolio Projects management coming in a later phase.</p>
-</main>
-<?php require_once INCLUDES_PATH . '/footer.php'; ?>
+cms_placeholder_page('portfolio.view', 'Portfolio Projects', 'PortfolioProjects', 'projects', 'leaf');
