@@ -67,7 +67,7 @@ $services = [
     ],
     [
         'slug'     => 'colour-psychology',
-        'title'    => 'Colour Psychology',
+        'title'    => 'Colour & Design Psychology',
         'icon'     => 'palette',
         'url'      => 'services/colour-psychology.php',
         'summary'  => 'Colour chosen with purpose, to influence mood, energy and behaviour in the way each space needs.',
@@ -102,7 +102,7 @@ $services = [
         'title'    => 'Speaking Engagements',
         'icon'     => 'mic',
         'url'      => 'services/speaking-engagements.php',
-        'summary'  => 'Engaging talks on biophilic design, colour psychology and nature-centred wellbeing.',
+        'summary'  => 'Engaging talks on biophilic design, colour & design psychology and nature-centred wellbeing.',
         'lead'     => 'Ideas that change how audiences see the spaces they live and work in.',
         'body'     => 'Vanessa speaks on the science and the art of designing with nature: why our surroundings matter so much to our wellbeing, and what anyone can do about it. Talks are tailored to the audience, whether a conference, a corporate wellness day, a community group or an industry event.',
         'includes' => [
@@ -120,7 +120,7 @@ $services = [
         'url'      => 'services/workshops.php',
         'summary'  => 'Hands-on, interactive sessions that teach people to bring nature and colour into their own spaces.',
         'lead'     => 'Learn by doing, and leave with ideas you can put into practice at home or at work.',
-        'body'     => 'Vanessa\'s workshops turn the principles of biophilic design and colour psychology into practical, enjoyable experiences. Participants explore how their surroundings affect them, then work through simple, achievable changes. Sessions suit teams, wellness programmes, retail events and community groups.',
+        'body'     => 'Vanessa\'s workshops turn the principles of biophilic design and colour & design psychology into practical, enjoyable experiences. Participants explore how their surroundings affect them, then work through simple, achievable changes. Sessions suit teams, wellness programmes, retail events and community groups.',
         'includes' => [
             'Interactive group sessions with hands-on activities',
             'Practical guides and worksheets to take home',
@@ -157,7 +157,7 @@ $portfolioCategories = [
         'tone'  => 'green',
     ],
     [
-        'title' => 'Colour Psychology',
+        'title' => 'Colour & Design Psychology',
         'text'  => 'Palettes designed to calm, energise or welcome, depending on what the space needs.',
         'url'   => 'portfolio/colour-psychology.php',
         'icon'  => 'palette',

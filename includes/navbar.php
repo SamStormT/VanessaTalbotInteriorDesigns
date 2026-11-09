@@ -8,7 +8,7 @@ $navItems = [
     ['label' => 'About',       'path' => 'about.php'],
     ['label' => 'Services',    'path' => 'services.php', 'children' => [
         ['label' => 'Biophilic Design',     'path' => 'services/biophilic-design.php'],
-        ['label' => 'Colour Psychology',    'path' => 'services/colour-psychology.php'],
+        ['label' => 'Colour & Design Psychology',    'path' => 'services/colour-psychology.php'],
         ['label' => 'Photography',          'path' => 'services/photography-services.php'],
         ['label' => 'Workshops',            'path' => 'services/workshops.php'],
         ['label' => 'Speaking Engagements', 'path' => 'services/speaking-engagements.php'],
@@ -16,7 +16,7 @@ $navItems = [
     ]],
     ['label' => 'Portfolio',   'path' => 'portfolio.php', 'children' => [
         ['label' => 'Biophilic Interior Design', 'path' => 'portfolio/biophilic-interior-design.php'],
-        ['label' => 'Colour Psychology',         'path' => 'portfolio/colour-psychology.php'],
+        ['label' => 'Colour & Design Psychology',         'path' => 'portfolio/colour-psychology.php'],
         ['label' => 'Photography Gallery',       'path' => 'portfolio/photography-gallery.php'],
         ['label' => 'Collaborators',             'path' => 'portfolio/collaborators.php'],
     ]],

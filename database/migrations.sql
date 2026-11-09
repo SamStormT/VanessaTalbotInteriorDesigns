@@ -118,7 +118,7 @@ SELECT 'Biophilic Design', 'biophilic-design', 'leaf', 'Interiors that reconnect
 FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM SchemaMigrations WHERE MigrationName = '004_seed_services');
 
 INSERT IGNORE INTO Services (ServiceName, Slug, Icon, ShortDescription, Lead, FullDescription, IncludedItems, IdealFor, Status, DisplayOrder)
-SELECT 'Colour Psychology', 'colour-psychology', 'palette', 'Colour chosen with purpose, to influence mood, energy and behaviour in the way each space needs.', 'Colour is never just decoration. It shapes how a room feels, and how we feel in it.', 'Vanessa combines an understanding of how colour affects mood and perception with a designer''s eye for harmony and balance. Whether a space needs to soothe, energise, welcome or inspire, the palette is built around the people who use it and what they need it to do.', 'Colour consultation based on how the space is used and who uses it\nConsidered palettes for walls, furnishings and finishes\nGuidance on natural and artificial light and how it changes colour\nBrand-aligned colour for commercial and retail spaces', 'Residential homes\nBoutiques\nWorkspaces', 'Published', 20
+SELECT 'Colour & Design Psychology', 'colour-psychology', 'palette', 'Colour chosen with purpose, to influence mood, energy and behaviour in the way each space needs.', 'Colour is never just decoration. It shapes how a room feels, and how we feel in it.', 'Vanessa combines an understanding of how colour affects mood and perception with a designer''s eye for harmony and balance. Whether a space needs to soothe, energise, welcome or inspire, the palette is built around the people who use it and what they need it to do.', 'Colour consultation based on how the space is used and who uses it\nConsidered palettes for walls, furnishings and finishes\nGuidance on natural and artificial light and how it changes colour\nBrand-aligned colour for commercial and retail spaces', 'Residential homes\nBoutiques\nWorkspaces', 'Published', 20
 FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM SchemaMigrations WHERE MigrationName = '004_seed_services');
 
 INSERT IGNORE INTO Services (ServiceName, Slug, Icon, ShortDescription, Lead, FullDescription, IncludedItems, IdealFor, Status, DisplayOrder)
@@ -126,11 +126,11 @@ SELECT 'Photography', 'photography-services', 'camera', 'Nature and interior pho
 FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM SchemaMigrations WHERE MigrationName = '004_seed_services');
 
 INSERT IGNORE INTO Services (ServiceName, Slug, Icon, ShortDescription, Lead, FullDescription, IncludedItems, IdealFor, Status, DisplayOrder)
-SELECT 'Speaking Engagements', 'speaking-engagements', 'mic', 'Engaging talks on biophilic design, colour psychology and nature-centred wellbeing.', 'Ideas that change how audiences see the spaces they live and work in.', 'Vanessa speaks on the science and the art of designing with nature: why our surroundings matter so much to our wellbeing, and what anyone can do about it. Talks are tailored to the audience, whether a conference, a corporate wellness day, a community group or an industry event.', 'Keynotes and talks tailored to your audience\nTopics spanning biophilic design, colour and wellbeing\nPractical takeaways audiences can use straight away\nPanel discussions and question-and-answer sessions', 'Events\nWorkspaces\nHealth & wellness centres', 'Published', 40
+SELECT 'Speaking Engagements', 'speaking-engagements', 'mic', 'Engaging talks on biophilic design, colour & design psychology and nature-centred wellbeing.', 'Ideas that change how audiences see the spaces they live and work in.', 'Vanessa speaks on the science and the art of designing with nature: why our surroundings matter so much to our wellbeing, and what anyone can do about it. Talks are tailored to the audience, whether a conference, a corporate wellness day, a community group or an industry event.', 'Keynotes and talks tailored to your audience\nTopics spanning biophilic design, colour and wellbeing\nPractical takeaways audiences can use straight away\nPanel discussions and question-and-answer sessions', 'Events\nWorkspaces\nHealth & wellness centres', 'Published', 40
 FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM SchemaMigrations WHERE MigrationName = '004_seed_services');
 
 INSERT IGNORE INTO Services (ServiceName, Slug, Icon, ShortDescription, Lead, FullDescription, IncludedItems, IdealFor, Status, DisplayOrder)
-SELECT 'Workshops', 'workshops', 'group', 'Hands-on, interactive sessions that teach people to bring nature and colour into their own spaces.', 'Learn by doing, and leave with ideas you can put into practice at home or at work.', 'Vanessa''s workshops turn the principles of biophilic design and colour psychology into practical, enjoyable experiences. Participants explore how their surroundings affect them, then work through simple, achievable changes. Sessions suit teams, wellness programmes, retail events and community groups.', 'Interactive group sessions with hands-on activities\nPractical guides and worksheets to take home\nContent tailored to teams, clients or communities\nOptions for corporate wellness and team-building days', 'Workspaces\nEvents\nHealth & wellness centres', 'Published', 50
+SELECT 'Workshops', 'workshops', 'group', 'Hands-on, interactive sessions that teach people to bring nature and colour into their own spaces.', 'Learn by doing, and leave with ideas you can put into practice at home or at work.', 'Vanessa''s workshops turn the principles of biophilic design and colour & design psychology into practical, enjoyable experiences. Participants explore how their surroundings affect them, then work through simple, achievable changes. Sessions suit teams, wellness programmes, retail events and community groups.', 'Interactive group sessions with hands-on activities\nPractical guides and worksheets to take home\nContent tailored to teams, clients or communities\nOptions for corporate wellness and team-building days', 'Workspaces\nEvents\nHealth & wellness centres', 'Published', 50
 FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM SchemaMigrations WHERE MigrationName = '004_seed_services');
 
 INSERT IGNORE INTO Services (ServiceName, Slug, Icon, ShortDescription, Lead, FullDescription, IncludedItems, IdealFor, Status, DisplayOrder)
@@ -145,7 +145,7 @@ INSERT IGNORE INTO SchemaMigrations (MigrationName) VALUES ('004_seed_services')
 -- See CONTENT_MAPPING.md for where each piece of text belongs.
 -- --------------------------------------------------------------------------
 UPDATE HomePageContent
-SET     HeroEyebrow = COALESCE(HeroEyebrow, 'Biophilic Interior Design · Colour Psychology · Photography'),
+SET     HeroEyebrow = COALESCE(HeroEyebrow, 'Biophilic Interior Design · Colour & Design Psychology · Photography'),
     HeroTitle = COALESCE(HeroTitle, 'Vanessa Talbot'),
     HeroSubtitle = COALESCE(HeroSubtitle, 'Interiors designed around the way people are meant to live: connected to light, colour and the natural world. Grounded in science, shaped by art, inspired by nature.'),
     CTA1Text = COALESCE(CTA1Text, 'Book a consultation'),
@@ -158,12 +158,12 @@ SET     HeroEyebrow = COALESCE(HeroEyebrow, 'Biophilic Interior Design · Colour
     IntroductionText = COALESCE(IntroductionText, 'Vanessa Talbot brings together a background in science and a passion for interior design to create spaces that do more than look beautiful. They help people feel well.\n\nHer work is built on a simple idea: the spaces we spend our days in shape how we think, feel and connect. By combining biophilic design, the psychology of colour and a photographer''s eye for light and detail, Vanessa designs interiors that are calm, personal and deeply connected to the natural world.'),
     FeaturedQuote = COALESCE(FeaturedQuote, 'Nature remains our magic well: the more we draw from its nourishing waters, the more we sustain the human body, mind and spirit.'),
     FeaturedQuoteAuthor = COALESCE(FeaturedQuoteAuthor, 'Stephen R. Kellert'),
-    MetaDescription = COALESCE(MetaDescription, 'Vanessa Talbot Interior Designs creates nature-centred interiors through biophilic design, colour psychology and photography, for homes, workspaces, wellness centres, boutiques and events.')
+    MetaDescription = COALESCE(MetaDescription, 'Vanessa Talbot Interior Designs creates nature-centred interiors through biophilic design, colour & design psychology and photography, for homes, workspaces, wellness centres, boutiques and events.')
 WHERE HomePageID = 1 AND NOT EXISTS (SELECT 1 FROM SchemaMigrations WHERE MigrationName = '005_seed_home_about_content');
 
 UPDATE AboutContent
 SET     Biography = COALESCE(Biography, 'Vanessa Talbot has always been fascinated by the relationship between people and the places they spend their lives in.\n\nIt is a curiosity that has carried her from science to interior design, and into photography. Each one has taught her to look a little more closely, at how light moves through a room, how colour changes a mood, and how a single living plant can soften an entire space.\n\nToday, Vanessa Talbot Interior Designs brings those threads together. Vanessa works with homeowners, businesses, wellness practitioners, retailers and event organisers to create interiors that are beautiful, personal and good for the people in them.'),
-    Journey = COALESCE(Journey, 'Vanessa''s path into design is what makes her approach different. She doesn''t see science and creativity as opposites. To her, they are two ways of understanding the same world.\n\nBiophilic design and colour psychology brought it all together: design choices informed by how people actually respond to their surroundings, expressed with an artist''s eye.'),
+    Journey = COALESCE(Journey, 'Vanessa''s path into design is what makes her approach different. She doesn''t see science and creativity as opposites. To her, they are two ways of understanding the same world.\n\nBiophilic design and colour & design psychology brought it all together: design choices informed by how people actually respond to their surroundings, expressed with an artist''s eye.'),
     ScienceBackground = COALESCE(ScienceBackground, 'A background in science taught Vanessa to observe carefully, ask questions and look for evidence. It also gave her a lasting respect for the natural systems that sustain us.'),
     DesignBackground = COALESCE(DesignBackground, 'Her love of beauty, colour and composition drew her to interior design, where she discovered she could use both sides of her thinking at once.'),
     Philosophy = COALESCE(Philosophy, 'Biophilia is our innate need to connect with nature. Vanessa''s work starts from the belief that this connection is not a luxury. It is essential to how we rest, focus and feel.\n\nIn practice, that means designing with:\n\nLight and air: making the most of daylight, fresh air and views to the outside.\nLiving elements: plants, water and natural features that bring a space to life.\nNatural materials: wood, stone, linen and texture that invite touch and feel grounded.\nColour with purpose: palettes drawn from nature and chosen for how they make people feel.\nOrganic form: shapes, patterns and layouts that echo the natural world.'),
@@ -289,7 +289,7 @@ SELECT s.SectionID, 'biophilic-interior-design', 'Biophilic Interior Design', 'H
 FROM PageSections s WHERE s.PageKey = 'home' AND s.SectionKey = 'portfolio' AND NOT EXISTS (SELECT 1 FROM SchemaMigrations WHERE MigrationName = '006_page_sections');
 
 INSERT IGNORE INTO PageSectionItems (SectionID, ItemKey, Title, Text, Icon, Link, DisplayOrder, Status)
-SELECT s.SectionID, 'colour-psychology', 'Colour Psychology', 'Palettes designed to calm, energise or welcome, depending on what the space needs.', 'palette', 'portfolio/colour-psychology.php', 20, 'Published'
+SELECT s.SectionID, 'colour-psychology', 'Colour & Design Psychology', 'Palettes designed to calm, energise or welcome, depending on what the space needs.', 'palette', 'portfolio/colour-psychology.php', 20, 'Published'
 FROM PageSections s WHERE s.PageKey = 'home' AND s.SectionKey = 'portfolio' AND NOT EXISTS (SELECT 1 FROM SchemaMigrations WHERE MigrationName = '006_page_sections');
 
 INSERT IGNORE INTO PageSectionItems (SectionID, ItemKey, Title, Text, Icon, Link, DisplayOrder, Status)
@@ -309,7 +309,7 @@ SELECT s.SectionID, 'biophilic-design', 'Biophilic design', NULL, NULL, NULL, 10
 FROM PageSections s WHERE s.PageKey = 'home' AND s.SectionKey = 'blog-empty' AND NOT EXISTS (SELECT 1 FROM SchemaMigrations WHERE MigrationName = '006_page_sections');
 
 INSERT IGNORE INTO PageSectionItems (SectionID, ItemKey, Title, Text, Icon, Link, DisplayOrder, Status)
-SELECT s.SectionID, 'colour-psychology', 'Colour psychology', NULL, NULL, NULL, 20, 'Published'
+SELECT s.SectionID, 'colour-psychology', 'Colour & design psychology', NULL, NULL, NULL, 20, 'Published'
 FROM PageSections s WHERE s.PageKey = 'home' AND s.SectionKey = 'blog-empty' AND NOT EXISTS (SELECT 1 FROM SchemaMigrations WHERE MigrationName = '006_page_sections');
 
 INSERT IGNORE INTO PageSectionItems (SectionID, ItemKey, Title, Text, Icon, Link, DisplayOrder, Status)
@@ -373,7 +373,7 @@ SELECT s.SectionID, 'design', 'A creative calling', 'Her love of beauty, colour 
 FROM PageSections s WHERE s.PageKey = 'about' AND s.SectionKey = 'journey' AND NOT EXISTS (SELECT 1 FROM SchemaMigrations WHERE MigrationName = '006_page_sections');
 
 INSERT IGNORE INTO PageSectionItems (SectionID, ItemKey, Title, Text, Icon, Link, DisplayOrder, Status)
-SELECT s.SectionID, 'nature', 'Nature as the bridge', 'Biophilic design and colour psychology brought it all together: design choices informed by how people actually respond to their surroundings, expressed with an artist''s eye.', 'sprout', NULL, 30, 'Published'
+SELECT s.SectionID, 'nature', 'Nature as the bridge', 'Biophilic design and colour & design psychology brought it all together: design choices informed by how people actually respond to their surroundings, expressed with an artist''s eye.', 'sprout', NULL, 30, 'Published'
 FROM PageSections s WHERE s.PageKey = 'about' AND s.SectionKey = 'journey' AND NOT EXISTS (SELECT 1 FROM SchemaMigrations WHERE MigrationName = '006_page_sections');
 
 INSERT IGNORE INTO PageSections (PageKey, SectionKey, Eyebrow, Heading, Introduction, Body, ButtonText, ButtonLink, SecondaryButtonText, SecondaryButtonLink, DisplayOrder, Status)
@@ -433,7 +433,7 @@ SELECT 'about', 'closing', NULL, 'Ready to reconnect your space with nature?', '
 FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM SchemaMigrations WHERE MigrationName = '006_page_sections');
 
 INSERT IGNORE INTO PageSections (PageKey, SectionKey, Eyebrow, Heading, Introduction, Body, ButtonText, ButtonLink, SecondaryButtonText, SecondaryButtonLink, DisplayOrder, Status)
-SELECT 'services', 'seo', NULL, 'Services', 'Biophilic design, colour psychology, photography, workshops, speaking engagements and consultations by Vanessa Talbot Interior Designs.', NULL, NULL, NULL, NULL, NULL, 0, 'Published'
+SELECT 'services', 'seo', NULL, 'Services', 'Biophilic design, colour & design psychology, photography, workshops, speaking engagements and consultations by Vanessa Talbot Interior Designs.', NULL, NULL, NULL, NULL, NULL, 0, 'Published'
 FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM SchemaMigrations WHERE MigrationName = '006_page_sections');
 
 INSERT IGNORE INTO PageSections (PageKey, SectionKey, Eyebrow, Heading, Introduction, Body, ButtonText, ButtonLink, SecondaryButtonText, SecondaryButtonLink, DisplayOrder, Status)
@@ -465,7 +465,7 @@ SELECT 'services', 'closing', NULL, 'Not sure where to start?', 'A consultation 
 FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM SchemaMigrations WHERE MigrationName = '006_page_sections');
 
 INSERT IGNORE INTO PageSections (PageKey, SectionKey, Eyebrow, Heading, Introduction, Body, ButtonText, ButtonLink, SecondaryButtonText, SecondaryButtonLink, DisplayOrder, Status)
-SELECT 'global', 'footer', NULL, NULL, 'Biophilic interior design, colour psychology and photography for homes, workspaces, wellness centres, boutiques and events.', 'Ready to bring nature into your space? Let''s talk about what you have in mind.', 'Contact Vanessa', 'contact.php', NULL, NULL, 10, 'Published'
+SELECT 'global', 'footer', NULL, NULL, 'Biophilic interior design, colour & design psychology and photography for homes, workspaces, wellness centres, boutiques and events.', 'Ready to bring nature into your space? Let''s talk about what you have in mind.', 'Contact Vanessa', 'contact.php', NULL, NULL, 10, 'Published'
 FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM SchemaMigrations WHERE MigrationName = '006_page_sections');
 
 INSERT IGNORE INTO PageSectionItems (SectionID, ItemKey, Title, Text, Icon, Link, DisplayOrder, Status)
@@ -484,7 +484,7 @@ FROM PageSections s WHERE s.PageKey = 'global' AND s.SectionKey = 'footer' AND N
 -- only if they still hold the original seeded wording.
 UPDATE HomePageContent SET IntroductionText = NULL WHERE HomePageID = 1 AND IntroductionText = 'Vanessa Talbot brings together a background in science and a passion for interior design to create spaces that do more than look beautiful. They help people feel well.\n\nHer work is built on a simple idea: the spaces we spend our days in shape how we think, feel and connect. By combining biophilic design, the psychology of colour and a photographer''s eye for light and detail, Vanessa designs interiors that are calm, personal and deeply connected to the natural world.' AND NOT EXISTS (SELECT 1 FROM SchemaMigrations WHERE MigrationName = '006_page_sections');
 
-UPDATE AboutContent SET Journey = NULL WHERE AboutID = 1 AND Journey = 'Vanessa''s path into design is what makes her approach different. She doesn''t see science and creativity as opposites. To her, they are two ways of understanding the same world.\n\nBiophilic design and colour psychology brought it all together: design choices informed by how people actually respond to their surroundings, expressed with an artist''s eye.' AND NOT EXISTS (SELECT 1 FROM SchemaMigrations WHERE MigrationName = '006_page_sections');
+UPDATE AboutContent SET Journey = NULL WHERE AboutID = 1 AND Journey = 'Vanessa''s path into design is what makes her approach different. She doesn''t see science and creativity as opposites. To her, they are two ways of understanding the same world.\n\nBiophilic design and colour & design psychology brought it all together: design choices informed by how people actually respond to their surroundings, expressed with an artist''s eye.' AND NOT EXISTS (SELECT 1 FROM SchemaMigrations WHERE MigrationName = '006_page_sections');
 
 UPDATE AboutContent SET ScienceBackground = NULL WHERE AboutID = 1 AND ScienceBackground = 'A background in science taught Vanessa to observe carefully, ask questions and look for evidence. It also gave her a lasting respect for the natural systems that sustain us.' AND NOT EXISTS (SELECT 1 FROM SchemaMigrations WHERE MigrationName = '006_page_sections');
 
@@ -509,3 +509,60 @@ WHERE s.PageKey = 'global' AND s.SectionKey = 'footer'
   AND NOT EXISTS (SELECT 1 FROM SchemaMigrations WHERE MigrationName = '007_remove_footer_navigation_labels');
 
 INSERT IGNORE INTO SchemaMigrations (MigrationName) VALUES ('007_remove_footer_navigation_labels');
+
+
+-- --------------------------------------------------------------------------
+-- 008: The service is now called Colour & Design Psychology. Wording only;
+-- web addresses, keys and column names are unchanged. Runs once, and changes
+-- only the service name inside existing text.
+-- --------------------------------------------------------------------------
+UPDATE HomePageContent SET HeroEyebrow = 'Biophilic Interior Design · Colour & Design Psychology · Photography'
+WHERE HomePageID = 1 AND HeroEyebrow = 'Test' AND NOT EXISTS (SELECT 1 FROM SchemaMigrations WHERE MigrationName = '008_rename_colour_design_psychology');
+
+UPDATE HomePageContent
+SET HeroEyebrow = REPLACE(REPLACE(REPLACE(HeroEyebrow, 'Colour Psychology', 'Colour & Design Psychology'), 'Colour psychology', 'Colour & design psychology'), 'colour psychology', 'colour & design psychology'),
+    HeroSubtitle = REPLACE(REPLACE(REPLACE(HeroSubtitle, 'Colour Psychology', 'Colour & Design Psychology'), 'Colour psychology', 'Colour & design psychology'), 'colour psychology', 'colour & design psychology'),
+    FeaturedCTATitle = REPLACE(REPLACE(REPLACE(FeaturedCTATitle, 'Colour Psychology', 'Colour & Design Psychology'), 'Colour psychology', 'Colour & design psychology'), 'colour psychology', 'colour & design psychology'),
+    FeaturedCTAText = REPLACE(REPLACE(REPLACE(FeaturedCTAText, 'Colour Psychology', 'Colour & Design Psychology'), 'Colour psychology', 'Colour & design psychology'), 'colour psychology', 'colour & design psychology'),
+    MetaTitle = REPLACE(REPLACE(REPLACE(MetaTitle, 'Colour Psychology', 'Colour & Design Psychology'), 'Colour psychology', 'Colour & design psychology'), 'colour psychology', 'colour & design psychology'),
+    MetaDescription = REPLACE(REPLACE(REPLACE(MetaDescription, 'Colour Psychology', 'Colour & Design Psychology'), 'Colour psychology', 'Colour & design psychology'), 'colour psychology', 'colour & design psychology')
+WHERE NOT EXISTS (SELECT 1 FROM SchemaMigrations WHERE MigrationName = '008_rename_colour_design_psychology');
+
+UPDATE AboutContent
+SET Biography = REPLACE(REPLACE(REPLACE(Biography, 'Colour Psychology', 'Colour & Design Psychology'), 'Colour psychology', 'Colour & design psychology'), 'colour psychology', 'colour & design psychology'),
+    Qualifications = REPLACE(REPLACE(REPLACE(Qualifications, 'Colour Psychology', 'Colour & Design Psychology'), 'Colour psychology', 'Colour & design psychology'), 'colour psychology', 'colour & design psychology'),
+    CoreValues = REPLACE(REPLACE(REPLACE(CoreValues, 'Colour Psychology', 'Colour & Design Psychology'), 'Colour psychology', 'Colour & design psychology'), 'colour psychology', 'colour & design psychology'),
+    SpeakingIntroduction = REPLACE(REPLACE(REPLACE(SpeakingIntroduction, 'Colour Psychology', 'Colour & Design Psychology'), 'Colour psychology', 'Colour & design psychology'), 'colour psychology', 'colour & design psychology'),
+    SpeakingTopics = REPLACE(REPLACE(REPLACE(SpeakingTopics, 'Colour Psychology', 'Colour & Design Psychology'), 'Colour psychology', 'Colour & design psychology'), 'colour psychology', 'colour & design psychology'),
+    MetaTitle = REPLACE(REPLACE(REPLACE(MetaTitle, 'Colour Psychology', 'Colour & Design Psychology'), 'Colour psychology', 'Colour & design psychology'), 'colour psychology', 'colour & design psychology'),
+    MetaDescription = REPLACE(REPLACE(REPLACE(MetaDescription, 'Colour Psychology', 'Colour & Design Psychology'), 'Colour psychology', 'Colour & design psychology'), 'colour psychology', 'colour & design psychology')
+WHERE NOT EXISTS (SELECT 1 FROM SchemaMigrations WHERE MigrationName = '008_rename_colour_design_psychology');
+
+UPDATE AboutValues
+SET Description = REPLACE(REPLACE(REPLACE(Description, 'Colour Psychology', 'Colour & Design Psychology'), 'Colour psychology', 'Colour & design psychology'), 'colour psychology', 'colour & design psychology')
+WHERE NOT EXISTS (SELECT 1 FROM SchemaMigrations WHERE MigrationName = '008_rename_colour_design_psychology');
+
+UPDATE Services
+SET ServiceName = REPLACE(REPLACE(REPLACE(ServiceName, 'Colour Psychology', 'Colour & Design Psychology'), 'Colour psychology', 'Colour & design psychology'), 'colour psychology', 'colour & design psychology'),
+    ShortDescription = REPLACE(REPLACE(REPLACE(ShortDescription, 'Colour Psychology', 'Colour & Design Psychology'), 'Colour psychology', 'Colour & design psychology'), 'colour psychology', 'colour & design psychology'),
+    Lead = REPLACE(REPLACE(REPLACE(Lead, 'Colour Psychology', 'Colour & Design Psychology'), 'Colour psychology', 'Colour & design psychology'), 'colour psychology', 'colour & design psychology'),
+    FullDescription = REPLACE(REPLACE(REPLACE(FullDescription, 'Colour Psychology', 'Colour & Design Psychology'), 'Colour psychology', 'Colour & design psychology'), 'colour psychology', 'colour & design psychology'),
+    IncludedItems = REPLACE(REPLACE(REPLACE(IncludedItems, 'Colour Psychology', 'Colour & Design Psychology'), 'Colour psychology', 'Colour & design psychology'), 'colour psychology', 'colour & design psychology'),
+    IdealFor = REPLACE(REPLACE(REPLACE(IdealFor, 'Colour Psychology', 'Colour & Design Psychology'), 'Colour psychology', 'Colour & design psychology'), 'colour psychology', 'colour & design psychology'),
+    MetaTitle = REPLACE(REPLACE(REPLACE(MetaTitle, 'Colour Psychology', 'Colour & Design Psychology'), 'Colour psychology', 'Colour & design psychology'), 'colour psychology', 'colour & design psychology'),
+    MetaDescription = REPLACE(REPLACE(REPLACE(MetaDescription, 'Colour Psychology', 'Colour & Design Psychology'), 'Colour psychology', 'Colour & design psychology'), 'colour psychology', 'colour & design psychology')
+WHERE NOT EXISTS (SELECT 1 FROM SchemaMigrations WHERE MigrationName = '008_rename_colour_design_psychology');
+
+UPDATE PageSections
+SET Eyebrow = REPLACE(REPLACE(REPLACE(Eyebrow, 'Colour Psychology', 'Colour & Design Psychology'), 'Colour psychology', 'Colour & design psychology'), 'colour psychology', 'colour & design psychology'),
+    Heading = REPLACE(REPLACE(REPLACE(Heading, 'Colour Psychology', 'Colour & Design Psychology'), 'Colour psychology', 'Colour & design psychology'), 'colour psychology', 'colour & design psychology'),
+    Introduction = REPLACE(REPLACE(REPLACE(Introduction, 'Colour Psychology', 'Colour & Design Psychology'), 'Colour psychology', 'Colour & design psychology'), 'colour psychology', 'colour & design psychology'),
+    Body = REPLACE(REPLACE(REPLACE(Body, 'Colour Psychology', 'Colour & Design Psychology'), 'Colour psychology', 'Colour & design psychology'), 'colour psychology', 'colour & design psychology')
+WHERE NOT EXISTS (SELECT 1 FROM SchemaMigrations WHERE MigrationName = '008_rename_colour_design_psychology');
+
+UPDATE PageSectionItems
+SET Title = REPLACE(REPLACE(REPLACE(Title, 'Colour Psychology', 'Colour & Design Psychology'), 'Colour psychology', 'Colour & design psychology'), 'colour psychology', 'colour & design psychology'),
+    Text = REPLACE(REPLACE(REPLACE(Text, 'Colour Psychology', 'Colour & Design Psychology'), 'Colour psychology', 'Colour & design psychology'), 'colour psychology', 'colour & design psychology')
+WHERE NOT EXISTS (SELECT 1 FROM SchemaMigrations WHERE MigrationName = '008_rename_colour_design_psychology');
+
+INSERT IGNORE INTO SchemaMigrations (MigrationName) VALUES ('008_rename_colour_design_psychology');

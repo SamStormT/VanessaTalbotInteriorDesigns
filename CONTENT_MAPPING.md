@@ -51,7 +51,7 @@ Fields marked *(empty)* exist but have nothing to hold yet.
 | Home | Featured portfolio | Paragraph | `PageSections` | `home/portfolio` | `Introduction` |
 | Home | Featured portfolio | Link to portfolio | `PageSections` | `home/portfolio` | `ButtonText`, `ButtonLink` |
 | Home | Featured portfolio | Biophilic Interior Design tile | `PageSectionItems` | `home/portfolio#biophilic-interior-design` | `Title`, `Text`, `Icon`, `Link` |
-| Home | Featured portfolio | Colour Psychology tile | `PageSectionItems` | `home/portfolio#colour-psychology` | `Title`, `Text`, `Icon`, `Link` |
+| Home | Featured portfolio | Colour & Design Psychology tile | `PageSectionItems` | `home/portfolio#colour-psychology` | `Title`, `Text`, `Icon`, `Link` |
 | Home | Featured portfolio | Photography Gallery tile | `PageSectionItems` | `home/portfolio#photography-gallery` | `Title`, `Text`, `Icon`, `Link` |
 | Home | Latest blog | Small heading | `PageSections` | `home/blog` | `Eyebrow` |
 | Home | Latest blog | Heading | `PageSections` | `home/blog` | `Heading` |
@@ -59,7 +59,7 @@ Fields marked *(empty)* exist but have nothing to hold yet.
 | Home | Latest blog, no posts yet | Message heading | `PageSections` | `home/blog-empty` | `Heading` |
 | Home | Latest blog, no posts yet | Message | `PageSections` | `home/blog-empty` | `Introduction` |
 | Home | Latest blog, no posts yet | Topic: Biophilic design | `PageSectionItems` | `home/blog-empty#biophilic-design` | `Title` |
-| Home | Latest blog, no posts yet | Topic: Colour psychology | `PageSectionItems` | `home/blog-empty#colour-psychology` | `Title` |
+| Home | Latest blog, no posts yet | Topic: Colour & design psychology | `PageSectionItems` | `home/blog-empty#colour-psychology` | `Title` |
 | Home | Latest blog, no posts yet | Topic: Wellbeing at home | `PageSectionItems` | `home/blog-empty#wellbeing-at-home` | `Title` |
 | Home | Latest blog, no posts yet | Topic: Healthier workspaces | `PageSectionItems` | `home/blog-empty#healthier-workspaces` | `Title` |
 | Home | Latest blog, no posts yet | Topic: Photography | `PageSectionItems` | `home/blog-empty#photography` | `Title` |
@@ -199,4 +199,4 @@ A comparison of the live pages with the database confirmed that these are the on
 
 - Before connecting, the Home, About, Services and Contact page output was captured.
 - After connecting, on a clean install, all four are identical, apart from whitespace and HTML comments, both from the database and in fallback mode with the database unreachable.
-- Your local database differs in one field: `HomePageContent.HeroEyebrow` holds `Test` from an earlier admin edit, and that now shows on the Home page. To restore it, enter "Biophilic Interior Design · Colour Psychology · Photography" in Homepage Content.
+- The local database now matches as well, including the corrected hero heading.
