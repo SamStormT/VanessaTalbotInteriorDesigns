@@ -1,17 +1,25 @@
 <?php
 /**
- * Home page
+ * Home page. All wording comes from the CMS (see CONTENT_MAPPING.md).
  */
 require_once __DIR__ . '/includes/config.php';
-require_once INCLUDES_PATH . '/site-data.php';
+require_once INCLUDES_PATH . '/content.php';
 
-$pageTitle       = '';
-$pageDescription = 'Vanessa Talbot Interior Designs creates nature-centred interiors through biophilic design, colour psychology and photography, for homes, workspaces, wellness centres, boutiques and events.';
+$home     = site_home();
+$sections = site_sections('home');
+$services = site_services();
+
+$pageTitle       = $home['MetaTitle'] ?? '';
+$pageDescription = ($home['MetaDescription'] ?? '') ?: SITE_TAGLINE;
 
 // Latest blog posts. Loaded from the database in a later phase; empty until then.
 $latestPosts = [];
 
 require_once INCLUDES_PATH . '/header.php';
+
+$featureCta = $sections['feature-cta'] ?? [];
+$arrow      = ' ' . icon('arrow', 'icon icon--inline');
+$tileTones  = ['green', 'gold', 'peach'];
 ?>
 <main id="main-content">
 
@@ -19,159 +27,138 @@ require_once INCLUDES_PATH . '/header.php';
     <section class="hero" aria-labelledby="hero-title">
         <div class="container hero__inner">
             <div class="hero__content">
-                <p class="eyebrow">Biophilic Interior Design &middot; Colour Psychology &middot; Photography</p>
-                <h1 id="hero-title" class="display-title hero__title">Vanessa Talbot</h1>
-                <p class="tagline hero__tagline"><?= e(SITE_TAGLINE) ?></p>
-                <p class="hero__lead">
-                    Interiors designed around the way people are meant to live: connected to light, colour
-                    and the natural world. Grounded in science, shaped by art, inspired by nature.
-                </p>
+                <?php if (!empty($home['HeroEyebrow'])): ?><p class="eyebrow"><?= e($home['HeroEyebrow']) ?></p><?php endif; ?>
+                <h1 id="hero-title" class="display-title hero__title"><?= e($home['HeroTitle'] ?? '') ?></h1>
+                <p class="tagline hero__tagline"><?= e(site_tagline()) ?></p>
+                <p class="hero__lead"><?= e($home['HeroSubtitle'] ?? '') ?></p>
                 <div class="btn-group">
-                    <a class="btn btn--primary" href="<?= e(url('services/consultations.php')) ?>">Book a consultation</a>
-                    <a class="btn btn--outline" href="<?= e(url('services.php')) ?>">Explore services</a>
+                    <?= content_link($home['CTA1Text'] ?? '', $home['CTA1Link'] ?? '', 'btn btn--primary') ?>
+                    <?= content_link($home['CTA2Text'] ?? '', $home['CTA2Link'] ?? '', 'btn btn--outline') ?>
                 </div>
             </div>
-            <div class="hero__media" aria-hidden="true">
-                <div class="art-frame art-frame--arch art-frame--peach">
-                    <?= botanical('botanical art-frame__botanical') ?>
-                </div>
+            <div class="hero__media"<?= empty($home['HeroImage']) ? ' aria-hidden="true"' : '' ?>>
+                <?= empty($home['HeroImage'])
+                    ? '<div class="art-frame art-frame--arch art-frame--peach">' . botanical('botanical art-frame__botanical') . '</div>'
+                    : content_frame('art-frame art-frame--arch art-frame--peach', $home['HeroImage'], $home['HeroImageAlt'] ?? '', '') ?>
                 <span class="hero__accent"></span>
             </div>
         </div>
     </section>
 
     <!-- Featured call-to-action -->
+<?php if (!empty($home['FeaturedCTATitle'])): ?>
     <section class="feature-cta" aria-labelledby="feature-cta-title">
         <div class="container">
             <div class="feature-cta__card">
                 <span class="feature-cta__icon"><?= icon('leaf') ?></span>
                 <div class="feature-cta__text">
-                    <h2 id="feature-cta-title" class="feature-cta__title">Bring nature back into your space</h2>
-                    <p>
-                        Start with a one-on-one consultation. Together we'll look at how your space feels,
-                        how you use it, and the simple, meaningful changes that will make the biggest difference.
-                    </p>
+                    <h2 id="feature-cta-title" class="feature-cta__title"><?= e($home['FeaturedCTATitle']) ?></h2>
+                    <p><?= e($home['FeaturedCTAText'] ?? '') ?></p>
                 </div>
-                <a class="btn btn--primary" href="<?= e(url('services/consultations.php')) ?>">
-                    Start with a consultation <?= icon('arrow', 'icon icon--inline') ?>
-                </a>
+                <?= content_link($featureCta['ButtonText'] ?? '', $home['FeaturedCTALink'] ?? '', 'btn btn--primary', $arrow) ?>
             </div>
         </div>
     </section>
+<?php endif; ?>
 
     <!-- Introduction to Vanessa -->
-    <section class="section" aria-labelledby="intro-title">
+<?php if ($section = $sections['introduction'] ?? null): ?>
+    <section class="section"<?= content_labelled($section, 'intro-title') ?>>
         <div class="container split">
             <div class="split__media">
-                <div class="art-frame art-frame--portrait art-frame--arch art-frame--light" aria-hidden="true">
-                    <?= botanical('botanical art-frame__botanical') ?>
-                </div>
+                <?= content_frame('art-frame art-frame--portrait art-frame--arch art-frame--light', $home['IntroductionImage'] ?? '', $home['IntroductionImageAlt'] ?? '', botanical('botanical art-frame__botanical')) ?>
             </div>
             <div class="split__content">
-                <p class="eyebrow">Meet Vanessa</p>
-                <h2 id="intro-title">Where science, art and nature meet</h2>
-                <p class="lead">
-                    Vanessa Talbot brings together a background in science and a passion for interior design
-                    to create spaces that do more than look beautiful. They help people feel well.
-                </p>
-                <p>
-                    Her work is built on a simple idea: the spaces we spend our days in shape how we think,
-                    feel and connect. By combining biophilic design, the psychology of colour and a
-                    photographer's eye for light and detail, Vanessa designs interiors that are calm,
-                    personal and deeply connected to the natural world.
-                </p>
+                <?= content_eyebrow($section) ?>
+                <?= content_heading($section, 'intro-title') ?>
+                <?= content_paragraphs($section['Introduction'], 'lead') ?>
+                <?= content_paragraphs($section['Body']) ?>
+<?php if ($section['items']): ?>
                 <ul class="pillars" aria-label="The three foundations of Vanessa's work">
-                    <li class="pillar"><?= icon('brush') ?><span><strong>Art</strong> Beauty, harmony and creative expression</span></li>
-                    <li class="pillar"><?= icon('flask') ?><span><strong>Science</strong> Evidence-informed design decisions</span></li>
-                    <li class="pillar"><?= icon('sprout') ?><span><strong>Nature</strong> Living, restorative connection</span></li>
+<?php foreach ($section['items'] as $item): ?>
+                    <li class="pillar"><?= icon((string) $item['Icon']) ?><span><strong><?= e($item['Title']) ?></strong> <?= e($item['Text']) ?></span></li>
+<?php endforeach; ?>
                 </ul>
-                <a class="text-link" href="<?= e(url('about.php')) ?>">Read Vanessa's story <?= icon('arrow', 'icon icon--inline') ?></a>
+<?php endif; ?>
+                <?= content_link($section['ButtonText'], $section['ButtonLink'], 'text-link', $arrow) ?>
             </div>
         </div>
     </section>
+<?php endif; ?>
 
     <!-- Brand quote -->
+<?php if (!empty($home['FeaturedQuote'])): ?>
     <section class="quote-band" aria-label="Quote">
         <div class="container">
             <span class="divider" aria-hidden="true"><?= icon('leaf') ?></span>
             <figure class="quote-band__figure">
                 <blockquote>
-                    <p>Nature remains our magic well: the more we draw from its nourishing waters, the more we sustain the human body, mind and spirit.</p>
+                    <p><?= e($home['FeaturedQuote']) ?></p>
                 </blockquote>
-                <figcaption><span class="tagline">Stephen R. Kellert</span></figcaption>
+                <figcaption><span class="tagline"><?= e($home['FeaturedQuoteAuthor'] ?? '') ?></span></figcaption>
             </figure>
         </div>
     </section>
+<?php endif; ?>
 
     <!-- Services overview -->
-    <section class="section section--peach" aria-labelledby="services-title">
+<?php if ($section = $sections['services'] ?? null): ?>
+    <section class="section section--peach"<?= content_labelled($section, 'services-title') ?>>
         <div class="container">
-            <header class="section-header">
-                <p class="eyebrow">Services</p>
-                <h2 id="services-title">Designing with nature, in every sense</h2>
-                <p>
-                    From a single consultation to a complete biophilic redesign, every service is shaped
-                    around the people who will use the space.
-                </p>
-            </header>
+            <?= content_section_header($section, 'services-title') ?>
 
             <ul class="card-grid card-grid--3">
 <?php foreach ($services as $service): ?>
                 <li class="card">
-                    <span class="card__icon"><?= icon($service['icon']) ?></span>
+                    <span class="card__icon"><?= icon((string) $service['Icon']) ?></span>
                     <h3 class="card__title">
-                        <a class="card__link" href="<?= e(url($service['url'])) ?>"><?= e($service['title']) ?></a>
+                        <a class="card__link" href="<?= e(service_page_url($service['Slug'])) ?>"><?= e($service['ServiceName']) ?></a>
                     </h3>
-                    <p><?= e($service['summary']) ?></p>
+                    <p><?= e($service['ShortDescription']) ?></p>
                     <span class="card__more" aria-hidden="true">Learn more <?= icon('arrow', 'icon icon--inline') ?></span>
                 </li>
 <?php endforeach; ?>
             </ul>
 
             <p class="section-footer">
-                <a class="btn btn--dark" href="<?= e(url('services.php')) ?>">View all services</a>
+                <?= content_link($section['ButtonText'], $section['ButtonLink'], 'btn btn--dark') ?>
             </p>
         </div>
     </section>
+<?php endif; ?>
 
     <!-- Featured portfolio -->
-    <section class="section" aria-labelledby="portfolio-title">
+<?php if ($section = $sections['portfolio'] ?? null): ?>
+    <section class="section"<?= content_labelled($section, 'portfolio-title') ?>>
         <div class="container">
-            <header class="section-header">
-                <p class="eyebrow">Portfolio</p>
-                <h2 id="portfolio-title">Spaces with a sense of place</h2>
-                <p>Explore Vanessa's work across biophilic interiors, colour-led design and photography.</p>
-            </header>
+            <?= content_section_header($section, 'portfolio-title') ?>
 
             <ul class="portfolio-grid">
-<?php foreach ($portfolioCategories as $category): ?>
+<?php foreach ($section['items'] as $index => $item): ?>
                 <li class="portfolio-tile">
-                    <div class="art-frame art-frame--<?= e($category['tone']) ?>" aria-hidden="true">
-                        <?= icon($category['icon'], 'icon art-frame__icon') ?>
-                    </div>
+                    <?= content_frame('art-frame art-frame--' . $tileTones[$index % 3], $item['Image'] ?? '', $item['ImageAlt'] ?? '', icon((string) $item['Icon'], 'icon art-frame__icon')) ?>
                     <div class="portfolio-tile__body">
                         <h3 class="portfolio-tile__title">
-                            <a class="card__link" href="<?= e(url($category['url'])) ?>"><?= e($category['title']) ?></a>
+                            <a class="card__link" href="<?= e(content_url($item['Link'])) ?>"><?= e($item['Title']) ?></a>
                         </h3>
-                        <p><?= e($category['text']) ?></p>
+                        <p><?= e($item['Text']) ?></p>
                     </div>
                 </li>
 <?php endforeach; ?>
             </ul>
 
             <p class="section-footer">
-                <a class="text-link" href="<?= e(url('portfolio.php')) ?>">View the full portfolio <?= icon('arrow', 'icon icon--inline') ?></a>
+                <?= content_link($section['ButtonText'], $section['ButtonLink'], 'text-link', $arrow) ?>
             </p>
         </div>
     </section>
+<?php endif; ?>
 
     <!-- Latest blog -->
-    <section class="section section--peach" aria-labelledby="blog-title">
+<?php if ($section = $sections['blog'] ?? null): ?>
+    <section class="section section--peach"<?= content_labelled($section, 'blog-title') ?>>
         <div class="container">
-            <header class="section-header">
-                <p class="eyebrow">From the blog</p>
-                <h2 id="blog-title">Ideas for living closer to nature</h2>
-            </header>
+            <?= content_section_header($section, 'blog-title') ?>
 
 <?php if ($latestPosts): ?>
             <ul class="card-grid card-grid--3">
@@ -183,37 +170,30 @@ require_once INCLUDES_PATH . '/header.php';
                 </li>
 <?php endforeach; ?>
             </ul>
-<?php else: ?>
+<?php elseif ($empty = $sections['blog-empty'] ?? null): ?>
             <div class="empty-state">
                 <span class="empty-state__icon"><?= icon('pen') ?></span>
-                <p class="empty-state__title">The first articles are on their way</p>
-                <p>
-                    Vanessa will be sharing practical ideas on biophilic design, the psychology of colour,
-                    nature-centred wellbeing and the stories behind her photography.
-                    Join the newsletter below to be the first to read them.
-                </p>
+                <p class="empty-state__title"><?= e($empty['Heading']) ?></p>
+                <p><?= e($empty['Introduction']) ?></p>
                 <ul class="tag-list" aria-label="Upcoming blog topics">
-                    <li>Biophilic design</li>
-                    <li>Colour psychology</li>
-                    <li>Wellbeing at home</li>
-                    <li>Healthier workspaces</li>
-                    <li>Photography</li>
+<?php foreach ($empty['items'] as $item): ?>
+                    <li><?= e($item['Title']) ?></li>
+<?php endforeach; ?>
                 </ul>
             </div>
 <?php endif; ?>
         </div>
     </section>
+<?php endif; ?>
 
     <!-- Newsletter -->
-    <section id="newsletter" class="section newsletter" aria-labelledby="newsletter-title">
+<?php if ($section = $sections['newsletter'] ?? null): ?>
+    <section id="newsletter" class="section newsletter"<?= content_labelled($section, 'newsletter-title') ?>>
         <div class="container newsletter__inner">
             <div class="newsletter__text">
-                <p class="eyebrow">Newsletter</p>
-                <h2 id="newsletter-title">Nature-inspired ideas, delivered to your inbox</h2>
-                <p>
-                    Seasonal inspiration, colour and design tips, new photography prints, and first news
-                    of upcoming workshops and talks. No clutter, just ideas worth your time.
-                </p>
+                <?= content_eyebrow($section) ?>
+                <?= content_heading($section, 'newsletter-title') ?>
+                <?= content_paragraphs($section['Introduction']) ?>
             </div>
 
             <form class="newsletter__form" action="<?= e(url('contact.php')) ?>" method="get" data-newsletter-form novalidate>
@@ -227,33 +207,30 @@ require_once INCLUDES_PATH . '/header.php';
                 </div>
                 <button class="btn btn--primary" type="submit"><?= icon('mail', 'icon icon--inline') ?> Subscribe</button>
                 <p id="newsletter-status" class="form-status" role="status" aria-live="polite"></p>
-                <p class="form-note">
-                    Your details are only used to send the newsletter. See our
-                    <a href="<?= e(url('privacy-policy.php')) ?>">Privacy Policy</a>.
-                </p>
+                <p class="form-note"><?= content_with_link($section['Body'], 'Privacy Policy', 'privacy-policy.php') ?></p>
             </form>
         </div>
     </section>
+<?php endif; ?>
 
     <!-- Contact call-to-action -->
-    <section class="section cta-banner" aria-labelledby="contact-cta-title">
+<?php if ($section = $sections['contact-cta'] ?? null): ?>
+    <section class="section cta-banner"<?= content_labelled($section, 'contact-cta-title') ?>>
         <div class="container cta-banner__inner">
-            <h2 id="contact-cta-title">Let's create a space that feels like you</h2>
-            <p>
-                Whether it's your home, your workspace, a wellness centre, a boutique or an event,
-                Vanessa would love to hear what you have in mind.
-            </p>
+            <?= content_heading($section, 'contact-cta-title') ?>
+            <?= content_paragraphs($section['Introduction']) ?>
             <ul class="tag-list tag-list--centred" aria-label="Who Vanessa works with">
-<?php foreach ($targetMarkets as $market): ?>
-                <li><?= e($market) ?></li>
+<?php foreach ($section['items'] as $item): ?>
+                <li><?= e($item['Title']) ?></li>
 <?php endforeach; ?>
             </ul>
             <div class="btn-group btn-group--centred">
-                <a class="btn btn--primary" href="<?= e(url('contact.php')) ?>">Get in touch</a>
-                <a class="btn btn--outline" href="<?= e(url('portfolio.php')) ?>">See the portfolio</a>
+                <?= content_link($section['ButtonText'], $section['ButtonLink'], 'btn btn--primary') ?>
+                <?= content_link($section['SecondaryButtonText'], $section['SecondaryButtonLink'], 'btn btn--outline') ?>
             </div>
         </div>
     </section>
+<?php endif; ?>
 
 </main>
 <?php require_once INCLUDES_PATH . '/footer.php'; ?>

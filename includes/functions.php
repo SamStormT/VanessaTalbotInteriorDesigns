@@ -46,6 +46,18 @@ function brand_logo(string $variant = 'dark'): string
          . '</span>';
 }
 
+/** Allow site-relative links and http(s), mailto or tel only. */
+function link_is_safe(string $value): bool
+{
+    if (preg_match('/[\s<>"]/', $value) || str_starts_with($value, '//')) {
+        return false;
+    }
+    if (preg_match('/^([a-z][a-z0-9+.-]*):/i', $value, $match)) {
+        return in_array(strtolower($match[1]), ['http', 'https', 'mailto', 'tel'], true);
+    }
+    return true;
+}
+
 /** Current request path relative to BASE_URL, e.g. "services/workshops.php". */
 function current_path(): string
 {

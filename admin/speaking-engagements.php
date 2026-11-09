@@ -1,8 +1,8 @@
 <?php
 /**
- * Speaking Engagements: placeholder until its screens are built.
+ * Speaking Engagements: list.
  */
 require_once __DIR__ . '/../includes/config.php';
 require_once INCLUDES_PATH . '/cms.php';
 
-cms_placeholder_page('speaking.view', 'Speaking Engagements', 'SpeakingEngagements', 'engagements', 'mic');
+cms_record_list_page('speaking');

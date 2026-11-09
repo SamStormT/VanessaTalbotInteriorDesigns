@@ -22,6 +22,8 @@ function permission_map(): array
         'homepage'     => ['actions' => ['view', 'edit'], 'Admin' => ['view', 'edit'], 'Editor' => ['view', 'edit']],
         'about'        => ['actions' => ['view', 'edit'], 'Admin' => ['view', 'edit'], 'Editor' => ['view', 'edit']],
         'services'     => ['actions' => $publishable, 'Admin' => ['view', 'create', 'edit', 'publish', 'archive'], 'Editor' => ['view', 'edit']],
+        'about_items'  => $content,
+        'page_sections' => $content,
         'portfolio'    => $content,
         'speaking'     => $content,
         'testimonials' => $content,

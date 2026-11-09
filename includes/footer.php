@@ -5,6 +5,11 @@
 
 $layout = $layout ?? 'public';
 
+if ($layout !== 'admin') {
+    require_once INCLUDES_PATH . '/content.php';
+    $footerContent = site_sections('global')['footer'] ?? [];
+}
+
 if ($layout === 'admin'): ?>
 </div><!-- /.admin-main -->
 </div><!-- /.admin-shell -->
@@ -14,11 +19,8 @@ if ($layout === 'admin'): ?>
     <div class="container site-footer__inner">
         <div class="site-footer__brand">
             <p class="brand"><?= brand_logo('light') ?></p>
-            <p class="tagline site-footer__tagline"><?= e(SITE_TAGLINE) ?></p>
-            <p class="site-footer__about">
-                Biophilic interior design, colour psychology and photography for homes,
-                workspaces, wellness centres, boutiques and events.
-            </p>
+            <p class="tagline site-footer__tagline"><?= e(site_tagline()) ?></p>
+            <p class="site-footer__about"><?= e($footerContent['Introduction'] ?? '') ?></p>
         </div>
 
         <nav class="site-footer__col" aria-labelledby="footer-explore">
@@ -44,8 +46,8 @@ if ($layout === 'admin'): ?>
 
         <div class="site-footer__col">
             <h2 class="site-footer__heading">Get in touch</h2>
-            <p>Ready to bring nature into your space? Let's talk about what you have in mind.</p>
-            <a class="btn btn--light btn--small" href="<?= e(url('contact.php')) ?>">Contact Vanessa</a>
+            <p><?= e($footerContent['Body'] ?? '') ?></p>
+            <?= content_link($footerContent['ButtonText'] ?? '', $footerContent['ButtonLink'] ?? '', 'btn btn--light btn--small') ?>
         </div>
     </div>
 

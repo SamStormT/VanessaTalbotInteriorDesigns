@@ -1,6 +1,6 @@
 # Phase 5 Implementation Plan
 
-**Status: proposed, awaiting approval. No Phase 5 code has been written.**
+**Status: in progress.** Done: B2 (values and qualifications), B5 (Speaking Engagements), B11 (Page Sections), and public integration of the Home, About and Services pages and the footer (C2, C3 and the main page of C4). Not done from those: the six service detail pages. Awaiting approval before anything else.
 
 This lists everything still outstanding after Phase 4, in build order. Permissions follow the matrix in `database/CMS_ARCHITECTURE.md`.
 

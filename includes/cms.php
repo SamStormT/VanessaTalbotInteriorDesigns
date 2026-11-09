@@ -8,6 +8,7 @@ declare(strict_types=1);
 
 require_once INCLUDES_PATH . '/auth.php';
 require_once INCLUDES_PATH . '/cms-modules.php';
+require_once INCLUDES_PATH . '/cms-records.php';
 
 function cms_module(string $key): array
 {
@@ -55,7 +56,7 @@ function cms_validate(array $module, array $input): array
             if (!empty($field['required'])) {
                 $errors[$name] = "$label is required.";
             }
-            $data[$name] = $field['type'] === 'int' ? 0 : null;
+            $data[$name] = $field['type'] === 'int' && empty($field['nullable']) ? 0 : null;
             continue;
         }
 
@@ -67,10 +68,11 @@ function cms_validate(array $module, array $input): array
             'email'  => filter_var($value, FILTER_VALIDATE_EMAIL) ? null : 'Enter a valid email address.',
             'tel'    => preg_match('/^\+?[0-9][0-9 ()-]{5,28}$/', $value) ? null : 'Enter a valid phone number.',
             'url'    => preg_match('#^https?://[^\s<>"]+$#i', $value) && filter_var($value, FILTER_VALIDATE_URL) ? null : 'Enter a full web address starting with https://',
-            'link'   => cms_link_is_safe($value) ? null : 'Enter a page such as contact.php, or a full address starting with https://',
+            'link'   => link_is_safe($value) ? null : 'Enter a page such as contact.php, or a full address starting with https://',
             'path'   => preg_match('#^[A-Za-z0-9_-][A-Za-z0-9_./ -]*$#', $value) && !str_contains($value, '..') ? null : 'Enter a file path such as uploads/home/hero.jpg',
             'slug'   => preg_match('/^[a-z0-9]+(-[a-z0-9]+)*$/', $value) ? null : 'Use lower-case letters, numbers and single hyphens only.',
             'int'    => filter_var($value, FILTER_VALIDATE_INT) !== false ? null : 'Enter a whole number.',
+            'date'   => (DateTime::createFromFormat('!Y-m-d', $value) ?: null)?->format('Y-m-d') === $value ? null : 'Enter a valid date.',
             'select' => in_array($value, $field['options'], true) ? null : 'Choose one of the listed options.',
             default  => null,
         };
@@ -81,19 +83,15 @@ function cms_validate(array $module, array $input): array
         $data[$name] = $field['type'] === 'int' ? (int) $value : $value;
     }
 
-    return [$data, $errors];
-}
+    // A blank slug is built from the field it names, for example the title.
+    foreach ($module['fields'] as $name => $field) {
+        if (!empty($field['auto_from']) && array_key_exists($name, $data) && $data[$name] === null) {
+            $slug = trim((string) preg_replace('/[^a-z0-9]+/', '-', strtolower((string) ($data[$field['auto_from']] ?? ''))), '-');
+            $data[$name] = $slug === '' ? 'item' : $slug;
+        }
+    }
 
-/** Allow site-relative links and http(s), mailto or tel only. */
-function cms_link_is_safe(string $value): bool
-{
-    if (preg_match('/[\s<>"]/', $value) || str_starts_with($value, '//')) {
-        return false;
-    }
-    if (preg_match('/^([a-z][a-z0-9+.-]*):/i', $value, $match)) {
-        return in_array(strtolower($match[1]), ['http', 'https', 'mailto', 'tel'], true);
-    }
-    return true;
+    return [$data, $errors];
 }
 
 /**
@@ -264,7 +262,7 @@ function cms_render_control(string $name, array $field, string $value, ?string $
         $control = '<textarea rows="' . $rows . '" ' . $attrs . '>' . e($value) . '</textarea>';
     } else {
         $type = match ($field['type']) {
-            'email' => 'email', 'tel' => 'tel', 'url' => 'url', 'int' => 'number', default => 'text',
+            'email' => 'email', 'tel' => 'tel', 'url' => 'url', 'int' => 'number', 'date' => 'date', default => 'text',
         };
         $max     = isset($field['max']) ? ' maxlength="' . (int) $field['max'] . '"' : '';
         $control = '<input type="' . $type . '" value="' . e($value) . '"' . $max . ' ' . $attrs . '>';

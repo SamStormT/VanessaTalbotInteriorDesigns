@@ -495,3 +495,17 @@ UPDATE AboutContent SET Philosophy = NULL WHERE AboutID = 1 AND Philosophy = 'Bi
 UPDATE AboutContent SET SpeakingIntroduction = NULL WHERE AboutID = 1 AND SpeakingIntroduction = 'Vanessa speaks to audiences about why our surroundings matter so much, and how anyone can bring more nature, colour and calm into the places they live and work.\n\nTalks are tailored to each audience. Popular themes include:' AND NOT EXISTS (SELECT 1 FROM SchemaMigrations WHERE MigrationName = '006_page_sections');
 
 INSERT IGNORE INTO SchemaMigrations (MigrationName) VALUES ('006_page_sections');
+
+-- --------------------------------------------------------------------------
+-- 007: Footer menu headings are navigation labels, which stay in the code.
+-- Runs once and removes them only if they still hold the original wording.
+-- --------------------------------------------------------------------------
+DELETE i FROM PageSectionItems i
+JOIN PageSections s ON s.SectionID = i.SectionID
+WHERE s.PageKey = 'global' AND s.SectionKey = 'footer'
+  AND ((i.ItemKey = 'explore-heading' AND i.Title = 'Explore')
+    OR (i.ItemKey = 'services-heading' AND i.Title = 'Services')
+    OR (i.ItemKey = 'contact-heading' AND i.Title = 'Get in touch'))
+  AND NOT EXISTS (SELECT 1 FROM SchemaMigrations WHERE MigrationName = '007_remove_footer_navigation_labels');
+
+INSERT IGNORE INTO SchemaMigrations (MigrationName) VALUES ('007_remove_footer_navigation_labels');

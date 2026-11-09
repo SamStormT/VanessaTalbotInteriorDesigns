@@ -11,6 +11,9 @@ $adminNav = [
     'Website Content' => [
         ['label' => 'Homepage Content',     'path' => 'admin/homepage-content.php',     'can' => 'homepage.view'],
         ['label' => 'About Content',        'path' => 'admin/about-content.php',        'can' => 'about.view'],
+        ['label' => 'About Values',         'path' => 'admin/about-values.php',         'can' => 'about_items.view'],
+        ['label' => 'Qualifications',       'path' => 'admin/qualifications.php',       'can' => 'about_items.view'],
+        ['label' => 'Page Sections',        'path' => 'admin/page-sections.php',        'can' => 'page_sections.view'],
         ['label' => 'Services',             'path' => 'admin/services.php',             'can' => 'services.view'],
         ['label' => 'Speaking Engagements', 'path' => 'admin/speaking-engagements.php', 'can' => 'speaking.view'],
         ['label' => 'Testimonials',         'path' => 'admin/testimonials.php',         'can' => 'testimonials.view'],

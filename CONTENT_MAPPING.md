@@ -2,7 +2,7 @@
 
 Every visible content block on the Home, About and Services pages, and the database record that holds it.
 
-The public pages are **not connected** to the database yet, and their fixed text has not been removed. All wording is still draft until Vanessa confirms it (`CONTENT_REQUIREMENTS.md`, section 8).
+Home, About, Services and the footer now **read from the database**. All wording is still draft until Vanessa confirms it (`CONTENT_REQUIREMENTS.md`, section 8). If the database can't be reached, the pages show the snapshot in `includes/content-fallback.php`.
 
 **Reading the Record column**
 
@@ -168,10 +168,6 @@ Fields marked *(empty)* exist but have nothing to hold yet.
 | All pages | Footer | Short description | `PageSections` | `global/footer` | `Introduction` |
 | All pages | Footer | "Ready to bring nature…" text | `PageSections` | `global/footer` | `Body` |
 | All pages | Footer | Contact button | `PageSections` | `global/footer` | `ButtonText`, `ButtonLink` |
-| All pages | Footer | "Explore" heading | `PageSectionItems` | `global/footer#explore-heading` | `Title` |
-| All pages | Footer | "Services" heading | `PageSectionItems` | `global/footer#services-heading` | `Title` |
-| All pages | Footer | "Get in touch" heading | `PageSectionItems` | `global/footer#contact-heading` | `Title` |
-| All pages | Footer | Copyright line | `WebsiteSettings` | Row 1 | `FooterCopyright` *(empty; the page builds it with the current year)* |
 
 ## 5. The six combined rows, resolved
 
@@ -192,15 +188,15 @@ Those six database columns are now empty and hidden from the admin forms, so eac
 
 These are interface wording and site navigation rather than content, so they are not in the database:
 
-- Main menu, footer menus, breadcrumbs, logo text and "Skip to content".
+- Main menu, footer menus and their headings, breadcrumbs, logo text and "Skip to content".
 - "Learn more", "What's included", "Ideal for", "More about…", "Enquire about…" and the "01 Service" numbering.
 - Newsletter form labels and the Subscribe button.
-- The "All rights reserved" line and legal link names.
+- The footer copyright line and legal link names.
 
 A comparison of the live pages with the database confirmed that these are the only visible words not held in the database.
 
 ## 7. Verification
 
-- Seeded text was compared with the rendered Home, About and Services pages.
-- A clean install matched exactly on all 210 stored pieces.
-- The local database matches on 209. The one difference is `HomePageContent.HeroEyebrow`, which holds `Test` from an earlier admin edit. To restore it, enter "Biophilic Interior Design · Colour Psychology · Photography" in Homepage Content.
+- Before connecting, the Home, About, Services and Contact page output was captured.
+- After connecting, on a clean install, all four are identical, apart from whitespace and HTML comments, both from the database and in fallback mode with the database unreachable.
+- Your local database differs in one field: `HomePageContent.HeroEyebrow` holds `Test` from an earlier admin edit, and that now shows on the Home page. To restore it, enter "Biophilic Interior Design · Colour Psychology · Photography" in Homepage Content.
