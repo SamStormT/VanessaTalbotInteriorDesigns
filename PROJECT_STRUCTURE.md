@@ -90,7 +90,8 @@ Stack: HTML5, CSS3, JavaScript, PHP 8, MariaDB, PHPMailer, PayFast. Hosted on Xn
 │   └── images/
 │
 └── database/
-    └── schema.sql             Placeholder; tables come in a later phase
+    ├── schema.sql             All 29 tables; safe to re-run
+    └── CMS_ARCHITECTURE.md    ERD, CRUD plan, permissions, recommendations
 ```
 
 ## How a page is built

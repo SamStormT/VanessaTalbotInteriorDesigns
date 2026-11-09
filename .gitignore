@@ -1,0 +1,40 @@
+# Environment files: passwords and API keys
+.env
+.env.local
+.env.production
+
+# Database exports: contain customer and subscriber personal data
+*.sql.bak
+*.dump
+database/backups/
+
+# Uploaded content: lives on the server, never in Git
+uploads/
+uploads/portfolio/
+uploads/photography/
+uploads/profile/
+
+# Logs
+*.log
+logs/
+
+# Windows system files
+Thumbs.db
+Desktop.ini
+
+# VS Code settings
+.vscode/
+
+# Temporary files
+*.tmp
+*.temp
+
+# Cache files
+.cache/
+.cache-loader/
+
+# Composer packages (PHPMailer etc.)
+vendor/
+
+# Node packages, if ever added
+node_modules/

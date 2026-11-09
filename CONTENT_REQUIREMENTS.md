@@ -222,11 +222,11 @@ For each platform, give the **full link** (for example `https://www.instagram.co
 
 ## 7. Business details to confirm
 
-### 7.1 Contact details (from the brand pack; please confirm they are current)
+### 7.1 Contact details (please check the ones on your business card are still current)
 
-- [ ] 🟢 Phone: **(+27) 82 806 4100**. Show on the website? Also make it a WhatsApp link?
-- [ ] 🟢 Email: **vanessa@vanessatalbot.co.za**. Note that this email uses a **different domain** from the website (`vanessatalbotinteriordesigns.co.za`). Which email should the website show, and where should contact-form enquiries be sent?
-- [ ] 🟢 Address: **19 Sienna Estate, 40 Warwick Road, Ferncliffe, Pietermaritzburg, KwaZulu-Natal, 3210**. This looks like a residential address. Should it appear on the public website? Options: full address, "Pietermaritzburg, KwaZulu-Natal" only, or not shown.
+- [ ] 🟢 Phone number on your business card: is it current? Show it on the website? Also make it a WhatsApp link?
+- [ ] 🟢 Email on your business card: note that it uses a **different domain** from the website (`vanessatalbotinteriordesigns.co.za`). Which email should the website show, and where should contact-form enquiries be sent?
+- [ ] 🟢 Address on your business card: this looks like a residential address. Should it appear on the public website? Options: full address, town and province only, or not shown.
 - [ ] 🟢 Website address: is **vanessatalbotinteriordesigns.co.za** registered, and is it the domain we'll launch on with Xneelo?
 - [ ] ⚪ Business hours, or "by appointment only"
 - [ ] ⚪ Your title on the site ("Director", as on the business card, or something else)
