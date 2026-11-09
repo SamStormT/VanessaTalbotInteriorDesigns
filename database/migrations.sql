@@ -877,3 +877,16 @@ UPDATE SitePages SET Title = 'Copyright Notice', Content = COALESCE(Content, 'Al
 WHERE Slug = 'copyright' AND NOT EXISTS (SELECT 1 FROM SchemaMigrations WHERE MigrationName = '010_seed_public_pages');
 
 INSERT IGNORE INTO SchemaMigrations (MigrationName) VALUES ('010_seed_public_pages');
+
+
+-- --------------------------------------------------------------------------
+-- 011: Captions and edit stamps for the Media Library.
+-- --------------------------------------------------------------------------
+ALTER TABLE MediaLibrary
+    ADD COLUMN IF NOT EXISTS Caption VARCHAR(500) NULL,
+    ADD COLUMN IF NOT EXISTS LastEditedBy INT UNSIGNED NULL,
+    ADD COLUMN IF NOT EXISTS LastEditedDate DATETIME NULL,
+    ADD CONSTRAINT fk_MediaLibrary_LastEditedBy FOREIGN KEY IF NOT EXISTS fk_MediaLibrary_LastEditedBy (LastEditedBy)
+        REFERENCES AdminUsers (AdminUserID) ON UPDATE CASCADE ON DELETE SET NULL;
+
+INSERT IGNORE INTO SchemaMigrations (MigrationName) VALUES ('011_media_library_details');

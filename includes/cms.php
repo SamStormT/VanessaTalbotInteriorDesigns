@@ -9,6 +9,7 @@ declare(strict_types=1);
 require_once INCLUDES_PATH . '/auth.php';
 require_once INCLUDES_PATH . '/cms-modules.php';
 require_once INCLUDES_PATH . '/cms-records.php';
+require_once INCLUDES_PATH . '/media.php';
 
 function cms_module(string $key): array
 {
@@ -69,7 +70,7 @@ function cms_validate(array $module, array $input, array $existing = []): array
             'tel'    => preg_match('/^\+?[0-9][0-9 ()-]{5,28}$/', $value) ? null : 'Enter a valid phone number.',
             'url'    => preg_match('#^https?://[^\s<>"]+$#i', $value) && filter_var($value, FILTER_VALIDATE_URL) ? null : 'Enter a full web address starting with https://',
             'link'   => link_is_safe($value) ? null : 'Enter a page such as contact.php, or a full address starting with https://',
-            'path'   => preg_match('#^[A-Za-z0-9_-][A-Za-z0-9_./ -]*$#', $value) && !str_contains($value, '..') ? null : 'Enter a file path such as uploads/home/hero.jpg',
+            'image'  => $value === (string) ($existing[$name] ?? '') || (int) db_value('SELECT COUNT(*) FROM MediaLibrary WHERE FilePath = ?', [$value]) > 0 ? null : 'Please upload an image or choose one from the library.',
             'slug'   => preg_match('/^[a-z0-9]+(-[a-z0-9]+)*$/', $value) ? null : 'Use lower-case letters, numbers and single hyphens only.',
             'int'    => filter_var($value, FILTER_VALIDATE_INT) !== false ? null : 'Enter a whole number.',
             'date'   => (DateTime::createFromFormat('!Y-m-d', $value) ?: null)?->format('Y-m-d') === $value ? null : 'Enter a valid date.',
@@ -151,6 +152,7 @@ function cms_handle_post(array $module, int $id, array $existing, string $redire
     if ($errors === []) {
         try {
             $changed = cms_save($module, $id, $data, $existing);
+            media_learn_alt_text($module, $data);
             flash_set('success', $changed === [] ? 'No changes to save.' : 'Your changes have been saved.');
             header('Location: ' . $redirect);
             exit;
@@ -209,6 +211,10 @@ function cms_render_view(array $module, array $row): string
         $html .= '<section class="admin-panel"><h2 class="admin-panel__title">' . e($group) . '</h2><dl class="admin-fields">';
         foreach ($fields as $name => $field) {
             $value = $row[$name] ?? null;
+            if ($field['type'] === 'image') {
+                $html .= '<div><dt>' . e($field['label']) . '</dt><dd>' . ($value ? '<img class="admin-thumb" src="' . e(url((string) $value)) . '" alt="">' : '<span class="admin-muted">Not set</span>') . '</dd></div>';
+                continue;
+            }
             if ($field['type'] === 'checkbox') {
                 $text = $value ? 'Yes' : 'No';
             } else {
@@ -249,6 +255,10 @@ function cms_render_control(string $name, array $field, string $value, ?string $
         $attrs .= ' required';
     }
 
+    if ($field['type'] === 'image') {
+        return cms_render_image_control($name, $field, $value, $id, $help, $message);
+    }
+
     if ($field['type'] === 'checkbox') {
         $checked = $value !== '' && $value !== '0' ? ' checked' : '';
         return '<div class="admin-field admin-field--check"><label><input type="checkbox" value="1" ' . $attrs . $checked . '> '
@@ -281,8 +291,31 @@ function cms_render_control(string $name, array $field, string $value, ?string $
     return '<div class="admin-field">' . $label . $control . $help . $message . '</div>';
 }
 
+/** Drop zone, preview and library button. The path is held in a hidden field. */
+function cms_render_image_control(string $name, array $field, string $value, string $id, string $help, string $message): string
+{
+    $targets = ' data-alt-target="field-' . e($field['alt_field'] ?? '') . '"'
+             . (empty($field['caption_field']) ? '' : ' data-caption-target="field-' . e($field['caption_field']) . '"');
+    $hidden  = $value === '' ? ' hidden' : '';
+
+    return '<div class="admin-field"><span class="admin-field__label" id="' . e($id) . '-label">' . e($field['label']) . '</span>'
+         . '<div class="media-field" data-media-field data-category="' . e($GLOBALS['cms_form_title'] ?? '') . '"' . $targets . '>'
+         . '<input type="hidden" name="' . e($name) . '" value="' . e($value) . '" data-media-value>'
+         . '<div class="media-field__preview"' . $hidden . '><img src="' . ($value === '' ? '' : e(url($value))) . '" alt=""></div>'
+         . '<div class="media-field__controls"><div class="media-drop"><label>'
+         . '<span class="media-drop__text">Drag an image here, or <span class="media-drop__link">browse</span></span>'
+         . '<span class="media-drop__hint">JPG, PNG, WebP or GIF, up to ' . (int) (MEDIA_MAX_BYTES / 1048576) . ' MB</span>'
+         . '<input class="visually-hidden" type="file" accept="image/jpeg,image/png,image/webp,image/gif" aria-labelledby="' . e($id) . '-label"></label></div>'
+         . '<div class="media-field__buttons"><button class="btn btn--outline btn--small" type="button" data-media-library>Choose from library</button>'
+         . '<button class="admin-delete__button" type="button" data-media-remove' . $hidden . '>Remove image</button></div></div>'
+         . '<p class="media-field__status" role="status"></p></div>'
+         . '<noscript><p class="admin-error">Images need JavaScript to be switched on.</p></noscript>'
+         . $help . $message . '</div>';
+}
+
 function cms_render_form(array $module, array $row, array $errors, string $cancelUrl, bool $posted): string
 {
+    $GLOBALS['cms_form_title'] = $module['title'];
     $html = '<form method="post" class="admin-form" novalidate>' . csrf_field();
 
     if ($errors !== []) {

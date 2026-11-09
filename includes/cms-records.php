@@ -56,6 +56,7 @@ function cms_handle_create(array $module, string $redirect, array $extra = []): 
     if ($errors === []) {
         try {
             cms_create($module, $data + $extra);
+            media_learn_alt_text($module, $data);
             flash_set('success', 'Added.');
             header('Location: ' . $redirect);
             exit;

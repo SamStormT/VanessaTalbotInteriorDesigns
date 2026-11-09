@@ -13,13 +13,20 @@ cms_record_edit_page('portfolio', static function (array $project): void {
     if (can('portfolio.create')) {
         echo '<div class="admin-toolbar admin-toolbar--end"><a class="btn btn--primary btn--small" href="', e(url('admin/project-image-edit.php?project=' . $id)), '">Add image</a></div>';
     }
+    if (can('portfolio.create') && can('media.create')) {
+        echo '<div class="media-drop media-drop--wide" data-gallery-drop data-category="Portfolio Projects" data-post-url="', e(url('admin/project-image-edit.php?project=' . $id)), '"><label>',
+             '<span class="media-drop__text">Drag gallery images here, or <span class="media-drop__link">browse</span></span>',
+             '<span class="media-drop__hint">You can add several at once</span>',
+             '<input class="visually-hidden" type="file" accept="image/jpeg,image/png,image/webp,image/gif" multiple></label>',
+             '<p class="media-field__status" role="status"></p></div>';
+    }
     if ($images === []) {
         echo admin_empty_state('No gallery images', 'Images added here appear on the project page.', 'camera');
         return;
     }
     echo '<div class="admin-table-wrap"><table class="admin-table"><thead><tr><th scope="col">Image</th><th scope="col">Caption</th><th scope="col">Order</th><th scope="col"><span class="visually-hidden">Actions</span></th></tr></thead><tbody>';
     foreach ($images as $image) {
-        echo '<tr><td>', e($image['ImagePath']), '</td><td>', e($image['Caption'] ?? ''), '</td><td>', (int) $image['DisplayOrder'], '</td>',
+        echo '<tr><td><img class="admin-thumb admin-thumb--small" src="', e(url($image['ImagePath'])), '" alt=""></td><td>', e($image['Caption'] ?? ''), '</td><td>', (int) $image['DisplayOrder'], '</td>',
              '<td class="admin-table__actions"><a class="btn btn--outline btn--small" href="', e(url('admin/project-image-edit.php?id=' . (int) $image['ImageID'])), '">Edit<span class="visually-hidden"> ', e($image['ImagePath']), '</span></a></td></tr>';
     }
     echo '</tbody></table></div>';

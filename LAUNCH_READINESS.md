@@ -12,7 +12,7 @@
 | Contact form | **Interface only** | Sends and stores nothing, and says so on the page |
 | Privacy Policy, Terms, Copyright | Built, **needs legal review** | Draft wording, editable under Legal Pages |
 | Admin sign-in, roles, activity log | Ready | Tested on the local stack and Apache |
-| Images | **No uploads** | Paths are typed by hand; files must be placed on the server |
+| Images | Built | Drag and drop on every image field, plus a searchable Media Library. Images are not resized, so photos should be web-sized |
 | Newsletter form | **Not connected** | Says sign-ups are opening soon; saves nothing |
 | Blog and photography store | Not built | Removed from the menus; awaiting approval |
 | Production hosting | **Not tested** | Only tested locally |
@@ -26,7 +26,7 @@
 | 3 | All wording is draft | Vanessa's review of section 3 below | Vanessa |
 | 4 | Photography service mentions an online store that doesn't exist yet | Reword the description and "What's included" under Services | Vanessa |
 | 5 | Newsletter section invites sign-ups that are not saved | Unpublish `home/newsletter`, or approve the feature | Samantha |
-| 6 | No photographs, and no way to upload them | Photos, plus the Media Library | Vanessa, Development |
+| 6 | No photographs yet | Photos, uploaded through the admin area | Vanessa |
 | 7 | No portfolio projects | At least a few real projects with client permission | Vanessa |
 | 8 | Stand-in logo text and fonts | Official logo files; web-licensed John Mayer and Bayshore | Vanessa |
 | 9 | No "forgot password" | Requires the email phase; until then a developer resets it | Development |
@@ -67,7 +67,8 @@ Everything below can be changed in the admin area. Page Sections are listed by p
 - [ ] Run `database/setup.php` on the server (table names must not come from a Windows export)
 - [ ] Create the real SuperAdmin with a strong password; no test accounts on the server
 - [ ] Confirm `.htaccess` is honoured: `/.env`, `/database/` and `/includes/` must return 404
-- [ ] Exclude `uploads/` from anything that mirrors files
+- [ ] Exclude `uploads/` from anything that mirrors files, and make sure PHP can write to it
+- [ ] Confirm Xneelo's PHP upload limits allow 10 MB files
 - [ ] Schedule database and `uploads/` backups, and test a restore
 - [ ] Add a monitoring check, and review `logs/php-error.log` after launch
 
@@ -95,7 +96,7 @@ Everything below can be changed in the admin area. Page Sections are listed by p
 | Step | Scope | Needs |
 |---|---|---|
 | 1 | Make the repo private. Vanessa starts on her content | Nothing further |
-| 2 | Media Library | Approval, GD switched on |
+| 2 | Vanessa uploads photos and replaces wording | Her content |
 | 3 | **First public launch** as a brochure site, with enquiries by phone and email and the newsletter section unpublished | Photos, confirmed wording, legal review, hosting checklist |
 | 4 | Email, contact form and newsletter | Approval, mail details |
 | 5 | Blog | Approval |

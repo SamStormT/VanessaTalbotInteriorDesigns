@@ -24,6 +24,11 @@ $fullTitle = $pageTitle !== '' ? $pageTitle . ' | ' . SITE_NAME : SITE_NAME . ' 
     <title><?= e($fullTitle) ?></title>
     <meta name="description" content="<?= e($pageDescription) ?>">
     <meta name="theme-color" content="#243A39">
+<?php if ($layout === 'admin'): ?>
+    <meta name="csrf-token" content="<?= e(csrf_token()) ?>">
+    <meta name="media-upload-url" content="<?= e(url('admin/media-upload.php')) ?>">
+    <meta name="media-list-url" content="<?= e(url('admin/media-list.php')) ?>">
+<?php endif; ?>
 <?php if ($layout === 'admin' || !empty($noindex)): ?>
     <meta name="robots" content="noindex, nofollow">
 <?php else: ?>

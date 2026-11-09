@@ -4,7 +4,7 @@
 
 Stack: HTML5, CSS3, JavaScript, PHP 8, MariaDB, PHPMailer, PayFast. Hosted on Xneelo Standard Hosting.
 
-> **Status: Phase 6.** Every page in the public menus reads from the CMS. The contact form is interface only. Blog, photography store, email and payments are not built yet.
+> **Status: Phase 7.** Every page in the public menus reads from the CMS, and images are uploaded by drag and drop from the page being edited. The contact form is interface only. Blog, photography store, email and payments are not built yet.
 
 ## Folder layout
 
@@ -77,6 +77,7 @@ Stack: HTML5, CSS3, JavaScript, PHP 8, MariaDB, PHPMailer, PayFast. Hosted on Xn
 │   ├── cms.php                CMS framework: view, form, validation, save, audit
 │   ├── cms-modules.php        Field definitions for each editable module
 │   ├── cms-records.php        CMS list, create, edit and delete for multi-record modules
+│   ├── media.php              Media Library: validated uploads, search, usage checks
 │   ├── content.php            Public page content from the database, with rendering helpers
 │   ├── content-fallback.php   Snapshot of the wording, used only if the database is unreachable
 │   ├── page-service.php       Layout for individual service pages

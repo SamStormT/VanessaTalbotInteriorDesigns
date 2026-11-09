@@ -247,6 +247,52 @@ fieldset.admin-panel > .admin-panel__title + * { clear: both; }
 .admin-delete { margin-top: var(--space-lg); padding-top: var(--space-md); border-top: 1px solid var(--color-border); }
 .admin-delete__button { background: none; border: 0; padding: 0; color: #8C1D18; font-size: var(--fs-sm); text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
 
+/* Media: drop zones, previews and the library */
+.admin-field__label { display: block; margin-bottom: 0.3rem; font-size: var(--fs-sm); font-weight: 600; color: var(--color-primary); }
+.admin-thumb { max-width: 220px; max-height: 160px; width: auto; }
+.admin-thumb--small { max-width: 72px; max-height: 56px; }
+.media-field { display: grid; grid-template-columns: auto 1fr; gap: var(--space-md); max-width: 680px; }
+.media-field__preview { width: 140px; height: 105px; background: var(--color-peach-light); border: 1px solid var(--color-border); }
+.media-field__preview img { width: 100%; height: 100%; object-fit: cover; }
+.media-field__preview[hidden] { display: none; }
+.media-field__controls { min-width: 0; grid-column: 2; }
+.media-field__preview[hidden] + .media-field__controls { grid-column: 1 / -1; }
+.media-field__buttons { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-md); margin-top: 0.625rem; }
+.media-field__status { grid-column: 1 / -1; margin: 0; font-size: 0.8125rem; font-weight: 600; color: var(--color-primary); }
+.media-field__status:empty { display: none; }
+.media-drop { border: 1px dashed var(--color-accent-dark); background: var(--color-peach-light); transition: background-color var(--transition), border-color var(--transition); }
+.media-drop label { display: block; padding: 1.125rem 1rem; text-align: center; cursor: pointer; }
+.media-drop--wide { margin-bottom: var(--space-lg); }
+.media-drop--wide label { padding: 2.25rem 1rem; }
+.media-drop--wide .media-field__status { padding: 0 1rem 1rem; text-align: center; }
+.media-drop.is-dragging { background: var(--color-soft-peach); border-color: var(--color-primary); border-style: solid; }
+.media-drop.is-focused { outline: 2px solid var(--color-primary); outline-offset: 2px; }
+.media-drop__text { display: block; color: var(--color-primary); font-size: 0.9375rem; }
+.media-drop__link { text-decoration: underline; text-underline-offset: 3px; }
+.media-drop__hint { display: block; font-size: 0.8125rem; }
+.media-search { display: flex; flex-wrap: wrap; align-items: flex-end; gap: var(--space-md); margin-bottom: var(--space-md); }
+.media-search .admin-field { flex: 1 1 220px; margin: 0; }
+.media-grid { list-style: none; margin: var(--space-md) 0 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: var(--space-md); }
+.media-card { background: var(--color-white); border: 1px solid var(--color-border); }
+.media-card:hover, .media-card:focus-within { border-color: var(--color-primary); }
+.media-card__link { display: block; width: 100%; padding: 0; background: none; border: 0; text-align: left; text-decoration: none; color: inherit; cursor: pointer; }
+.media-card__preview { display: block; aspect-ratio: 4 / 3; background: var(--color-peach-light); }
+.media-card__preview img { width: 100%; height: 100%; object-fit: cover; }
+.media-card__name { display: block; padding: 0.5rem 0.625rem; font-size: 0.8125rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.media-card .admin-badge { margin: 0 0.625rem 0.625rem; }
+.media-detail { display: grid; grid-template-columns: minmax(0, 320px) 1fr; gap: var(--space-lg); align-items: start; }
+.media-detail__image { width: 100%; height: auto; }
+.media-picker { width: min(860px, calc(100vw - 2rem)); max-height: calc(100vh - 2rem); padding: var(--space-lg); border: 0; border-top: 3px solid var(--color-primary); box-shadow: var(--shadow-lg); }
+.media-picker::backdrop { background: rgba(36, 58, 57, 0.45); }
+.media-picker__head { display: flex; align-items: center; justify-content: space-between; margin-bottom: var(--space-md); }
+.media-picker__title { margin: 0; font-family: var(--font-subheading); font-size: 1.125rem; font-weight: 600; }
+.media-grid--picker { margin-bottom: var(--space-md); }
+.media-picker [hidden] { display: none; }
+@media (max-width: 600px) {
+    .media-field, .media-detail { grid-template-columns: 1fr; }
+    .media-field__controls { grid-column: 1; }
+}
+
 /* Sign-in page */
 .login-page {
     display: grid;
