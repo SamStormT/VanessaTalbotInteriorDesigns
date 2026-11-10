@@ -16,6 +16,8 @@ const LOGIN_MAX_PER_EMAIL      = 5;
 const LOGIN_MAX_PER_IP         = 20;
 const PASSWORD_MIN_LENGTH      = 12;
 const PASSWORD_RESET_MINUTES   = 60;
+const PASSWORD_RESET_PER_USER  = 3;   // reset emails per account per hour
+const PASSWORD_RESET_PER_IP    = 10;  // reset emails per IP address per hour
 
 // Verified when an email is unknown, so response time doesn't reveal which accounts exist.
 const DUMMY_PASSWORD_HASH = '$2y$10$YK.O0ZXW64DjRwMv6jkEMuW9avWi9z4dEvmAVjflVm2kAmneof.Xu';
@@ -118,6 +120,15 @@ function activity_log(string $action, ?string $table = null, ?int $recordId = nu
     db_query(
         'INSERT INTO ActivityLog (AdminUserID, Action, EntityType, EntityID, Details, IPAddress) VALUES (?, ?, ?, ?, ?, ?)',
         [$adminId, $action, $table, $recordId, $details, client_ip()]
+    );
+}
+
+/** Activity by a website visitor (contact form, newsletter), never credited to a signed-in user. */
+function activity_log_visitor(string $action, string $table, int $recordId, ?string $details = null): void
+{
+    db_query(
+        'INSERT INTO ActivityLog (AdminUserID, Action, EntityType, EntityID, Details, IPAddress) VALUES (NULL, ?, ?, ?, ?, ?)',
+        [$action, $table, $recordId, $details, client_ip()]
     );
 }
 
@@ -305,8 +316,41 @@ function admin_guard(string $permission): void
 }
 
 // ---------------------------------------------------------------------------
-// Password resets (foundation; the email step arrives with PHPMailer)
+// Password resets
 // ---------------------------------------------------------------------------
+
+/**
+ * "Forgot password": email a reset link if the address belongs to an active
+ * account. Returns nothing, and the page says the same thing either way, so
+ * the form can't be used to discover which accounts exist. The email is sent
+ * after the page has been delivered, so timing doesn't reveal it either.
+ */
+function password_reset_request(string $email): void
+{
+    $email = strtolower(trim($email));
+    $user  = db_row("SELECT AdminUserID, Name, Email FROM AdminUsers WHERE Email = ? AND Status = 'Active'", [$email]);
+
+    if ($user === null) {
+        return;
+    }
+
+    $recentForUser = (int) db_value('SELECT COUNT(*) FROM PasswordResets WHERE AdminUserID = ? AND CreatedDate >= NOW() - INTERVAL 1 HOUR', [$user['AdminUserID']]);
+    $recentFromIp  = (int) db_value('SELECT COUNT(*) FROM PasswordResets WHERE RequestIP = ? AND CreatedDate >= NOW() - INTERVAL 1 HOUR', [client_ip()]);
+    if ($recentForUser >= PASSWORD_RESET_PER_USER || $recentFromIp >= PASSWORD_RESET_PER_IP) {
+        activity_log('password_reset_limited', 'AdminUsers', (int) $user['AdminUserID'], null, (int) $user['AdminUserID']);
+        return;
+    }
+
+    $token = password_reset_create((int) $user['AdminUserID']);
+    activity_log('password_reset_request', 'AdminUsers', (int) $user['AdminUserID'], null, (int) $user['AdminUserID']);
+
+    require_once INCLUDES_PATH . '/mail.php';
+    mail_send_later($user['Email'], 'password-reset', [
+        'name'     => $user['Name'],
+        'resetUrl' => absolute_url('reset-password.php?token=' . $token),
+        'minutes'  => PASSWORD_RESET_MINUTES,
+    ], ['to_name' => $user['Name']]);
+}
 
 /** Create a reset token for an account. Returns the raw token; only its hash is stored. */
 function password_reset_create(int $adminId): string

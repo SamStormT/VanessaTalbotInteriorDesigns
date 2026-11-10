@@ -1,0 +1,14 @@
+{
+    "name": "vanessa-talbot/interior-designs",
+    "description": "Website and CMS for Vanessa Talbot Interior Designs",
+    "type": "project",
+    "license": "proprietary",
+    "require": {
+        "php": ">=8.1",
+        "phpmailer/phpmailer": "^6.9"
+    },
+    "config": {
+        "optimize-autoloader": true,
+        "sort-packages": true
+    }
+}

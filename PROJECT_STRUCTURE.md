@@ -2,9 +2,9 @@
 
 **Vanessa Talbot Interior Designs**: *"The Balance of Art, Science and Nature in Spaces"*
 
-Stack: HTML5, CSS3, JavaScript, PHP 8, MariaDB. PHPMailer and PayFast are planned. Hosted on Xneelo Standard Hosting.
+Stack: HTML5, CSS3, JavaScript, PHP 8, MariaDB, PHPMailer (installed with Composer). PayFast is planned. Hosted on Xneelo Standard Hosting.
 
-> **Status: Phase 8.** Every page in the public menus reads its wording from the CMS. Images are uploaded by drag and drop from the page being edited, kept in the Media Library, and optimised automatically. The contact form is interface only. Blog, photography store, email and payments are not built yet.
+> **Status: Phase 9.** Every page in the public menus reads its wording from the CMS. Images are uploaded by drag and drop from the page being edited, kept in the Media Library, and optimised automatically. The contact form, newsletter sign-up and forgot-password emails work through PHPMailer. Blog, photography store, newsletter sending and payments are not built yet.
 
 ## Folder layout
 
@@ -14,11 +14,14 @@ Stack: HTML5, CSS3, JavaScript, PHP 8, MariaDB. PHPMailer and PayFast are planne
 ├── about.php
 ├── services.php               Services overview
 ├── portfolio.php              Portfolio landing page
-├── contact.php                Contact details, location, FAQ, enquiry form (does not send yet)
+├── contact.php                Contact details, location, FAQ, enquiry form (saves and emails)
+├── newsletter.php             Newsletter sign-up, and the confirm and unsubscribe links
 ├── privacy-policy.php         ┐
 ├── terms-and-conditions.php   ├ Legal pages, wording from SitePages
 ├── copyright.php              ┘
 ├── login.php                  Admin sign-in
+├── forgot-password.php        Emails a password reset link
+├── reset-password.php         Choose a new password from the link
 ├── logout.php                 Sign-out (POST with CSRF token only)
 ├── speaking.php               Redirects to services/speaking-engagements.php
 ├── photography.php            Redirects to the photography gallery until the store exists
@@ -61,8 +64,10 @@ Stack: HTML5, CSS3, JavaScript, PHP 8, MariaDB. PHPMailer and PayFast are planne
 │   ├── collaborators.php, collaborator-edit.php
 │   ├── media-library.php, media-edit.php            Media Library
 │   ├── media-upload.php, media-list.php             JSON endpoints for drop zones and the picker
+│   ├── enquiries.php, enquiry.php                   Contact Messages: list by status, one message
+│   ├── subscribers.php                              Newsletter subscribers
 │   └── (placeholders) blogs.php, blog-create.php, blog-edit.php, photography-products.php,
-│       photography-orders.php, subscribers.php, enquiries.php, admin-users.php
+│       photography-orders.php, admin-users.php
 │
 ├── includes/                  Never served directly (blocked by .htaccess)
 │   ├── config.php             Reads .env; constants, error handling, paths
@@ -87,14 +92,18 @@ Stack: HTML5, CSS3, JavaScript, PHP 8, MariaDB. PHPMailer and PayFast are planne
 │   ├── topbar.php             Admin top bar
 │   ├── sidebar.php            Admin sidebar, filtered by role
 │   ├── site-data.php          No longer used by any page; kept as the original seed source
-│   ├── mail.php               PHPMailer (placeholder)
+│   ├── mail.php               Every email: mail_send(), templates, branded layout, SMTP or log
+│   ├── mail-templates/        One file per email: contact-notification, newsletter-confirm,
+│   │                          password-reset, password-changed
+│   ├── enquiries.php          Contact form: validation, saving, notification
+│   ├── newsletter.php         Newsletter: subscribe, confirm, unsubscribe
 │   └── payfast.php            PayFast (placeholder)
 │
 ├── assets/
 │   ├── css/style.css          Brand tokens (CSS variables), public layout and components
 │   ├── css/admin.css          Admin layout, forms, Media Library and drop zones
 │   ├── css/responsive.css     Breakpoints at 1100px (menu), 1024px, 768px and 600px
-│   ├── js/main.js             Mobile menu; contact and newsletter forms (interface only)
+│   ├── js/main.js             Mobile menu; contact form checks; newsletter sign-up in the background
 │   ├── js/admin.js            Admin sidebar, delete confirmation, drag and drop, library picker
 │   └── images/                Official logo files go here when supplied
 │
@@ -109,6 +118,8 @@ Stack: HTML5, CSS3, JavaScript, PHP 8, MariaDB. PHPMailer and PayFast are planne
 │   ├── optimise-media.php     Command-line: optimise images uploaded before Phase 8; safe to re-run
 │   └── CMS_ARCHITECTURE.md    Database design, admin screens, permissions
 │
+├── vendor/                    PHPMailer, installed by Composer; ignored by Git; must be deployed
+├── composer.json, composer.lock  Library list and exact versions (blocked from the web)
 ├── .env.example               Configuration template (.env itself is private)
 └── .htaccess                  Hides private folders and files; blocks scripts in uploads/
 ```
@@ -191,3 +202,5 @@ John Mayer and Bayshore need web-licensed `.woff2` files. Put them in `assets/fo
 - `BASE_URL` (in `.env`) is empty when the site runs at the domain root. Set it to `/subfolder` when testing locally from a subdirectory.
 - Real credentials never go in the repository. They belong in `.env`, which on the live server sits in the folder above the website.
 - `APP_ENV` defaults to production, so a missing `.env` never shows error details to visitors.
+- `APP_URL` (in `.env`) is the site's public address. Links in emails are built from it.
+- Run `composer install --no-dev` after cloning to create `vendor/`. Without it the site works, but no email is sent and the error log says why.

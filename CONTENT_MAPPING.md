@@ -191,6 +191,8 @@ These are interface wording and site navigation rather than content, so they are
 - Main menu, footer menus and their headings, breadcrumbs, logo text and "Skip to content".
 - "Learn more", "What's included", "Ideal for", "More about…", "Enquire about…" and the "01 Service" numbering.
 - Newsletter form labels and the Subscribe button.
+- Contact form labels, error messages and the "message sent" confirmation; newsletter, confirmation and unsubscribe messages; sign-in and password reset screens.
+- Email wording (`includes/mail-templates/`). Where messages are sent is set in Website Settings.
 - The footer copyright line and legal link names.
 
 A comparison of the live pages with the database confirmed that these are the only visible words not held in the database.

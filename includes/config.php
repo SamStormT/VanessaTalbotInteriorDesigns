@@ -98,15 +98,25 @@ define('DB_USER', env_value('DB_USER'));
 define('DB_PASS', env_value('DB_PASS'));
 define('DB_CHARSET', 'utf8mb4');
 
+// The site's public address, such as https://www.example.co.za, with no
+// trailing slash. Links in emails are built from this, never from the
+// visitor's request, so a forged Host header can't redirect a reset link.
+define('APP_URL', rtrim(env_value('APP_URL'), '/'));
+
 // ---------------------------------------------------------------------------
-// Mail (not used yet; PHPMailer is a later phase)
+// Mail (PHPMailer; see includes/mail.php)
 // ---------------------------------------------------------------------------
+// MAIL_MAILER: smtp (default) sends through the mail server; log writes each
+// email to logs/mail/ instead, for local development.
+define('MAIL_MAILER', env_value('MAIL_MAILER', 'smtp') === 'log' ? 'log' : 'smtp');
 define('MAIL_HOST', env_value('MAIL_HOST'));
 define('MAIL_PORT', (int) env_value('MAIL_PORT', '587'));
+// tls (STARTTLS, usually port 587), ssl (usually port 465) or none.
+define('MAIL_ENCRYPTION', env_value('MAIL_ENCRYPTION', MAIL_PORT === 465 ? 'ssl' : 'tls'));
 define('MAIL_USERNAME', env_value('MAIL_USERNAME'));
 define('MAIL_PASSWORD', env_value('MAIL_PASSWORD'));
 define('MAIL_FROM_ADDRESS', env_value('MAIL_FROM_ADDRESS'));
-define('MAIL_FROM_NAME', SITE_NAME);
+define('MAIL_FROM_NAME', env_value('MAIL_FROM_NAME', SITE_NAME));
 
 // ---------------------------------------------------------------------------
 // PayFast (not used yet; a later phase)

@@ -33,6 +33,7 @@ function cms_modules(): array
                 'Tagline'         => ['label' => 'Tagline', 'type' => 'text', 'max' => 255, 'group' => 'Business'],
                 'Phone'           => ['label' => 'Phone', 'type' => 'tel', 'max' => 30, 'group' => 'Contact'],
                 'Email'           => ['label' => 'Email', 'type' => 'email', 'max' => 254, 'group' => 'Contact'],
+                'EnquiryEmail'    => ['label' => 'Send contact form messages to', 'type' => 'email', 'max' => 254, 'group' => 'Contact', 'help' => 'Not shown on the website. Leave blank to use the email above.'],
                 'AddressLine1'    => ['label' => 'Street address', 'type' => 'text', 'max' => 150, 'group' => 'Location', 'help' => 'Only shown if the setting below is switched on.'],
                 'AddressLine2'    => ['label' => 'Address line 2', 'type' => 'text', 'max' => 150, 'group' => 'Location'],
                 'City'            => ['label' => 'City', 'type' => 'text', 'max' => 100, 'group' => 'Location'],

@@ -976,9 +976,33 @@ label {
 .form-field input:focus-visible { border-color: var(--color-primary); outline-offset: 1px; }
 .form-field input[aria-invalid="true"] { border: 2px solid #B3261E; }
 .required { color: var(--color-accent-text); }
+.form-field select[aria-invalid="true"],
+.form-field textarea[aria-invalid="true"] { border: 2px solid #B3261E; }
+.form-error { margin: 0; font-size: 0.8125rem; font-weight: 600; color: #8C1D18; }
 .form-status { margin: 0; font-weight: 600; color: var(--color-primary); }
 .form-status:empty { display: none; }
 .form-note { font-size: 0.8125rem; margin: 0; }
+
+/* Result of sending a form: shown at the top of the form after the page reloads. */
+.form-alert {
+    margin: 0;
+    padding: 0.875rem 1rem;
+    border-left: 3px solid var(--color-earthy-gold);
+    background: var(--color-white);
+    font-weight: 600;
+    color: var(--color-primary);
+}
+.form-alert--error { border-left-color: #B3261E; color: #8C1D18; }
+.form-alert:focus { outline: 2px solid var(--color-primary); outline-offset: 2px; }
+
+/* Spam trap: a field people never see or reach, which only bots fill in. */
+.form-trap {
+    position: absolute;
+    left: -10000px;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+}
 
 /* --------------------------------------------------------------------------
    16. Call-to-action banner

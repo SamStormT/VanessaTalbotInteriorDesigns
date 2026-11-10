@@ -5,6 +5,7 @@
  */
 require_once __DIR__ . '/../includes/config.php';
 require_once INCLUDES_PATH . '/cms.php';
+require_once INCLUDES_PATH . '/enquiries.php';
 
 admin_guard('dashboard.view');
 
@@ -24,10 +25,17 @@ $counts = array_values(array_filter($counts, static fn(array $item): bool => can
 
 $activity = can('activity.view')
     ? db_all(
-        "SELECT a.Action, a.EntityType, a.EntityID, a.CreatedDate, CONCAT(u.Name, ' ', u.Surname) AS UserName
+        "SELECT a.Action, a.EntityType, a.EntityID, a.CreatedDate, a.AdminUserID, CONCAT(u.Name, ' ', u.Surname) AS UserName
          FROM ActivityLog a LEFT JOIN AdminUsers u ON u.AdminUserID = a.AdminUserID
          ORDER BY a.LogID DESC LIMIT 8"
       )
+    : [];
+
+// Actions taken by website visitors rather than staff (see activity_log_visitor()).
+$visitorActions = ['contact_message', 'newsletter_signup', 'newsletter_resubscribe', 'newsletter_confirm', 'newsletter_unsubscribe'];
+
+$latestMessages = can('messages.view')
+    ? db_all("SELECT MessageID, Name, Surname, EnquiryType, CreatedDate FROM ContactMessages WHERE Status = 'New' ORDER BY CreatedDate DESC LIMIT 5")
     : [];
 
 $pageTitle = 'Dashboard';
@@ -69,7 +77,7 @@ require_once INCLUDES_PATH . '/header.php';
 <?php foreach ($activity as $entry): ?>
                 <tr>
                     <td><?= e(cms_format_date($entry['CreatedDate'])) ?></td>
-                    <td><?= e($entry['UserName'] ?? 'Former user') ?></td>
+                    <td><?= e($entry['UserName'] ?? (in_array($entry['Action'], $visitorActions, true) ? 'Website visitor' : 'Former user')) ?></td>
                     <td><?= e($entry['Action']) ?></td>
                     <td><?= e($entry['EntityType'] ?? '') ?></td>
                     <td><?= e((string) ($entry['EntityID'] ?? '')) ?></td>
@@ -80,11 +88,27 @@ require_once INCLUDES_PATH . '/header.php';
     </div>
 <?php endif; ?>
 
+<?php if ($latestMessages !== []): ?>
+    <h2 class="admin-section-title">New messages</h2>
+    <div class="admin-table-wrap">
+        <table class="admin-table">
+            <thead><tr><th scope="col">Received</th><th scope="col">From</th><th scope="col">About</th><th scope="col"><span class="visually-hidden">Actions</span></th></tr></thead>
+            <tbody>
+<?php foreach ($latestMessages as $message): ?>
+                <tr>
+                    <td><?= e(cms_format_date($message['CreatedDate'])) ?></td>
+                    <td><?= e(trim($message['Name'] . ' ' . ($message['Surname'] ?? ''))) ?></td>
+                    <td><?= e(enquiry_types()[$message['EnquiryType']] ?? $message['EnquiryType']) ?></td>
+                    <td class="admin-table__actions"><a class="btn btn--outline btn--small" href="<?= e(url('admin/enquiry.php?id=' . (int) $message['MessageID'])) ?>">Open</a></td>
+                </tr>
+<?php endforeach; ?>
+            </tbody>
+        </table>
+    </div>
+<?php endif; ?>
+
     <h2 class="admin-section-title">Coming soon</h2>
     <div class="admin-empty-grid">
-<?php if (can('messages.view')): ?>
-        <?= admin_empty_state('No messages yet', 'Contact form messages will appear here.', 'mail') ?>
-<?php endif; ?>
 <?php if (can('orders.view')): ?>
         <?= admin_empty_state('No orders yet', 'Photography orders will appear here.', 'camera') ?>
 <?php endif; ?>

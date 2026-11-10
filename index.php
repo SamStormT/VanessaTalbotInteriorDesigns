@@ -4,8 +4,12 @@
  */
 require_once __DIR__ . '/includes/config.php';
 require_once INCLUDES_PATH . '/content.php';
+require_once INCLUDES_PATH . '/newsletter.php';
 
 $home     = site_home();
+
+// Result of a newsletter sign-up sent without JavaScript (see newsletter.php).
+$newsletterResult = is_string($_GET['newsletter'] ?? null) ? $_GET['newsletter'] : '';
 $sections = site_sections('home');
 $services = site_services();
 
@@ -196,17 +200,21 @@ $tileTones  = ['green', 'gold', 'peach'];
                 <?= content_paragraphs($section['Introduction']) ?>
             </div>
 
-            <form class="newsletter__form" action="<?= e(url('contact.php')) ?>" method="get" data-newsletter-form novalidate>
+            <form class="newsletter__form" action="<?= e(url('newsletter.php')) ?>" method="post" data-newsletter-form novalidate>
                 <div class="form-field">
                     <label for="newsletter-name">First name</label>
-                    <input id="newsletter-name" name="name" type="text" autocomplete="given-name">
+                    <input id="newsletter-name" name="name" type="text" autocomplete="given-name" maxlength="100">
                 </div>
                 <div class="form-field">
                     <label for="newsletter-email">Email address <span class="required" aria-hidden="true">*</span></label>
-                    <input id="newsletter-email" name="email" type="email" autocomplete="email" required aria-describedby="newsletter-status">
+                    <input id="newsletter-email" name="email" type="email" autocomplete="email" maxlength="254" required aria-describedby="newsletter-status"<?= $newsletterResult === 'invalid' ? ' aria-invalid="true"' : '' ?>>
+                </div>
+                <div class="form-trap" aria-hidden="true">
+                    <label for="newsletter-website">Leave this empty</label>
+                    <input id="newsletter-website" name="website" type="text" tabindex="-1" autocomplete="off">
                 </div>
                 <button class="btn btn--primary" type="submit"><?= icon('mail', 'icon icon--inline') ?> Subscribe</button>
-                <p id="newsletter-status" class="form-status" role="status" aria-live="polite"></p>
+                <p id="newsletter-status" class="form-status" role="status" aria-live="polite"><?= e(newsletter_messages()[$newsletterResult] ?? '') ?></p>
                 <p class="form-note"><?= content_with_link($section['Body'], 'Privacy Policy', 'privacy-policy.php') ?></p>
             </form>
         </div>

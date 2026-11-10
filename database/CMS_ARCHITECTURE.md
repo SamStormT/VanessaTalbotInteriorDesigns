@@ -1,11 +1,11 @@
 # CMS Architecture
 
-**Status: Phase 8.**
+**Status: Phase 9.**
 
 - **Database:** 31 tables. `database/schema.sql` creates 29, and `database/migrations.sql` adds `PageSections` and `PageSectionItems`, edit stamps (`LastEditedBy`, `LastEditedDate`) on every editable content table, Media Library captions and optimisation details, and the starting content.
 - **Install:** run `php database/setup.php`.
-- **Built:** every content screen the public website needs, and the Media Library.
-- **Placeholders only:** blog, photography store, subscriber, contact message and user management screens.
+- **Built:** every content screen the public website needs, the Media Library, Contact Messages, Subscribers, and email (contact notifications, newsletter confirmation, password resets).
+- **Placeholders only:** blog, photography store, newsletter campaigns and user management screens.
 
 ## 1. How content survives deployments
 
@@ -18,7 +18,7 @@
 
 Back up the database and `uploads/` separately. Git holds neither.
 
-**Migrations so far:** 002 edit stamps · 003 location defaults · 004 services · 005 Home and About wording · 006 page sections · 007 removal of footer menu headings · 008 rename to Colour & Design Psychology · 009 gallery image stamps · 010 service, portfolio, contact and legal page wording · 011 Media Library captions and stamps · 012 image optimisation details.
+**Migrations so far** (Phase 9 added none; it uses existing tables): 002 edit stamps · 003 location defaults · 004 services · 005 Home and About wording · 006 page sections · 007 removal of footer menu headings · 008 rename to Colour & Design Psychology · 009 gallery image stamps · 010 service, portfolio, contact and legal page wording · 011 Media Library captions and stamps · 012 image optimisation details.
 
 ## 2. ERD
 
@@ -159,6 +159,22 @@ The order of these assignments matters: `SubscriptionStatus` must change after t
 | Metadata | `Width`, `Height` and `FileSize` describe the main image. `OriginalPath`, `OriginalWidth`, `OriginalHeight` and `OriginalFileSize` describe the upload. The details screen lists every size with its dimensions and file size |
 | Existing images | Images uploaded before optimisation keep working at full size. `php database/optimise-media.php` converts them without changing any saved path |
 
+## 4a. Email, contact form and newsletter
+
+| Part | How it works |
+|---|---|
+| Sending | Every email goes through `mail_send()` in `includes/mail.php`, using PHPMailer over SMTP. Settings come only from `.env`. `MAIL_MAILER=log` writes emails to `logs/mail/` instead, for development |
+| Templates | One file per email in `includes/mail-templates/`. Each returns a subject, heading, HTML and plain text; a shared branded layout wraps the HTML. Every value is escaped. A new email is one new template |
+| Links in emails | Built from `APP_URL`, never from the visitor's request, so a forged Host header can't redirect a reset link. In production, no email is sent if `APP_URL` is missing |
+| Timing | Emails are sent after the visitor's page has been delivered (`mail_send_later()`), so nobody waits for the mail server and response time can't reveal whether an account exists |
+| Failure | Sending never throws. A failure is logged (with the recipient's domain only), and the record that triggered it is already saved |
+| Contact form | Validated on the server, saved to `ContactMessages`, then the notification is emailed. CSRF protection, a hidden spam-trap field, and a limit of 5 messages per IP address per hour. Errors redisplay the form with the visitor's text kept |
+| Notification | Sent to Website Settings "Send contact form messages to" (`EnquiryEmail`), otherwise the public email, otherwise the sending address. Reply-To is the visitor, so replying in the mail app answers them |
+| Newsletter | Home page form and the contact form tick-box. Double opt-in: a confirmation email; only confirmed subscribers will receive newsletters. The same message is shown whether or not someone is already subscribed. Spam trap, 10 sign-ups per IP per hour, and no repeat confirmation email within 10 minutes |
+| Confirm and unsubscribe | Links use the subscriber's `UnsubscribeToken`. Opening a link shows a button; only the button changes anything, so email scanners can't confirm or unsubscribe someone. Confirmation emails carry a `List-Unsubscribe` header |
+| Forgot password | `forgot-password.php` gives the same answer for every address. Only active accounts are emailed. Limits: 3 emails per account and 10 per IP address per hour. The link expires after 60 minutes and works once. `reset-password.php` moves the token out of the address bar, requires 12 characters, ends every other session for that account, and emails a "password changed" notice |
+| Activity log | Visitor actions (`contact_message`, `newsletter_signup`, `newsletter_resubscribe`, `newsletter_confirm`, `newsletter_unsubscribe`) are logged with no user. Staff actions: message updates (field names only), deletions, unsubscribes, erasures, `password_reset_request`, `password_reset_limited`, `password_reset` |
+
 ## 5. Admin screens
 
 "Built" means a working screen. "Placeholder" means a protected page with a count and a "coming soon" notice. Every form uses CSRF protection and prepared statements. Every save, create and delete is written to `ActivityLog`.
@@ -183,8 +199,9 @@ The order of these assignments matters: `SubscriptionStatus` must change after t
 | Media Library | `media-library.php`, `media-edit.php` | Built | Upload | Description, caption, category | Only when unused |
 | Blog Posts and Categories | `blogs.php`, `blog-create.php`, `blog-edit.php` | Placeholder | | | |
 | Photography Products and Orders | `photography-products.php`, `photography-orders.php` | Placeholder | | | |
-| Subscribers, Newsletter Campaigns | `subscribers.php` | Placeholder | | | |
-| Contact Messages | `enquiries.php` | Placeholder | | | |
+| Subscribers | `subscribers.php` | Built | Website forms only | Unsubscribe (Admin) | Erase (SuperAdmin) |
+| Newsletter Campaigns | none yet | Not built | | | |
+| Contact Messages | `enquiries.php`, `enquiry.php` | Built | Website form only | Status and private notes | Permanent delete (SuperAdmin) |
 | Users | `admin-users.php` | Placeholder | Via `setup.php` only | | |
 | Activity Log | Latest 8 entries on the dashboard, SuperAdmin only | Partial | Automatic | Never | Never |
 
@@ -216,8 +233,8 @@ Photography
   Photography Orders       placeholder
 
 Audience
-  Subscribers              placeholder
-  Contact Messages         placeholder
+  Subscribers              list, filters, search, unsubscribe, erase
+  Contact Messages         list by status, message, reply, notes
 
 Library
   Media Library
@@ -250,8 +267,8 @@ Menu items a role cannot use are hidden, and each page also checks permission on
 | Blog (planned) | V C E P A D | V C E P A D | V C E |
 | Photography Products (planned) | V C E P A D | V C E P A | V E |
 | Photography Orders (planned) | V E X | V E X | – |
-| Subscribers (planned) | V C E A D X | V C E A | – |
-| Contact Messages (planned) | V E A D | V E A | – |
+| Subscribers | V C E A D X | V C E A | – |
+| Contact Messages | V E A D | V E A | – |
 | Users (planned) | V C E A | – | – |
 | Activity Log | V | – | – |
 
@@ -266,6 +283,6 @@ Menu items a role cannot use are hidden, and each page also checks permission on
 - **MariaDB 10.2.1 or newer** is needed, or the `CHECK` rules are ignored.
 - **First SuperAdmin:** `php database/setup.php` creates it. On a host with no command line, `php database/setup.php --print-admin-sql` prints an INSERT to paste into phpMyAdmin.
 - **Uploads:** PHP must be able to write to `uploads/`, and the PHP upload limit must allow 10 MB files.
-- **Email phase:** check Xneelo's outbound email limits and cron access before building newsletter sending.
+- **Email:** `.env` needs `APP_URL` and the `MAIL_*` settings, and `vendor/` (PHPMailer) must be deployed. Check Xneelo's outbound email limits and cron access before building newsletter sending.
 - **Retention:** decide how long to keep `LoginAttempts`, `ActivityLog` and IP addresses. These are personal data under POPIA.
 - **Analytics:** store only the Google Analytics Measurement ID, and add a cookie notice.

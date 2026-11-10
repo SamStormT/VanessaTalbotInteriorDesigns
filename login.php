@@ -66,6 +66,7 @@ require_once INCLUDES_PATH . '/header.php';
             </div>
             <button class="btn btn--primary" type="submit">Sign in</button>
         </form>
+        <p class="login-card__link"><a href="<?= e(url('forgot-password.php')) ?>">Forgot your password?</a></p>
     </div>
 </main>
 <?php require_once INCLUDES_PATH . '/footer.php'; ?>
