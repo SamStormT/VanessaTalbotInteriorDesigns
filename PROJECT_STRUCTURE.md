@@ -2,9 +2,9 @@
 
 **Vanessa Talbot Interior Designs**: *"The Balance of Art, Science and Nature in Spaces"*
 
-Stack: HTML5, CSS3, JavaScript, PHP 8, MariaDB, PHPMailer, PayFast. Hosted on Xneelo Standard Hosting.
+Stack: HTML5, CSS3, JavaScript, PHP 8, MariaDB. PHPMailer and PayFast are planned. Hosted on Xneelo Standard Hosting.
 
-> **Status: Phase 7.** Every page in the public menus reads from the CMS, and images are uploaded by drag and drop from the page being edited. The contact form is interface only. Blog, photography store, email and payments are not built yet.
+> **Status: Phase 7.** Every page in the public menus reads its wording from the CMS. Images are uploaded by drag and drop from the page being edited and kept in the Media Library. The contact form is interface only. Blog, photography store, email and payments are not built yet.
 
 ## Folder layout
 
@@ -13,122 +13,152 @@ Stack: HTML5, CSS3, JavaScript, PHP 8, MariaDB, PHPMailer, PayFast. Hosted on Xn
 ├── index.php                  Home
 ├── about.php
 ├── services.php               Services overview
-├── portfolio.php              Portfolio overview
-├── photography.php            Photography overview
-├── blog.php                   Blog listing
-├── contact.php
-├── speaking.php
-├── privacy-policy.php
-├── terms-and-conditions.php
-├── copyright.php
-├── login.php                  Admin login
+├── portfolio.php              Portfolio landing page
+├── contact.php                Contact details, location, FAQ, enquiry form (does not send yet)
+├── privacy-policy.php         ┐
+├── terms-and-conditions.php   ├ Legal pages, wording from SitePages
+├── copyright.php              ┘
+├── login.php                  Admin sign-in
+├── logout.php                 Sign-out (POST with CSRF token only)
+├── speaking.php               Redirects to services/speaking-engagements.php
+├── photography.php            Redirects to the photography gallery until the store exists
+├── blog.php                   Placeholder, not linked (blog not built)
 │
-├── services/                  Individual service pages
+├── services/                  One file per service; all use includes/page-service.php
 │   ├── biophilic-design.php
-│   ├── colour-psychology.php
+│   ├── colour-psychology.php       Colour & Design Psychology (web address unchanged)
 │   ├── photography-services.php
 │   ├── workshops.php
 │   ├── speaking-engagements.php
 │   └── consultations.php
 │
 ├── portfolio/
-│   ├── biophilic-interior-design.php
-│   ├── colour-psychology.php
-│   ├── photography-gallery.php
+│   ├── biophilic-interior-design.php   ┐
+│   ├── colour-psychology.php           ├ Use includes/page-portfolio-category.php
+│   ├── photography-gallery.php         ┘
 │   ├── collaborators.php
-│   └── project.php            Single project view
+│   └── project.php            Single project, found by ?slug=
 │
-├── blog/
-│   ├── blog-post.php          Single post
-│   ├── category.php
-│   ├── archive.php
-│   └── search.php
+├── blog/                      Placeholders, not linked (blog not built)
+├── photography/               Placeholders, not linked (store not built)
 │
-├── photography/               Print store (PayFast)
-│   ├── gallery.php
-│   ├── product.php
-│   ├── cart.php
-│   ├── checkout.php
-│   ├── payment-success.php
-│   └── payment-failed.php
-│
-├── admin/                     Back office (requires login)
+├── admin/                     Back office; every page calls admin_guard()
 │   ├── dashboard.php
-│   ├── subscribers.php
-│   ├── enquiries.php
-│   ├── blogs.php / blog-create.php / blog-edit.php
-│   ├── portfolio-projects.php / project-create.php / project-edit.php
-│   ├── photography-products.php
-│   ├── photography-orders.php
-│   ├── speaking-engagements.php
-│   ├── testimonials.php
-│   ├── media-library.php
-│   ├── admin-users.php
-│   └── settings.php
+│   ├── settings.php                     Website Settings
+│   ├── homepage-content.php             Single-row sections: view and edit
+│   ├── about-content.php
+│   ├── about-values.php, about-value-edit.php
+│   ├── qualifications.php, qualification-edit.php
+│   ├── page-sections.php                All sections, grouped by page
+│   ├── section-edit.php, item-edit.php  One section and its repeating items
+│   ├── services.php, service-edit.php
+│   ├── speaking-engagements.php, speaking-edit.php
+│   ├── testimonials.php, testimonial-edit.php
+│   ├── site-pages.php, site-page-edit.php           Legal Pages
+│   ├── portfolio-projects.php, project-edit.php     Projects with gallery
+│   ├── project-create.php                           Redirects to project-edit.php
+│   ├── project-image-edit.php                       One gallery image
+│   ├── collaborators.php, collaborator-edit.php
+│   ├── media-library.php, media-edit.php            Media Library
+│   ├── media-upload.php, media-list.php             JSON endpoints for drop zones and the picker
+│   └── (placeholders) blogs.php, blog-create.php, blog-edit.php, photography-products.php,
+│       photography-orders.php, subscribers.php, enquiries.php, admin-users.php
 │
-├── includes/
-│   ├── config.php             Constants, environment, paths; loads functions.php
-│   ├── functions.php          e(), url(), asset(), is_active()
+├── includes/                  Never served directly (blocked by .htaccess)
+│   ├── config.php             Reads .env; constants, error handling, paths
+│   ├── functions.php          e(), url(), asset(), is_active(), brand_logo(), link_is_safe()
 │   ├── icons.php              icon() inline SVG icons, botanical() decoration
-│   ├── site-data.php          Shared content: services, values, target markets, portfolio categories
 │   ├── database.php           Central PDO connection and query helpers
 │   ├── auth.php               Sessions, sign-in, CSRF, activity log, admin_guard(), password resets
 │   ├── permissions.php        Role and permission map
 │   ├── cms.php                CMS framework: view, form, validation, save, audit
-│   ├── cms-modules.php        Field definitions for each editable module
-│   ├── cms-records.php        CMS list, create, edit and delete for multi-record modules
-│   ├── media.php              Media Library: validated uploads, search, usage checks
+│   ├── cms-modules.php        Field definitions for every editable module
+│   ├── cms-records.php        List, create, edit and delete for multi-record modules
+│   ├── media.php              Media Library: validated uploads, search, usage checks, deletion
 │   ├── content.php            Public page content from the database, with rendering helpers
-│   ├── content-fallback.php   Snapshot of the wording, used only if the database is unreachable
+│   ├── content-fallback.php   Saved copy of the wording, used only if the database is unreachable
 │   ├── page-service.php       Layout for individual service pages
 │   ├── page-portfolio-category.php  Layout for portfolio categories
 │   ├── page-legal.php         Layout for legal pages
-│   ├── mail.php               PHPMailer (placeholder)
-│   ├── payfast.php            PayFast payments + ITN (placeholder)
-│   ├── header.php             <head>, fonts, CSS; opens public or admin layout
-│   ├── navbar.php             Public main navigation with dropdowns
-│   ├── footer.php             Public footer + legal links / closes admin layout
+│   ├── header.php             <head>, fonts, CSS; opens the public or admin layout
+│   ├── navbar.php             Public main navigation
+│   ├── footer.php             Public footer / closes the admin layout
 │   ├── topbar.php             Admin top bar
-│   └── sidebar.php            Admin sidebar navigation
+│   ├── sidebar.php            Admin sidebar, filtered by role
+│   ├── site-data.php          No longer used by any page; kept as the original seed source
+│   ├── mail.php               PHPMailer (placeholder)
+│   └── payfast.php            PayFast (placeholder)
 │
 ├── assets/
-│   ├── css/style.css          Brand tokens (CSS variables), base, header, footer
-│   ├── css/admin.css          Admin layout
-│   ├── css/responsive.css     Breakpoints at 1024px / 768px
-│   ├── js/main.js             Mobile nav toggle
-│   ├── js/admin.js            Admin sidebar toggle
-│   └── images/
+│   ├── css/style.css          Brand tokens (CSS variables), public layout and components
+│   ├── css/admin.css          Admin layout, forms, Media Library and drop zones
+│   ├── css/responsive.css     Breakpoints at 1100px (menu), 1024px, 768px and 600px
+│   ├── js/main.js             Mobile menu; contact and newsletter forms (interface only)
+│   ├── js/admin.js            Admin sidebar, delete confirmation, drag and drop, library picker
+│   └── images/                Official logo files go here when supplied
 │
-└── database/
-    ├── schema.sql             29 core tables; safe to re-run
-    ├── migrations.sql         Page sections, later changes and seed data; safe to re-run
-    ├── setup.php              Command-line install: applies both files, creates first SuperAdmin
-    └── CMS_ARCHITECTURE.md    ERD, CRUD plan, permissions, recommendations
+├── uploads/                   Created on first upload; ignored by Git; must survive deployments
+│   └── media/YYYY/MM/         Uploaded images, with generated file names
+│
+├── database/                  Never served directly (blocked by .htaccess)
+│   ├── schema.sql             29 core tables; safe to re-run
+│   ├── migrations.sql         Migrations 002 to 011: page sections, edit stamps, seed content
+│   ├── setup.php              Command-line install; safe to re-run; creates the first SuperAdmin
+│   └── CMS_ARCHITECTURE.md    Database design, admin screens, permissions
+│
+├── .env.example               Configuration template (.env itself is private)
+└── .htaccess                  Hides private folders and files; blocks scripts in uploads/
 ```
 
-## How a page is built
-
-Public page:
+## How a public page is built
 
 ```php
-require_once __DIR__ . '/includes/config.php';   // '/../includes/config.php' in subfolders
-$pageTitle = 'About';
-require_once INCLUDES_PATH . '/header.php';       // includes navbar.php
-// ... <main id="main-content"> ...
+require_once __DIR__ . '/includes/config.php';    // '/../includes/config.php' in subfolders
+require_once INCLUDES_PATH . '/content.php';
+
+$sections = site_sections('contact');               // Published PageSections and their items
+$pageTitle = $sections['page-header']['Heading'] ?? '';
+
+require_once INCLUDES_PATH . '/header.php';         // includes navbar.php
+// <main id="main-content"> ... render with e(), content_paragraphs(), content_link() ...
 require_once INCLUDES_PATH . '/footer.php';
 ```
 
-Admin page: the same, plus `require_once INCLUDES_PATH . '/auth.php'; require_admin();` and `$layout = 'admin';`. The header then loads `admin.css`, `sidebar.php` and `topbar.php` instead of the public navbar.
+- `content.php` returns only Published records. If the database fails, it falls back to `content-fallback.php` and logs the problem.
+- All text is plain and escaped on output. Links pass through `link_is_safe()`.
+- Interface wording stays in the code: menus, form labels, "Learn more", "Enquire", system messages and the copyright line.
+
+## How an admin page is built
+
+Most admin pages are a few lines, because the framework does the work:
+
+```php
+require_once __DIR__ . '/../includes/config.php';
+require_once INCLUDES_PATH . '/cms.php';
+
+cms_record_list_page('testimonials');     // or cms_record_edit_page(), or cms_singleton_page()
+```
+
+- **Field definitions** live in `cms-modules.php`. Each definition gives the table, fields, field types, list columns and permissions. Adding an editable module is mainly a new definition.
+- **Every page** starts with `admin_guard('module.action')`, which checks sign-in, then permission, then CSRF on POST.
+- **Saving** records `LastEditedBy` and `LastEditedDate`, and writes the changed field names to `ActivityLog`.
+
+## Database setup and changes
+
+- `php database/setup.php` applies `schema.sql`, then `migrations.sql`, loads first-run settings from `.env`, and creates the first SuperAdmin if none exists.
+- **Structure changes** go in `migrations.sql` as additive statements, recorded in `SchemaMigrations`.
+- **Content seeds** run once only, so re-running setup never restores text that was edited or removed.
 
 ## Brand tokens (`assets/css/style.css`)
 
 | Variable | Value | Role |
 |---|---|---|
-| `--color-forest-green` | `#243A39` | Primary: header, footer, headings |
-| `--color-golden-yellow` | `#CDA02D` | Accent: logo, hover, highlights |
-| `--color-soft-peach` | `#F6E2D4` | Surface: light sections, text on green |
-| `--color-earthy-gold` | `#9D7F3C` | Decorative accent: borders, frames |
+| `--color-forest-green` | `#243A39` | Primary: navigation, footer, buttons, headings |
+| `--color-golden-yellow` | `#CDA02D` | Accent: rules, highlights |
+| `--color-soft-peach` | `#F6E2D4` | Main section background |
+| `--color-earthy-gold` | `#9D7F3C` | Decorative accent: borders, frames, icons |
 | `--color-gold-text` | `#7A6230` | Earthy gold darkened for text and links on light backgrounds (WCAG AA) |
+
 ## Typography
 
 | Purpose | Brand font | Variable / selector | Web stand-in |
@@ -149,11 +179,11 @@ John Mayer and Bayshore need web-licensed `.woff2` files. Put them in `assets/fo
 ## Colour usage
 
 - **White and Soft Peach** are the main page backgrounds, alternating between sections.
-- **Forest Green** is reserved for the footer, buttons, navigation text, highlights and dividers.
+- **Forest Green** is reserved for navigation, the footer, buttons, highlights and dividers.
 - **Golden Yellow and Earthy Brown-Gold** are accents: rules, icons, tags, labels and decorative frames.
 
 ## Notes
 
-- `BASE_URL` in `config.php` is empty when the site runs at the domain root. Set it to `/subfolder` when testing locally from a subdirectory.
-- Real credentials must never be committed. A private config outside the web root is planned for a later phase.
-- Until authentication is built, every admin page redirects to `login.php`.
+- `BASE_URL` (in `.env`) is empty when the site runs at the domain root. Set it to `/subfolder` when testing locally from a subdirectory.
+- Real credentials never go in the repository. They belong in `.env`, which on the live server sits in the folder above the website.
+- `APP_ENV` defaults to production, so a missing `.env` never shows error details to visitors.

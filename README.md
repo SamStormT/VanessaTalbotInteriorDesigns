@@ -4,204 +4,131 @@
 
 ## Overview
 
-Vanessa Talbot Interior Designs is a bespoke website and content management platform focused on Biophilic Interior Design, Colour Psychology, Photography, and Nature-Inspired Living.
+Vanessa Talbot Interior Designs is a bespoke website and content management system (CMS) for a practice focused on Biophilic Interior Design, Colour & Design Psychology, Photography, Workshops, Speaking Engagements and Consultations.
 
-The platform combines Vanessa Talbot's background in science and interior design to create spaces that promote harmony, wellbeing, sustainability, and a deeper connection with nature.
+The website reflects Vanessa Talbot's background in science and interior design: spaces that promote harmony, wellbeing and a deeper connection with nature.
 
----
-
-## Core Features
-
-### Public Website
-
-- Home
-- About
-- Services
-- Portfolio
-- Blog
-- Photography Store
-- Contact
-
-### Portfolio Categories
-
-- Biophilic Interior Design
-- Colour Psychology
-- Photography
-- Collaborators
-
-### Blog
-
-- Blog articles
-- Categories
-- Search functionality
-- Featured images
-
-### Contact & Subscribers
-
-- Contact form
-- Newsletter signup
-- Subscriber management
-- Enquiry management
-
-### Photography Store
-
-- Photography catalogue
-- Product pages
-- Shopping cart
-- Checkout
-- Payment portal integration
-- Order tracking
-- Payment tracking
-
-### Speaking Engagements
-
-- Speaking topics
-- Event information
-- Booking enquiries
+**Current status:** a complete brochure website, managed through the CMS. Email, the blog and the photography store are planned but not yet built. See [LAUNCH_READINESS.md](LAUNCH_READINESS.md) for what remains before launch.
 
 ---
 
-## Admin Dashboard
+## Public website
 
-The administration area allows authorised users to manage:
+| Page | Status |
+|---|---|
+| Home, About, Services | Built, wording managed in the CMS |
+| Six service pages: Biophilic Design, Colour & Design Psychology, Photography, Workshops, Speaking Engagements, Consultations | Built |
+| Portfolio: landing page, Biophilic Interior Design, Colour & Design Psychology, Photography, Collaborators, single project | Built; shows "coming soon" until projects are published |
+| Contact: details, location, frequently asked questions, enquiry form | Built; **the form does not send yet** and says so |
+| Privacy Policy, Terms and Conditions, Copyright Notice | Built, draft wording |
+| Blog | Planned. Not linked from the menus |
+| Photography store, cart, checkout and PayFast | Planned. Not linked from the menus |
 
-- Subscribers
-- Enquiries
-- Blogs
-- Portfolio Projects
-- Photography Products
-- Photography Orders
-- Speaking Engagements
-- Testimonials
-- Media Library
-- Admin Users
-- Website Settings
+If the database is unreachable, public pages show a saved copy of the wording instead of an error.
 
 ---
 
-## Technology Stack
+## Content management (admin area)
 
-### Frontend
+Signed-in staff can edit every piece of website wording without a developer.
 
-- HTML5
-- CSS3
-- JavaScript
+| Area | What can be managed |
+|---|---|
+| Website Settings | Business name, tagline, phone, email, location, whether the street address is shown, social links, footer text |
+| Homepage Content, About Content | Hero, introduction, quote, story, speaking topics, search engine details |
+| Page Sections | Headings, introductions, buttons and repeating blocks on every page, including FAQs and "how it works" steps |
+| Services | Each service's wording, inclusions, client types, image and visibility |
+| About Values, Qualifications | Individual values; qualifications, certifications, memberships and awards |
+| Portfolio Projects | Projects with gallery images; publishing requires client permission |
+| Collaborators, Testimonials | Publishing requires a recorded permission date |
+| Speaking Engagements | Talks and events |
+| Legal Pages | Privacy Policy, Terms, Copyright |
+| Media Library | Every uploaded image, with search, preview, descriptions and captions |
 
-### Backend
+**Workflow:** content is Draft, Published or Archived, and only Published content appears on the site. Every change records who made it and when, and is written to an activity log.
 
-- PHP 8.x
+**Roles:** SuperAdmin (everything), Admin (content, settings, media, and later orders, subscribers and messages), Editor (prepares content; an Admin publishes it).
 
-### Database
+**Images:** every image field accepts drag and drop or "Choose from library". Uploads go into the Media Library automatically, so nobody types file paths. Galleries and the library accept several images at once.
 
-- MariaDB (MySQL Compatible)
-
-### Email
-
-- PHPMailer
-
-### Payments
-
-- PayFast
-
-### Hosting
-
-- Xneelo Standard Hosting
-
-### Version Control
-
-- Git
-- GitHub
+Planned admin areas (placeholders today): Blog, Photography Products and Orders, Subscribers, Contact Messages, Users.
 
 ---
 
-## Brand Identity
+## Technology
 
-### Business Name
+| Layer | Technology |
+|---|---|
+| Frontend | HTML5, CSS3, JavaScript (no framework) |
+| Backend | PHP 8.x with PDO prepared statements |
+| Database | MariaDB 10.2.1 or newer |
+| Email | PHPMailer (planned) |
+| Payments | PayFast (planned) |
+| Hosting | Xneelo Standard Hosting |
+| Version control | Git and GitHub |
 
-Vanessa Talbot Interior Designs
+---
 
-### Tagline
+## Running it locally
 
-The Balance of Art, Science and Nature in Spaces.
+1. Install XAMPP (PHP 8 and MariaDB). In `C:\xampp\mysql\bin\my.ini`, add `lower_case_table_names=2` under `[mysqld]`. Enable `extension=gd` in `php.ini`.
+2. Copy `.env.example` to `.env` and fill in the database details.
+3. Create an empty database, then run `php database/setup.php`. It creates all tables, adds the starting content, and asks for the first SuperAdmin account. It is safe to run again.
+4. Run `php -S localhost:8000` in the project folder and open http://localhost:8000. The admin area is at `/login.php`.
 
-### Colour Palette
+Configuration and secrets live only in `.env`, which Git ignores. On the live server, `.env` belongs in the folder above the website.
+
+---
+
+## Documentation
+
+| Document | Contents |
+|---|---|
+| [PROJECT_STRUCTURE.md](PROJECT_STRUCTURE.md) | Folders, files, how pages are built, brand tokens |
+| [database/CMS_ARCHITECTURE.md](database/CMS_ARCHITECTURE.md) | Database design, relationships, admin screens, permissions |
+| [CONTENT_MAPPING.md](CONTENT_MAPPING.md) | Where every piece of website wording is stored |
+| [CONTENT_REQUIREMENTS.md](CONTENT_REQUIREMENTS.md) | What Vanessa needs to supply |
+| [LAUNCH_READINESS.md](LAUNCH_READINESS.md) | Launch blockers and checklists |
+
+---
+
+## Brand identity
+
+**Business name:** Vanessa Talbot Interior Designs
+
+**Tagline:** The Balance of Art, Science and Nature in Spaces.
 
 | Colour | Hex |
-|----------|----------|
+|---|---|
 | Forest Green | #243A39 |
 | Golden Yellow | #CDA02D |
 | Soft Peach | #F6E2D4 |
 | Earthy Brown-Gold | #9D7F3C |
 
-### Typography
-
-- John Mayer Fancy Ligature (Logo)
-- Bayshore (Tagline)
-- Helvetica
-- Open Sans
-
----
-
-## Project Structure
-
-```text
-VanessaTalbotInteriorDesigns/
-
-├── index.php
-├── about.php
-├── services.php
-├── portfolio.php
-├── blog.php
-├── contact.php
-│
-├── admin/
-├── portfolio/
-├── services/
-├── photography/
-├── assets/
-│   ├── css/
-│   ├── js/
-│   ├── images/
-│   └── fonts/
-│
-├── uploads/
-├── includes/
-├── database/
-└── README.md
-```
-
----
-
-## Future Enhancements
-
-Planned future functionality:
-
-- Online Consultations
-- Workshop Bookings
-- Corporate Training
-- Online Courses
-- Client Portal
-- Community Membership Area
-- Photography Licensing
-- Event Registration
-- Digital Product Sales
+**Typography:** John Mayer (logo and page titles), Bayshore (quotes and taglines), Helvetica (headings and labels), Open Sans (body text and forms). Licensed web versions of John Mayer and Bayshore are still to be supplied; free stand-ins are used until then.
 
 ---
 
 ## Security
 
-- Secure password hashing
-- Session-based authentication
-- Role-based permissions
-- PayFast transaction verification
-- Input validation and sanitisation
+- Passwords hashed with PHP's `password_hash()`; sign-in rate limiting
+- Secure, HttpOnly session cookies with idle and absolute time-outs
+- CSRF protection on every form
+- Role-based permissions checked on the server for every admin page
+- Prepared statements for all database queries; all output escaped
+- Uploads checked by their real content, stored under generated names, and scripts blocked in `uploads/`
+- `.env`, `database/`, `includes/` and `logs/` blocked from the web
+
+---
+
+## Future enhancements
+
+Online consultations, workshop bookings, corporate training, online courses, a client portal, a community membership area, photography licensing, event registration and digital product sales.
 
 ---
 
 ## License
 
-Copyright © Vanessa Talbot Interior Designs.
+Copyright © Vanessa Talbot Interior Designs. All Rights Reserved.
 
-All Rights Reserved.
-
-The contents of this repository, including source code, branding, logos, images, photography, written content, and design assets may not be copied, reproduced, distributed, modified, or reused without prior written permission.
+The contents of this repository, including source code, branding, logos, images, photography, written content and design assets, may not be copied, reproduced, distributed, modified or reused without prior written permission. See [LICENSE.md](LICENSE.md).

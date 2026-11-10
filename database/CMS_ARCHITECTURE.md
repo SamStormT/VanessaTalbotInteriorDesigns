@@ -1,19 +1,24 @@
 # CMS Architecture
 
-**Status: foundation implemented (Phase 4).** `database/schema.sql` has 29 tables. `database/migrations.sql` adds `LastEditedBy` and `LastEditedDate` to every editable content table, and two more tables, `PageSections` and `PageSectionItems`, making 31. Install with `php database/setup.php`. Sign-in, permissions, Website Settings, Homepage, About and Services editing are built; the other screens below are still to come.
+**Status: Phase 7.**
 
-The schema was tested on a throwaway MariaDB 10.11 database: it loads cleanly, re-running it preserves existing data, and the delete rules, uniqueness rules and subscriber rule below were tested and held.
+- **Database:** 31 tables. `database/schema.sql` creates 29, and `database/migrations.sql` adds `PageSections` and `PageSectionItems`, edit stamps (`LastEditedBy`, `LastEditedDate`) on every editable content table, Media Library captions, and the starting content.
+- **Install:** run `php database/setup.php`.
+- **Built:** every content screen the public website needs, and the Media Library.
+- **Placeholders only:** blog, photography store, subscriber, contact message and user management screens.
 
 ## 1. How content survives deployments
 
 | Risk | Protection |
 |---|---|
 | Deploying code replaces content | All content is in database rows, and deployments only replace code files |
-| Re-running `schema.sql` wipes data | The file has no `DROP` or `TRUNCATE`; tables use `CREATE TABLE IF NOT EXISTS`, seeds use `INSERT IGNORE` |
-| Uploaded files are deleted | `uploads/` is in `.gitignore`. Any deployment that mirrors files must also exclude it, or it will delete everything in that folder |
-| Structure needs to change later | `schema.sql` cannot alter existing tables, so changes go in `database/migrations.sql` as additive statements and are recorded in `SchemaMigrations` |
+| Re-running setup wipes or restores data | No `DROP` or `TRUNCATE` anywhere. Tables use `CREATE TABLE IF NOT EXISTS`. Content seeds run once only, so edited or removed text never comes back |
+| Uploaded images are deleted | `uploads/` is in `.gitignore`. Any deployment that mirrors files must also exclude it, or every uploaded image is lost |
+| Structure needs to change later | Changes go in `migrations.sql` as additive statements, recorded in `SchemaMigrations` |
 
 Back up the database and `uploads/` separately. Git holds neither.
+
+**Migrations so far:** 002 edit stamps · 003 location defaults · 004 services · 005 Home and About wording · 006 page sections · 007 removal of footer menu headings · 008 rename to Colour & Design Psychology · 009 gallery image stamps · 010 service, portfolio, contact and legal page wording · 011 Media Library captions and stamps.
 
 ## 2. ERD
 
@@ -38,20 +43,27 @@ erDiagram
     PageSections ||--o{ PageSectionItems : "contains"
 ```
 
+Every editable content table also has `LastEditedBy` → `AdminUsers`. Those links are left out of the diagram for readability.
+
 **Connected groups**
 
-- **Staff and security.** `AdminUsers` links to password resets, the activity log, and everything staff author or handle.
-- **Blog.** A post has one author and at most one category.
+- **Staff and security.** `AdminUsers` links to password resets, the activity log, uploads, and everything staff author, handle or edit.
+- **Page wording.** `PageSections` hold headings, introductions and buttons for any page, found by `PageKey` and `SectionKey`. `PageSectionItems` hold their repeating blocks.
 - **Portfolio.** A project owns many gallery images and can be linked from testimonials.
-- **Store.** One checkout is one order. An order contains many items, and each item is a product with an optional print option. Payments attach to the order.
-- **Newsletter.** `CampaignRecipients` joins campaigns and subscribers, one row per person per campaign.
+- **Blog** (not built). A post has one author and at most one category.
+- **Store** (not built). One checkout is one order. An order contains many items, and each item is a product with an optional print option. Payments attach to the order.
+- **Newsletter** (not built). `CampaignRecipients` joins campaigns and subscribers, one row per person per campaign.
 
 **Standalone tables**
 
 - Always one row, created by the schema: `WebsiteSettings`, `HomePageContent`, `AboutContent`.
-- No foreign keys: `AboutValues`, `AboutQualifications`, `SitePages`, `Services`, `Collaborators`, `SpeakingEngagements`, `LoginAttempts`, `SchemaMigrations`.
+- No foreign keys apart from edit stamps: `AboutValues`, `AboutQualifications`, `SitePages`, `Services`, `Collaborators`, `SpeakingEngagements`, `LoginAttempts`, `SchemaMigrations`.
 
-Image columns store a file path and are not foreign keys to `MediaLibrary`, so the media screen must check where a file is used before deleting it. `MediaLibrary.FilePath` is unique, so alt text can be found from a path.
+**Images.** Image columns store a path inside `uploads/` and are not foreign keys to `MediaLibrary`. Instead:
+
+- The admin only accepts a path that exists in `MediaLibrary`.
+- The Media Library checks every image column before allowing a delete.
+- `MediaLibrary.FilePath` is unique.
 
 ## 3. Table relationships
 
@@ -59,6 +71,7 @@ Image columns store a file path and are not foreign keys to `MediaLibrary`, so t
 |---|---|---|---|
 | `PasswordResets.AdminUserID` | `AdminUsers` | Yes | **Cascade** |
 | `ActivityLog.AdminUserID` | `AdminUsers` | No | **Set null:** the log entry stays |
+| `*.LastEditedBy` (every editable table) | `AdminUsers` | No | **Set null:** the edit date stays, the name clears |
 | `BlogPosts.AuthorID` | `AdminUsers` | Yes | **Blocked:** deactivate the user instead |
 | `NewsletterCampaigns.CreatedBy` | `AdminUsers` | Yes | **Blocked** |
 | `MediaLibrary.UploadedBy` | `AdminUsers` | Yes | **Blocked** |
@@ -75,30 +88,40 @@ Image columns store a file path and are not foreign keys to `MediaLibrary`, so t
 | `CampaignRecipients.SubscriberID` | `Subscribers` | Yes | **Cascade:** so a POPIA erasure is complete |
 | `PageSectionItems.SectionID` | `PageSections` | Yes | **Cascade:** items are removed with their section |
 
-**Other rules enforced by the database:** unique, case-insensitive email on `AdminUsers` and `Subscribers`; unique slugs on every table that has one; unique `OrderNumber`, `PaymentReference`, `DownloadToken` and `UnsubscribeToken`; one person per campaign; one `PaymentTransactions` row per gateway reference and status, so a repeated PayFast notification cannot be recorded twice; prices cannot be negative and quantities must be above zero.
+**Other rules enforced by the database:**
 
-**Slugs** are on every record that can have its own web address: `Services`, `PortfolioProjects`, `Collaborators`, `SpeakingEngagements`, `PhotographyProducts`, `BlogCategories`, `BlogPosts`, `SitePages`. Testimonials, values, qualifications and print options only appear inside other pages, so they have none.
+- Unique, case-insensitive email on `AdminUsers` and `Subscribers`.
+- Unique slugs on every table that has one, and unique `PageKey` + `SectionKey`.
+- Unique `OrderNumber`, `PaymentReference`, `DownloadToken` and `UnsubscribeToken`.
+- One person per campaign.
+- One `PaymentTransactions` row per gateway reference and status, so a repeated PayFast notification cannot be recorded twice.
+- Prices cannot be negative, and quantities must be above zero.
 
-**Design notes on the approved items**
+**Slugs** are on every record that can have its own web address: `Services`, `PortfolioProjects`, `Collaborators`, `SpeakingEngagements`, `PhotographyProducts`, `BlogCategories`, `BlogPosts`, `SitePages`. Admin screens build a slug from the title when it is left blank.
 
-| Item | How it was built |
+**Stored values that differ from what is shown.** `PortfolioProjects.PortfolioCategory` and `ContactMessages.EnquiryType` store `Colour Psychology`. The admin and public forms display it as **Colour & Design Psychology**. The service's web address stays `colour-psychology`.
+
+**Design notes**
+
+| Item | How it works |
 |---|---|
-| Statuses | Draft / Published / Archived on all public content. Workflow tables (orders, messages, campaigns, subscribers) keep their specified values |
-| Cart | `PhotographyOrderItems`. `PhotoID` has moved off `PhotographyOrders` |
-| Prints and downloads | Both supported until Vanessa decides: `ProductType`, `PhotographyProductOptions`, shipping and delivery columns on orders, an expiring download token |
+| Statuses | Draft / Published / Archived on all public content. Workflow tables (orders, messages, campaigns, subscribers) have their own values |
 | Service inclusions | `IncludedItems` and `IdealFor`, one item per line, edited in a text box |
-| Values and qualifications | Rows in `AboutValues` and `AboutQualifications`. `AboutContent.CoreValues` (renamed from the reserved word `Values`) and `AboutContent.Qualifications` hold each section's introduction |
+| Values and qualifications | Rows in `AboutValues` and `AboutQualifications`. `AboutContent.CoreValues` and `AboutContent.Qualifications` hold each section's introduction |
+| Retired columns | `HomePageContent.IntroductionText` and `AboutContent.Journey`, `ScienceBackground`, `DesignBackground`, `Philosophy` and `SpeakingIntroduction` are empty. Their wording moved to page sections, and they are hidden from the admin |
+| Legal page wording | Plain text: a blank line separates paragraphs, `## ` starts a heading, `- ` starts a list item |
+| Cart and products | `PhotographyOrderItems` hold cart lines. Prints and digital downloads are both supported until Vanessa decides |
 | Stored tokens | Password reset and download tokens are stored only as hashes. `UnsubscribeToken` is stored as issued, because each email has to include it |
 
-**Rules the admin screens must enforce** (the database can't check these):
+**Rules enforced by the admin screens:**
 
-- A testimonial needs a `ConsentDate` before publishing.
-- A project needs `ClientPermission` before publishing.
-- A collaborator needs a `ConsentDate` before publishing.
-- Campaigns only go to `SubscriptionStatus = 'Subscribed'` with a `ConfirmedDate`.
-- `WebsiteSettings` street address only appears when `ShowAddress` is on. It is off by default.
+- Projects need `ClientPermission` before publishing. Testimonials and collaborators need a `ConsentDate`. This is checked whoever publishes.
+- An Editor never sees the Status or slug fields of publishable content, so anything an Editor creates starts as Draft.
+- A street address only appears on the site when `WebsiteSettings.ShowAddress` is on. It is off by default.
+- Every image field accepts only an image that is in the Media Library.
+- Campaigns will only go to subscribers with `SubscriptionStatus = 'Subscribed'` and a `ConfirmedDate` (newsletter phase).
 
-**Subscriber rule** (contact form with "Subscribe to Newsletter" ticked). Tested with a new person, an existing person in different capitalisation, and someone who had unsubscribed. The original `Source` and token are kept. Someone returning after unsubscribing must confirm by email again, which closes the gap where anyone could re-subscribe another person's address.
+**Subscriber rule** (for the contact-form phase). When "Subscribe to Newsletter" is ticked, this statement adds the person or re-subscribes them. It was tested with a new person, an existing person in different capitalisation, and someone who had unsubscribed. Someone returning after unsubscribing must confirm by email again.
 
 ```sql
 INSERT INTO Subscribers (Name, Email, Source, ConsentDate, ConsentIP, UnsubscribeToken)
@@ -115,126 +138,129 @@ ON DUPLICATE KEY UPDATE
 
 The order of these assignments matters: `SubscriptionStatus` must change after the two `IF` lines have read it.
 
-## 4. CRUD matrix
+## 4. Media Library
 
-"Existing" means the placeholder page is already in `admin/`. All other pages are new. Every form uses CSRF protection and prepared statements. Every change is written to `ActivityLog`.
+| Feature | How it works |
+|---|---|
+| Upload from the page | Every image field is a drop zone with a "browse" link. The upload happens immediately and shows a preview. The image is recorded in `MediaLibrary`, with its category set to the screen it came from |
+| Reuse | "Choose from library" opens a searchable window, 24 images at a time. The chosen image's description and caption fill any empty matching fields |
+| Several at once | The Media Library page and each project's gallery accept multiple dropped files. Gallery drops become gallery images directly |
+| Library page | Search by file name, description, caption or category. Filter by category. Previews, 48 per page, with a "Needs description" marker |
+| Image details | Edit description (alt text), caption and category. Shows size, dimensions, upload date and every place the image is used |
+| Learning descriptions | A description typed on a content form is saved to the library if the image has none, ready for reuse |
+| Deleting | Admins only, and only when the image is unused. The file is removed from disk and the deletion is logged |
+| Accepted files | JPG, PNG, WebP and GIF up to 10 MB, checked by their actual content. SVG and HEIC are refused |
+| Storage | `uploads/media/YYYY/MM/` with a generated name (`name-1a2b3c4d.jpg`), so uploads can't overwrite files or choose their own extension |
+| Protection | `.htaccess` blocks scripts anywhere in `uploads/`, confirmed on Apache |
+| Not yet built | Resizing or compressing photos. GD is installed, but no code uses it yet, so images are served at their uploaded size |
 
-| Module | Pages | Create | Read | Update | Delete |
+## 5. Admin screens
+
+"Built" means a working screen. "Placeholder" means a protected page with a count and a "coming soon" notice. Every form uses CSRF protection and prepared statements. Every save, create and delete is written to `ActivityLog`.
+
+| Module | Pages | Status | Create | Update | Delete |
 |---|---|---|---|---|---|
-| Website Settings | `settings.php` (existing) | Seeded | Form | Single form | Never |
-| Homepage Content | `homepage-content.php` | Seeded | Form | Single form | Never |
-| About Content | `about-content.php` | Seeded | Form | Single form | Never |
-| About Values | Panel in `about-content.php` | Inline | Sortable list | Inline, reorder | Archive, then delete |
-| Qualifications | Panel in `about-content.php` | Inline | List by type | Inline, reorder | Archive, then delete |
-| Site Pages | `site-pages.php`, `site-page-edit.php` | Seeded; form for new pages | List | Form | Archive; the 3 legal pages can't be removed |
-| Services | `services.php`, `service-edit.php` | Form | Sortable list | Form, reorder | Archive |
-| Portfolio Projects | `portfolio-projects.php`, `project-create.php`, `project-edit.php` (existing) | Form | List, filter by category, type, status | Form | Archive; permanent delete removes images |
-| Project Images | Panel in `project-edit.php` | Upload or choose from media | Grid | Caption, alt text, reorder | Remove from project |
-| Collaborators | `collaborators.php`, `collaborator-edit.php` | Form | Sortable list | Form, reorder | Archive, then delete |
-| Testimonials | `testimonials.php` (existing), `testimonial-edit.php` | Form | List | Form, reorder | Archive, then delete |
-| Speaking Engagements | `speaking-engagements.php` (existing), `engagement-edit.php` | Form | List, upcoming and past | Form | Archive, then delete |
-| Photography Products | `photography-products.php` (existing), `product-edit.php` | Form | List | Form | Archive; delete only if never ordered |
-| Product Options | Panel in `product-edit.php` | Inline | List | Inline, reorder | Archive; delete removes from sale only |
-| Photography Orders | `photography-orders.php` (existing), `order-view.php` | Checkout only | List, filter by status and date; CSV export | Order and delivery status, tracking number | Never |
-| Order Items | Shown in `order-view.php` | Checkout only | Read-only | Never | Never |
-| Payment Transactions | Shown in `order-view.php` | Payment notification only | Read-only | Never | Never |
-| Subscribers | `subscribers.php` (existing), `subscriber-edit.php` | Public forms, admin form, CSV import | List, filter by status and source; CSV export | Details and notes | Unsubscribe; permanent delete on POPIA request |
-| Newsletter Campaigns | `newsletter-campaigns.php`, `campaign-edit.php` | Form | List with preview | Draft or Scheduled only; Sent is locked | Archive |
-| Campaign Recipients | Shown in `campaign-edit.php` | Created at send | Delivery counts and failures | Sender only | Never directly |
-| Contact Messages | `enquiries.php` (existing), `enquiry-view.php` | Public form only | Inbox, filter by status, type, assignee | Status, assignee, internal notes; message text locked | Close; permanent delete on POPIA request |
-| Blog Categories | `blog-categories.php` | Inline | List with post counts | Inline | Delete; posts become uncategorised |
-| Blog Posts | `blogs.php`, `blog-create.php`, `blog-edit.php` (existing) | Form with slug generator | List, filter by status and category | Form with preview | Archive, then delete |
-| Media Library | `media-library.php` (existing) | Validated upload | Grid, filter by category and type | Alt text, category | Delete only if the file is unused |
-| Admin Users | `admin-users.php` (existing), `admin-user-edit.php` | SuperAdmin only | List, recent login attempts | Details, role, status, password reset | Deactivate |
-| Activity Log | `activity-log.php` | Automatic | List, filter by user, record, date | Never | Never by hand; old rows removed by a retention rule |
-| Password Resets | No screen | Forgot-password form | Token check | Marked used | Expired rows purged |
-| Login Attempts | Summary in Admin Users | Login form | Rate-limit check | Never | Old rows purged |
-| Schema Migrations | No screen | Migration run | Migration check | Never | Never |
+| Dashboard | `dashboard.php` | Built | – | – | – |
+| Website Settings | `settings.php` | Built | Seeded | Single form | Never |
+| Homepage Content | `homepage-content.php` | Built | Seeded | Single form | Never |
+| About Content | `about-content.php` | Built | Seeded | Single form | Never |
+| About Values | `about-values.php`, `about-value-edit.php` | Built | Form | Form | Permanent delete |
+| Qualifications | `qualifications.php`, `qualification-edit.php` | Built | Form | Form | Permanent delete |
+| Page Sections | `page-sections.php`, `section-edit.php` | Built | Developer only | Form | Never (unpublish instead) |
+| Section items | `item-edit.php` | Built | Form | Form | Permanent delete |
+| Services | `services.php`, `service-edit.php` | Built | Seeded | Form | Never (archive instead) |
+| Speaking Engagements | `speaking-engagements.php`, `speaking-edit.php` | Built | Form | Form | Permanent delete |
+| Testimonials | `testimonials.php`, `testimonial-edit.php` | Built | Form | Form | Permanent delete |
+| Legal Pages | `site-pages.php`, `site-page-edit.php` | Built | Seeded | Form | Never |
+| Portfolio Projects | `portfolio-projects.php`, `project-edit.php` | Built | Form | Form, with gallery panel | Permanent delete removes its gallery |
+| Project Images | `project-image-edit.php`, gallery drop zone | Built | Drop or form | Form | Permanent delete |
+| Collaborators | `collaborators.php`, `collaborator-edit.php` | Built | Form | Form | Permanent delete |
+| Media Library | `media-library.php`, `media-edit.php` | Built | Upload | Description, caption, category | Only when unused |
+| Blog Posts and Categories | `blogs.php`, `blog-create.php`, `blog-edit.php` | Placeholder | | | |
+| Photography Products and Orders | `photography-products.php`, `photography-orders.php` | Placeholder | | | |
+| Subscribers, Newsletter Campaigns | `subscribers.php` | Placeholder | | | |
+| Contact Messages | `enquiries.php` | Placeholder | | | |
+| Users | `admin-users.php` | Placeholder | Via `setup.php` only | | |
+| Activity Log | Latest 8 entries on the dashboard, SuperAdmin only | Partial | Automatic | Never | Never |
 
-Public pages read only rows with `Status = 'Published'`. Blog posts also need a `PublishedDate` that has passed.
+Public pages show only rows with `Status = 'Published'`. Projects also need client permission; collaborators also need a consent date.
 
-## 5. Admin navigation
+## 6. Admin navigation (as built)
 
 ```
-Dashboard                  new messages, recent orders, subscriber count, drafts
+Dashboard
 
 Website Content
   Homepage Content
-  About Content            values and qualifications inside
+  About Content
+  About Values
+  Qualifications
+  Page Sections            every page's headings, buttons and repeating items
   Services
   Speaking Engagements
   Testimonials
-  Legal & Other Pages
+  Legal Pages
 
-Portfolio
-  Projects                 images inside each project
+Portfolio & Blog
+  Portfolio Projects       gallery inside each project
   Collaborators
+  Blogs                    placeholder
 
-Blog
-  Posts
-  Categories
-
-Photography Store
-  Products                 print options inside each product
-  Orders                   items and payments inside each order
+Photography
+  Photography Products     placeholder
+  Photography Orders       placeholder
 
 Audience
-  Contact Messages
-  Subscribers
-  Newsletter Campaigns     delivery results inside each campaign
+  Subscribers              placeholder
+  Contact Messages         placeholder
 
-Media Library
+Library
+  Media Library
 
 System
   Website Settings
-  Admin Users
-  Activity Log
+  Users                    placeholder
 ```
 
 Menu items a role cannot use are hidden, and each page also checks permission on the server.
 
-## 6. Permission matrix
+## 7. Permission matrix
 
-**V** view, **C** create, **E** edit, **P** publish or send, **A** archive, **D** permanent delete, **X** export, **–** no access.
+**V** view, **C** create, **E** edit, **P** publish, **A** archive, **D** permanent delete, **X** export, **–** no access. This matches `includes/permissions.php`. SuperAdmin may perform every action listed for a module.
 
 | Module | SuperAdmin | Admin | Editor |
 |---|---|---|---|
 | Dashboard | V | V | V (content only) |
 | Website Settings | V E | V E | – |
-| Homepage Content | V E | V E | V E |
-| About Content | V E | V E | V E |
+| Homepage Content, About Content | V E | V E | V E |
 | About Values and Qualifications | V C E P A D | V C E P A D | V C E |
-| Site Pages (legal) | V E P | V E P | V |
+| Page Sections and items | V C E P A D | V C E P A D | V C E |
 | Services | V C E P A D | V C E P A | V E |
 | Portfolio Projects and Images | V C E P A D | V C E P A D | V C E |
 | Collaborators | V C E P A D | V C E P A D | V C E |
 | Testimonials | V C E P A D | V C E P A D | V C E |
 | Speaking Engagements | V C E P A D | V C E P A D | V C E |
-| Blog Categories | V C E D | V C E D | V |
-| Blog Posts | V C E P A D | V C E P A D | V C E (own drafts) |
+| Legal Pages | V E P | V E P | V |
 | Media Library | V C E D | V C E D | V C E |
-| Photography Products | V C E P A D | V C E P A | V E |
-| Product Options and prices | V C E A D | V C E A | V |
-| Photography Orders, Items, Transactions | V E X | V E X | – |
-| Subscribers | V C E A D X | V C E A | – |
-| Newsletter Campaigns | V C E P A | V C E P A | V C E (drafts) |
-| Campaign Recipients | V | V | – |
-| Contact Messages | V E A D | V E A | – |
-| Admin Users and Login Attempts | V C E A | – | – |
+| Blog (planned) | V C E P A D | V C E P A D | V C E |
+| Photography Products (planned) | V C E P A D | V C E P A | V E |
+| Photography Orders (planned) | V E X | V E X | – |
+| Subscribers (planned) | V C E A D X | V C E A | – |
+| Contact Messages (planned) | V E A D | V E A | – |
+| Users (planned) | V C E A | – | – |
 | Activity Log | V | – | – |
 
-Editors are kept away from subscribers, messages and orders because those hold personal data, which POPIA requires us to limit. Editors can prepare work, but an Admin publishes it.
+- **Personal data:** Editors are kept away from subscribers, messages and orders because those hold personal data, which POPIA requires us to limit.
+- **Publishing:** Editors prepare content, and an Admin publishes it. An Editor can still change wording on content that is already Published.
+- **Fail-safe:** a permission that isn't in the map is refused for every role.
+- **For the Users screen (planned):** the last active SuperAdmin must not be demoted or deactivated, and users must not be able to change their own role.
 
-Permissions are defined in `includes/permissions.php`. Modules are added to that map as their screens are built, and anything not listed is refused for every role.
+## 8. Deployment notes
 
-**Rules:** the last active SuperAdmin cannot be demoted or deactivated, users cannot change their own role, and permissions live in one PHP map checked by `can('module.action')`.
-
-## 7. Before implementation
-
-- **Table-name case.** XAMPP on Windows stores `AdminUsers` as `adminusers` (confirmed in testing), while Linux hosting is normally case-sensitive. Set `lower_case_table_names=2` in XAMPP's `my.ini` before creating the local database, and run `schema.sql` directly on the server rather than importing a local export.
-- **Confirm the MariaDB version** on Xneelo is 10.2.1 or newer; older versions ignore the `CHECK` rules.
-- **First SuperAdmin:** `php database/setup.php` creates it. On a host with no command line, `php database/setup.php --print-admin-sql` prints an INSERT to paste into phpMyAdmin. No credentials belong in a public repository.
-- **Xneelo limits:** check outbound email limits and cron access before promising bulk newsletter sending from the site.
-- **Retention:** decide how long to keep `LoginAttempts`, `ActivityLog` and the IP addresses on messages and subscribers. These are personal data under POPIA.
-- **Google Analytics:** store only the Measurement ID, and add a cookie notice.
-- **Uploads:** validate real file types, block PHP execution in `uploads/`, keep `DownloadFile` outside the web root, and enable GD locally (it's still off).
+- **Table-name case.** XAMPP on Windows can store `AdminUsers` as `adminusers`, while Linux hosting is case-sensitive. Use `lower_case_table_names=2` locally, and run `setup.php` on the server rather than importing a local export.
+- **MariaDB 10.2.1 or newer** is needed, or the `CHECK` rules are ignored.
+- **First SuperAdmin:** `php database/setup.php` creates it. On a host with no command line, `php database/setup.php --print-admin-sql` prints an INSERT to paste into phpMyAdmin.
+- **Uploads:** PHP must be able to write to `uploads/`, and the PHP upload limit must allow 10 MB files.
+- **Email phase:** check Xneelo's outbound email limits and cron access before building newsletter sending.
+- **Retention:** decide how long to keep `LoginAttempts`, `ActivityLog` and IP addresses. These are personal data under POPIA.
+- **Analytics:** store only the Google Analytics Measurement ID, and add a cookie notice.
