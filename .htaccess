@@ -11,6 +11,10 @@ RedirectMatch 404 "/(database|includes|logs|vendor)(/|$)"
 # Composer files list the exact library versions in use.
 RedirectMatch 404 "/composer\.(json|lock)$"
 
+# Project documents (README.md, LAUNCH_READINESS.md and others) are for the
+# team, not visitors. Blocked in every folder, whatever the capitalisation.
+RedirectMatch 404 "(?i)\.md$"
+
 # Never run or serve scripts from the upload folder.
 RedirectMatch 404 "(?i)/uploads/.*\.(php[0-9]?|phtml|phar|pl|py|cgi|sh|htaccess)$"
 

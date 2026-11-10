@@ -82,7 +82,7 @@ Everything below can be changed in the admin area. Page Sections are listed by p
 - [ ] Put `.env` in the folder above the website with `APP_ENV=production`
 - [ ] Run `database/setup.php` on the server (table names must not come from a Windows export)
 - [ ] Create the real SuperAdmin with a strong password; no test accounts on the server
-- [ ] Confirm `.htaccess` is honoured: `/.env`, `/database/`, `/includes/`, `/vendor/` and `/composer.json` must return 404, a script placed in `uploads/` must not run, and nothing in `uploads/originals/` may be downloadable
+- [ ] Confirm `.htaccess` is honoured: `/.env`, `/database/`, `/includes/`, `/vendor/`, `/composer.json` and `/README.md` must return 404, a script placed in `uploads/` must not run, and nothing in `uploads/originals/` may be downloadable
 - [ ] Make sure PHP can write to `uploads/`, and exclude it from anything that mirrors files
 - [ ] Confirm Xneelo's PHP upload limits allow 10 MB files, and that PHP may use 512 MB of memory while processing a large photo
 - [ ] Plan disk space: each photo is stored as the original plus three sizes (about 1.3 MB extra for a typical phone photo)

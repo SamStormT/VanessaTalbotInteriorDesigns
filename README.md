@@ -125,7 +125,7 @@ Configuration and secrets live only in `.env`, which Git ignores. On the live se
 - Prepared statements for all database queries; all output escaped
 - Uploads checked by their real content, stored under generated names, and scripts blocked in `uploads/`
 - Published images are re-encoded, which removes hidden photo data such as GPS location; originals are not publicly reachable
-- `.env`, `database/`, `includes/` and `logs/` blocked from the web
+- `.env`, `database/`, `includes/`, `logs/`, `vendor/`, Composer files and all `.md` documents blocked from the web
 
 ---
 
