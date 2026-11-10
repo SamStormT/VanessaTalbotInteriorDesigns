@@ -46,9 +46,20 @@ require_once INCLUDES_PATH . '/header.php';
     <div class="admin-toolbar"><?= cms_last_edited($row) ?></div>
 
     <section class="admin-panel media-detail">
-        <img class="media-detail__image" src="<?= e(url($row['FilePath'])) ?>" alt="<?= e($row['AltText'] ?? '') ?>">
+        <img class="media-detail__image" src="<?= e(image_url($row['FilePath'], 'web')) ?>" alt="<?= e($row['AltText'] ?? '') ?>">
         <dl class="admin-fields">
-            <div><dt>Size</dt><dd><?= (int) $row['Width'] ?> × <?= (int) $row['Height'] ?> pixels, <?= e(number_format(((int) $row['FileSize']) / 1048576, 1)) ?> MB</dd></div>
+<?php if (!empty($row['OriginalPath'])): ?>
+            <div><dt>Original upload</dt><dd><?= (int) $row['OriginalWidth'] ?> × <?= (int) $row['OriginalHeight'] ?> pixels, <?= e(media_format_bytes((int) $row['OriginalFileSize'])) ?> <span class="admin-muted">(kept privately)</span></dd></div>
+<?php endif; ?>
+<?php foreach (media_versions($row) as $label => $version): ?>
+            <div><dt><?= e($label) ?></dt><dd><?= $version['width'] ?> × <?= $version['height'] ?> pixels, <?= e(media_format_bytes($version['bytes'])) ?></dd></div>
+<?php endforeach; ?>
+            <div><dt>Optimisation</dt><dd><?= e(match ($row['Optimisation'] ?? null) {
+                'Optimised' => 'Resized and compressed automatically',
+                'Unchanged' => 'Animated image, used as uploaded',
+                'Failed'    => 'Could not be optimised; used as uploaded',
+                default     => 'Uploaded before optimisation existed',
+            }) ?></dd></div>
             <div><dt>Uploaded</dt><dd><?= e(cms_format_date($row['UploadDate'])) ?></dd></div>
             <div><dt>Used on</dt><dd><?= $usage === [] ? '<span class="admin-muted">Not in use</span>' : e(implode(', ', $usage)) ?></dd></div>
         </dl>

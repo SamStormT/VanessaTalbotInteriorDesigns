@@ -212,7 +212,7 @@ function cms_render_view(array $module, array $row): string
         foreach ($fields as $name => $field) {
             $value = $row[$name] ?? null;
             if ($field['type'] === 'image') {
-                $html .= '<div><dt>' . e($field['label']) . '</dt><dd>' . ($value ? '<img class="admin-thumb" src="' . e(url((string) $value)) . '" alt="">' : '<span class="admin-muted">Not set</span>') . '</dd></div>';
+                $html .= '<div><dt>' . e($field['label']) . '</dt><dd>' . ($value ? '<img class="admin-thumb" src="' . e(image_url((string) $value, 'thumb')) . '" alt="">' : '<span class="admin-muted">Not set</span>') . '</dd></div>';
                 continue;
             }
             if ($field['type'] === 'checkbox') {
@@ -301,7 +301,7 @@ function cms_render_image_control(string $name, array $field, string $value, str
     return '<div class="admin-field"><span class="admin-field__label" id="' . e($id) . '-label">' . e($field['label']) . '</span>'
          . '<div class="media-field" data-media-field data-category="' . e($GLOBALS['cms_form_title'] ?? '') . '"' . $targets . '>'
          . '<input type="hidden" name="' . e($name) . '" value="' . e($value) . '" data-media-value>'
-         . '<div class="media-field__preview"' . $hidden . '><img src="' . ($value === '' ? '' : e(url($value))) . '" alt=""></div>'
+         . '<div class="media-field__preview"' . $hidden . '><img src="' . ($value === '' ? '' : e(image_url($value, 'thumb'))) . '" alt=""></div>'
          . '<div class="media-field__controls"><div class="media-drop"><label>'
          . '<span class="media-drop__text">Drag an image here, or <span class="media-drop__link">browse</span></span>'
          . '<span class="media-drop__hint">JPG, PNG, WebP or GIF, up to ' . (int) (MEDIA_MAX_BYTES / 1048576) . ' MB</span>'

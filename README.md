@@ -49,7 +49,7 @@ Signed-in staff can edit every piece of website wording without a developer.
 
 **Roles:** SuperAdmin (everything), Admin (content, settings, media, and later orders, subscribers and messages), Editor (prepares content; an Admin publishes it).
 
-**Images:** every image field accepts drag and drop or "Choose from library". Uploads go into the Media Library automatically, so nobody types file paths. Galleries and the library accept several images at once.
+**Images:** every image field accepts drag and drop or "Choose from library". Uploads go into the Media Library automatically, so nobody types file paths. Galleries and the library accept several images at once. Each upload is turned upright, resized, compressed and given a thumbnail, while the untouched original is kept privately.
 
 Planned admin areas (placeholders today): Blog, Photography Products and Orders, Subscribers, Contact Messages, Users.
 
@@ -117,6 +117,7 @@ Configuration and secrets live only in `.env`, which Git ignores. On the live se
 - Role-based permissions checked on the server for every admin page
 - Prepared statements for all database queries; all output escaped
 - Uploads checked by their real content, stored under generated names, and scripts blocked in `uploads/`
+- Published images are re-encoded, which removes hidden photo data such as GPS location; originals are not publicly reachable
 - `.env`, `database/`, `includes/` and `logs/` blocked from the web
 
 ---

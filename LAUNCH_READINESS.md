@@ -19,7 +19,7 @@
 | Admin sign-in, roles, activity log | Ready | Tested on the local stack and Apache |
 | CMS editing | Ready | Every piece of public wording is editable; see `CONTENT_MAPPING.md` |
 | Media Library | Ready | Drag and drop on every image field, library search and reuse, descriptions and captions |
-| Image resizing | **Not built** | GD is installed, but uploads are stored at full size |
+| Image optimisation | Ready | Every upload is resized, compressed and given a thumbnail; the original is kept privately |
 | Testimonials | Admin only | Can be managed, but no public page shows them yet |
 | Newsletter form | **Not connected** | Says sign-ups are opening soon; saves nothing |
 | Blog and photography store | Not built | Removed from the menus |
@@ -35,13 +35,12 @@
 | 4 | The Photography service mentions an online store that doesn't exist yet | Reword the description and "What's included" under Services | Vanessa |
 | 5 | Newsletter section invites sign-ups that are not saved | Unpublish `home/newsletter` in Page Sections, or approve the feature | Samantha |
 | 6 | No photographs yet | Upload through the admin area | Vanessa |
-| 7 | Large photos would slow pages, because nothing resizes them | Add automatic resizing (GD is ready), or upload web-sized images only | Development |
-| 8 | No portfolio projects | At least a few real projects with client permission | Vanessa |
-| 9 | Stand-in logo text and fonts | Official logo files; web-licensed John Mayer and Bayshore | Vanessa |
-| 10 | No "forgot password" | Requires the email phase; until then a developer resets it | Development |
-| 11 | No Users screen | Accounts can only be created with `setup.php` or SQL; at least one Admin besides the SuperAdmin should be set up before handover | Development |
-| 12 | Vanessa's phone and street address are in the public GitHub history | Make the repo private, or rewrite history | Samantha |
-| 13 | Which email is public: the business card and business plan use a different address from Website Settings | Confirm and update Website Settings | Vanessa |
+| 7 | No portfolio projects | At least a few real projects with client permission | Vanessa |
+| 8 | Stand-in logo text and fonts | Official logo files; web-licensed John Mayer and Bayshore | Vanessa |
+| 9 | No "forgot password" | Requires the email phase; until then a developer resets it | Development |
+| 10 | No Users screen | Accounts can only be created with `setup.php` or SQL; at least one Admin besides the SuperAdmin should be set up before handover | Development |
+| 11 | Vanessa's phone and street address are in the public GitHub history | Make the repo private, or rewrite history | Samantha |
+| 12 | Which email is public: the business card and business plan use a different address from Website Settings | Confirm and update Website Settings | Vanessa |
 
 Blog and store placeholder pages still exist at their old addresses, but nothing links to them.
 
@@ -77,9 +76,10 @@ Everything below can be changed in the admin area. Page Sections are listed by p
 - [ ] Put `.env` in the folder above the website with `APP_ENV=production`
 - [ ] Run `database/setup.php` on the server (table names must not come from a Windows export)
 - [ ] Create the real SuperAdmin with a strong password; no test accounts on the server
-- [ ] Confirm `.htaccess` is honoured: `/.env`, `/database/` and `/includes/` must return 404, and a script placed in `uploads/` must not run
+- [ ] Confirm `.htaccess` is honoured: `/.env`, `/database/` and `/includes/` must return 404, a script placed in `uploads/` must not run, and nothing in `uploads/originals/` may be downloadable
 - [ ] Make sure PHP can write to `uploads/`, and exclude it from anything that mirrors files
-- [ ] Confirm Xneelo's PHP upload limits allow 10 MB files
+- [ ] Confirm Xneelo's PHP upload limits allow 10 MB files, and that PHP may use 512 MB of memory while processing a large photo
+- [ ] Plan disk space: each photo is stored as the original plus three sizes (about 1.3 MB extra for a typical phone photo)
 - [ ] Schedule database and `uploads/` backups, and test a restore
 - [ ] Add a monitoring check, and review `logs/php-error.log` after launch
 
@@ -100,7 +100,7 @@ Everything below can be changed in the admin area. Page Sections are listed by p
 - **Menus:** Photography points to the portfolio gallery, Speaking to its service page, and Blog is removed. These need revisiting when those features are built.
 - **Sections:** new page sections are added by a developer. On service pages a new section appears automatically. On other pages, the order is set by the design.
 - **Editors and live content:** an Editor changing an already Published record changes the site immediately. Only new records wait for an Admin.
-- **Images:** HEIC photos from iPhones are not accepted, and images are not resized. Speaking Engagement and Testimonial images are stored but not yet shown publicly.
+- **Images:** HEIC photos from iPhones are not accepted, and photos over about 50 megapixels are refused. Speaking Engagement and Testimonial images are stored but not yet shown publicly. Images uploaded before optimisation stay full size until `php database/optimise-media.php` is run.
 - **Fallback text** is a saved copy of the seeded wording. Phone and email are not in it, so they don't show if the database is down.
 - **Activity log:** there is no full log screen yet; the dashboard shows the latest eight entries to the SuperAdmin.
 
@@ -108,7 +108,7 @@ Everything below can be changed in the admin area. Page Sections are listed by p
 
 | Step | Scope | Needs |
 |---|---|---|
-| 1 | Make the repo private. Add image resizing | Approval |
+| 1 | Make the repo private | Nothing further |
 | 2 | Vanessa uploads photos and replaces wording | Her content |
 | 3 | **First public launch** as a brochure site, with enquiries by phone and email and the newsletter section unpublished | Confirmed wording, legal review, hosting checklist |
 | 4 | Users screen, email, "forgot password", contact form and newsletter | Approval, mail details |

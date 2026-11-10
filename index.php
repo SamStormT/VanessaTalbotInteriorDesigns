@@ -39,7 +39,7 @@ $tileTones  = ['green', 'gold', 'peach'];
             <div class="hero__media"<?= empty($home['HeroImage']) ? ' aria-hidden="true"' : '' ?>>
                 <?= empty($home['HeroImage'])
                     ? '<div class="art-frame art-frame--arch art-frame--peach">' . botanical('botanical art-frame__botanical') . '</div>'
-                    : content_frame('art-frame art-frame--arch art-frame--peach', $home['HeroImage'], $home['HeroImageAlt'] ?? '', '') ?>
+                    : content_frame('art-frame art-frame--arch art-frame--peach', $home['HeroImage'], $home['HeroImageAlt'] ?? '', '', 'full') ?>
                 <span class="hero__accent"></span>
             </div>
         </div>

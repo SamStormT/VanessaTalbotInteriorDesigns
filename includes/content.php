@@ -226,12 +226,13 @@ function content_section_header(array $section, string $id, ?string $intro = nul
 }
 
 /** Image frame: the photo if one is set, otherwise the decorative artwork. */
-function content_frame(string $class, ?string $image, ?string $alt, string $decoration): string
+function content_frame(string $class, ?string $image, ?string $alt, string $decoration, string $size = 'web'): string
 {
     if (trim((string) $image) === '') {
         return '<div class="' . e($class) . '" aria-hidden="true">' . $decoration . '</div>';
     }
-    return '<div class="' . e($class) . '"><img src="' . e(content_url($image)) . '" alt="' . e($alt) . '" loading="lazy"></div>';
+    $src = link_is_safe((string) $image) ? image_url((string) $image, $size) : '#';
+    return '<div class="' . e($class) . '"><img src="' . e($src) . '" alt="' . e($alt) . '"' . ($size === 'full' ? '' : ' loading="lazy"') . '></div>';
 }
 
 /** Inner page heading with breadcrumb. $crumbs is a list of [label, path] between Home and this page. */

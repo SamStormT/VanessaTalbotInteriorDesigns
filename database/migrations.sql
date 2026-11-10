@@ -890,3 +890,19 @@ ALTER TABLE MediaLibrary
         REFERENCES AdminUsers (AdminUserID) ON UPDATE CASCADE ON DELETE SET NULL;
 
 INSERT IGNORE INTO SchemaMigrations (MigrationName) VALUES ('011_media_library_details');
+
+
+-- --------------------------------------------------------------------------
+-- 012: Image optimisation. Width, Height and FileSize describe the optimised
+-- main image; the Original columns describe the private, untouched upload.
+-- Images uploaded earlier have no original on record until
+-- database/optimise-media.php is run.
+-- --------------------------------------------------------------------------
+ALTER TABLE MediaLibrary
+    ADD COLUMN IF NOT EXISTS OriginalPath VARCHAR(500) NULL,
+    ADD COLUMN IF NOT EXISTS OriginalWidth INT UNSIGNED NULL,
+    ADD COLUMN IF NOT EXISTS OriginalHeight INT UNSIGNED NULL,
+    ADD COLUMN IF NOT EXISTS OriginalFileSize INT UNSIGNED NULL,
+    ADD COLUMN IF NOT EXISTS Optimisation ENUM('Optimised','Unchanged','Failed') NULL;
+
+INSERT IGNORE INTO SchemaMigrations (MigrationName) VALUES ('012_media_optimisation');

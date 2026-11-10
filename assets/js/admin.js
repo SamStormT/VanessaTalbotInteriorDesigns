@@ -130,7 +130,7 @@ document.querySelectorAll('form[data-confirm]').forEach((form) => {
                     const frame = document.createElement('span');
                     frame.className = 'media-card__preview';
                     const image = document.createElement('img');
-                    image.src = item.url;
+                    image.src = item.thumb || item.url;
                     image.alt = '';
                     image.loading = 'lazy';
                     frame.append(image);
@@ -189,14 +189,14 @@ document.querySelectorAll('form[data-confirm]').forEach((form) => {
 
         function show(item) {
             value.value = item.path;
-            image.src = item.url;
+            image.src = item.thumb || item.url;
             preview.hidden = false;
             remove.hidden = false;
             if (alt && !alt.value && item.alt) alt.value = item.alt;
             if (caption && !caption.value && item.caption) caption.value = item.caption;
-            status.textContent = alt && !alt.value
+            status.textContent = (item.warning ? item.warning + ' ' : '') + (alt && !alt.value
                 ? 'Added. Please describe the image below, then save.'
-                : 'Added. Remember to save.';
+                : 'Added. Remember to save.');
         }
 
         acceptFiles(field.querySelector('.media-drop'), async (files) => {

@@ -4,7 +4,7 @@
 
 Stack: HTML5, CSS3, JavaScript, PHP 8, MariaDB. PHPMailer and PayFast are planned. Hosted on Xneelo Standard Hosting.
 
-> **Status: Phase 7.** Every page in the public menus reads its wording from the CMS. Images are uploaded by drag and drop from the page being edited and kept in the Media Library. The contact form is interface only. Blog, photography store, email and payments are not built yet.
+> **Status: Phase 8.** Every page in the public menus reads its wording from the CMS. Images are uploaded by drag and drop from the page being edited, kept in the Media Library, and optimised automatically. The contact form is interface only. Blog, photography store, email and payments are not built yet.
 
 ## Folder layout
 
@@ -66,7 +66,7 @@ Stack: HTML5, CSS3, JavaScript, PHP 8, MariaDB. PHPMailer and PayFast are planne
 │
 ├── includes/                  Never served directly (blocked by .htaccess)
 │   ├── config.php             Reads .env; constants, error handling, paths
-│   ├── functions.php          e(), url(), asset(), is_active(), brand_logo(), link_is_safe()
+│   ├── functions.php          e(), url(), asset(), image_url(), is_active(), brand_logo(), link_is_safe()
 │   ├── icons.php              icon() inline SVG icons, botanical() decoration
 │   ├── database.php           Central PDO connection and query helpers
 │   ├── auth.php               Sessions, sign-in, CSRF, activity log, admin_guard(), password resets
@@ -75,6 +75,7 @@ Stack: HTML5, CSS3, JavaScript, PHP 8, MariaDB. PHPMailer and PayFast are planne
 │   ├── cms-modules.php        Field definitions for every editable module
 │   ├── cms-records.php        List, create, edit and delete for multi-record modules
 │   ├── media.php              Media Library: validated uploads, search, usage checks, deletion
+│   ├── media-optimise.php     GD resizing, compression, orientation and thumbnails
 │   ├── content.php            Public page content from the database, with rendering helpers
 │   ├── content-fallback.php   Saved copy of the wording, used only if the database is unreachable
 │   ├── page-service.php       Layout for individual service pages
@@ -98,12 +99,14 @@ Stack: HTML5, CSS3, JavaScript, PHP 8, MariaDB. PHPMailer and PayFast are planne
 │   └── images/                Official logo files go here when supplied
 │
 ├── uploads/                   Created on first upload; ignored by Git; must survive deployments
-│   └── media/YYYY/MM/         Uploaded images, with generated file names
+│   ├── media/YYYY/MM/         Public images: name.jpg (main), name-web.jpg, name-thumb.jpg
+│   └── originals/YYYY/MM/     Untouched uploads; blocked from the web
 │
 ├── database/                  Never served directly (blocked by .htaccess)
 │   ├── schema.sql             29 core tables; safe to re-run
-│   ├── migrations.sql         Migrations 002 to 011: page sections, edit stamps, seed content
+│   ├── migrations.sql         Migrations 002 to 012: page sections, edit stamps, seed content, image details
 │   ├── setup.php              Command-line install; safe to re-run; creates the first SuperAdmin
+│   ├── optimise-media.php     Command-line: optimise images uploaded before Phase 8; safe to re-run
 │   └── CMS_ARCHITECTURE.md    Database design, admin screens, permissions
 │
 ├── .env.example               Configuration template (.env itself is private)
@@ -126,6 +129,7 @@ require_once INCLUDES_PATH . '/footer.php';
 
 - `content.php` returns only Published records. If the database fails, it falls back to `content-fallback.php` and logs the problem.
 - All text is plain and escaped on output. Links pass through `link_is_safe()`.
+- Images are output with `image_url($path, 'full' | 'web' | 'thumb')`, which falls back to the saved path when a size doesn't exist.
 - Interface wording stays in the code: menus, form labels, "Learn more", "Enquire", system messages and the copyright line.
 
 ## How an admin page is built

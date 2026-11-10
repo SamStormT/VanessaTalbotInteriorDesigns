@@ -10,6 +10,8 @@
 
 declare(strict_types=1);
 
+require_once __DIR__ . '/media-optimise.php';
+
 const MEDIA_MAX_BYTES = 10485760; // 10 MB
 const MEDIA_TYPES     = ['image/jpeg' => 'jpg', 'image/png' => 'png', 'image/webp' => 'webp', 'image/gif' => 'gif'];
 
@@ -36,36 +38,62 @@ function media_store_upload(array $file, string $category): array
         throw new RuntimeException('Please choose a JPG, PNG, WebP or GIF image.');
     }
 
+    if ((int) $info[0] * (int) $info[1] > MEDIA_MAX_PIXELS) {
+        throw new RuntimeException('That image has too many pixels to use on a website. Please export a smaller version.');
+    }
+
     $originalName = mb_substr(basename(str_replace('\\', '/', (string) $file['name'])), 0, 255);
     $stem         = strtolower((string) pathinfo($originalName, PATHINFO_FILENAME));
     $stem         = substr(trim((string) preg_replace('/[^a-z0-9]+/', '-', $stem), '-'), 0, 60) ?: 'image';
     $folder       = 'uploads/media/' . date('Y/m');
     $path         = $folder . '/' . $stem . '-' . bin2hex(random_bytes(4)) . '.' . MEDIA_TYPES[$mime];
     $absolute     = ROOT_PATH . '/' . $path;
+    $originalPath = media_original_path($path);
+    $original     = ROOT_PATH . '/' . $originalPath;
 
-    if (!is_dir(ROOT_PATH . '/' . $folder) && !mkdir(ROOT_PATH . '/' . $folder, 0755, true) && !is_dir(ROOT_PATH . '/' . $folder)) {
-        error_log('Could not create upload folder: ' . $folder);
+    media_make_folder($absolute);
+    media_make_folder($original);
+    if (!move_uploaded_file($file['tmp_name'], $original)) {
+        error_log('Could not save upload: ' . $originalPath);
         throw new RuntimeException('That file could not be saved. Please try again.');
     }
-    if (!move_uploaded_file($file['tmp_name'], $absolute)) {
-        error_log('Could not save upload: ' . $path);
-        throw new RuntimeException('That file could not be saved. Please try again.');
+
+    // Optimise. If that fails the upload still succeeds, using the original as it is.
+    $warning = null;
+    try {
+        $result = media_optimise($original, $mime, $absolute);
+    } catch (Throwable $problem) {
+        error_log('Optimising ' . $originalPath . ' failed: ' . $problem->getMessage());
+        foreach ([$absolute, media_variant_path($absolute, 'web'), media_variant_path($absolute, 'thumb')] as $partial) {
+            @unlink($partial);
+        }
+        if (!copy($original, $absolute)) {
+            @unlink($original);
+            throw new RuntimeException('That file could not be saved. Please try again.');
+        }
+        $result  = ['width' => (int) $info[0], 'height' => (int) $info[1], 'size' => (int) $file['size'], 'status' => 'Failed'];
+        $warning = 'Uploaded, but it could not be made smaller, so it may load slowly. A web-sized copy would be better.';
     }
 
     try {
         db_query(
-            'INSERT INTO MediaLibrary (FileName, FilePath, FileType, FileSize, Width, Height, Category, UploadedBy)
-             VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
-            [$originalName, $path, $mime, (int) $file['size'], (int) $info[0], (int) $info[1], $category === '' ? null : mb_substr($category, 0, 100), current_admin()['AdminUserID']]
+            'INSERT INTO MediaLibrary (FileName, FilePath, FileType, FileSize, Width, Height, OriginalPath, OriginalWidth,
+                                       OriginalHeight, OriginalFileSize, Optimisation, Category, UploadedBy)
+             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+            [$originalName, $path, $mime, $result['size'], $result['width'], $result['height'], $originalPath,
+             (int) $info[0], (int) $info[1], (int) $file['size'], $result['status'],
+             $category === '' ? null : mb_substr($category, 0, 100), current_admin()['AdminUserID']]
         );
         $id = (int) db()->lastInsertId();
-        activity_log('upload', 'MediaLibrary', $id);
+        activity_log('upload', 'MediaLibrary', $id, 'Optimisation: ' . $result['status']);
     } catch (Throwable $failure) {
-        @unlink($absolute);
+        media_remove_files($path, $originalPath);
         throw $failure;
     }
 
-    return db_row('SELECT * FROM MediaLibrary WHERE MediaID = ?', [$id]);
+    $row = db_row('SELECT * FROM MediaLibrary WHERE MediaID = ?', [$id]);
+    $row['_warning'] = $warning;
+    return $row;
 }
 
 function media_too_large_message(): string
@@ -80,11 +108,13 @@ function media_public(array $row): array
         'id'      => (int) $row['MediaID'],
         'path'    => $row['FilePath'],
         'url'     => url($row['FilePath']),
+        'thumb'   => image_url($row['FilePath'], 'thumb'),
         'name'    => $row['FileName'],
         'alt'     => (string) ($row['AltText'] ?? ''),
         'caption' => (string) ($row['Caption'] ?? ''),
         'width'   => (int) ($row['Width'] ?? 0),
         'height'  => (int) ($row['Height'] ?? 0),
+        'warning' => $row['_warning'] ?? null,
     ];
 }
 
@@ -151,12 +181,41 @@ function media_delete(array $row): void
 {
     db_query('DELETE FROM MediaLibrary WHERE MediaID = ?', [$row['MediaID']]);
     activity_log('delete', 'MediaLibrary', (int) $row['MediaID']);
+    media_remove_files($row['FilePath'], $row['OriginalPath'] ?? null);
+}
 
+/** Delete an image's main file, its sizes and its original, only inside uploads/. */
+function media_remove_files(string $path, ?string $originalPath): void
+{
     $uploads = realpath(ROOT_PATH . '/uploads');
-    $file    = realpath(ROOT_PATH . '/' . $row['FilePath']);
-    if ($uploads !== false && $file !== false && str_starts_with($file, $uploads . DIRECTORY_SEPARATOR)) {
-        @unlink($file);
+    if ($uploads === false) {
+        return;
     }
+    foreach (array_filter([$path, media_variant_path($path, 'web'), media_variant_path($path, 'thumb'), $originalPath]) as $relative) {
+        $file = realpath(ROOT_PATH . '/' . $relative);
+        if ($file !== false && str_starts_with($file, $uploads . DIRECTORY_SEPARATOR)) {
+            @unlink($file);
+        }
+    }
+}
+
+/** Sizes of the versions of one image, for the details screen. */
+function media_versions(array $row): array
+{
+    $versions = [];
+    foreach (['Main (heroes)' => $row['FilePath'], 'Web (content)' => media_variant_path($row['FilePath'], 'web'), 'Thumbnail' => media_variant_path($row['FilePath'], 'thumb')] as $label => $relative) {
+        $file = ROOT_PATH . '/' . $relative;
+        if (is_file($file)) {
+            $size = @getimagesize($file);
+            $versions[$label] = ['width' => (int) ($size[0] ?? 0), 'height' => (int) ($size[1] ?? 0), 'bytes' => (int) filesize($file)];
+        }
+    }
+    return $versions;
+}
+
+function media_format_bytes(int $bytes): string
+{
+    return $bytes >= 1048576 ? number_format($bytes / 1048576, 1) . ' MB' : max(1, (int) round($bytes / 1024)) . ' KB';
 }
 
 /** A saved description fills in a library image that has none, ready for reuse. */

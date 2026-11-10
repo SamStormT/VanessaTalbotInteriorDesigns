@@ -26,7 +26,7 @@ cms_record_edit_page('portfolio', static function (array $project): void {
     }
     echo '<div class="admin-table-wrap"><table class="admin-table"><thead><tr><th scope="col">Image</th><th scope="col">Caption</th><th scope="col">Order</th><th scope="col"><span class="visually-hidden">Actions</span></th></tr></thead><tbody>';
     foreach ($images as $image) {
-        echo '<tr><td><img class="admin-thumb admin-thumb--small" src="', e(url($image['ImagePath'])), '" alt=""></td><td>', e($image['Caption'] ?? ''), '</td><td>', (int) $image['DisplayOrder'], '</td>',
+        echo '<tr><td><img class="admin-thumb admin-thumb--small" src="', e(image_url($image['ImagePath'], 'thumb')), '" alt=""></td><td>', e($image['Caption'] ?? ''), '</td><td>', (int) $image['DisplayOrder'], '</td>',
              '<td class="admin-table__actions"><a class="btn btn--outline btn--small" href="', e(url('admin/project-image-edit.php?id=' . (int) $image['ImageID'])), '">Edit<span class="visually-hidden"> ', e($image['ImagePath']), '</span></a></td></tr>';
     }
     echo '</tbody></table></div>';

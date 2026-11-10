@@ -46,6 +46,22 @@ function brand_logo(string $variant = 'dark'): string
          . '</span>';
 }
 
+/**
+ * Address of an uploaded image at a given size: 'full' (main, up to 1920px),
+ * 'web' (up to 1200px) or 'thumb' (up to 400px). Images uploaded before
+ * optimisation have no sizes, so they fall back to the saved path.
+ */
+function image_url(string $path, string $size = 'web'): string
+{
+    if ($size !== 'full') {
+        $variant = (string) preg_replace('/(\.[A-Za-z0-9]+)$/', '-' . $size . '$1', $path);
+        if ($variant !== $path && is_file(ROOT_PATH . '/' . $variant)) {
+            return url($variant);
+        }
+    }
+    return url($path);
+}
+
 /** Allow site-relative links and http(s), mailto or tel only. */
 function link_is_safe(string $value): bool
 {

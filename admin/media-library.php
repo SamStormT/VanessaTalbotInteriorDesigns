@@ -67,10 +67,13 @@ require_once INCLUDES_PATH . '/header.php';
 <?php foreach ($items as $item): ?>
         <li class="media-card">
             <a class="media-card__link" href="<?= e(url('admin/media-edit.php?id=' . (int) $item['MediaID'])) ?>">
-                <span class="media-card__preview"><img src="<?= e(url($item['FilePath'])) ?>" alt="<?= e($item['AltText'] ?? '') ?>" loading="lazy"></span>
+                <span class="media-card__preview"><img src="<?= e(image_url($item['FilePath'], 'thumb')) ?>" alt="<?= e($item['AltText'] ?? '') ?>" loading="lazy"></span>
                 <span class="media-card__name"><?= e($item['FileName']) ?></span>
 <?php if (empty($item['AltText'])): ?>
                 <span class="admin-badge">Needs description</span>
+<?php endif; ?>
+<?php if (($item['Optimisation'] ?? null) !== 'Optimised' && ($item['Optimisation'] ?? null) !== 'Unchanged'): ?>
+                <span class="admin-badge">Not optimised</span>
 <?php endif; ?>
             </a>
         </li>

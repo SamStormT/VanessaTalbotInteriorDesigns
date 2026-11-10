@@ -34,7 +34,7 @@ require_once INCLUDES_PATH . '/header.php';
 <?php foreach ($collaborators as $person): ?>
                 <li class="card">
 <?php if (!empty($person['Logo'])): ?>
-                    <img class="collaborator-logo" src="<?= e(content_url($person['Logo'])) ?>" alt="<?= e($person['LogoAlt'] ?? '') ?>" loading="lazy">
+                    <img class="collaborator-logo" src="<?= e(image_url((string) $person['Logo'], 'thumb')) ?>" alt="<?= e($person['LogoAlt'] ?? '') ?>" loading="lazy">
 <?php endif; ?>
                     <h2 class="card__title"><?= e($person['Name']) ?></h2>
 <?php if (!empty($person['RoleTitle'])): ?>
