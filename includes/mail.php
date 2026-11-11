@@ -15,6 +15,7 @@ declare(strict_types=1);
 
 use PHPMailer\PHPMailer\Exception as MailException;
 use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\SMTP;
 
 if (is_file(ROOT_PATH . '/vendor/autoload.php')) {
     require_once ROOT_PATH . '/vendor/autoload.php';
@@ -245,6 +246,12 @@ function mail_create(): PHPMailer
         $mail->Port    = MAIL_PORT;
         $mail->Timeout = 15;
 
+        // Development only: write the SMTP conversation to the error log.
+        if (APP_ENV === 'development') {
+            $mail->SMTPDebug   = SMTP::DEBUG_CONNECTION;
+            $mail->Debugoutput = mail_debug_writer();
+        }
+
         if (MAIL_ENCRYPTION === 'ssl') {
             $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;
         } elseif (MAIL_ENCRYPTION === 'none') {
@@ -262,6 +269,35 @@ function mail_create(): PHPMailer
     }
 
     return $mail;
+}
+
+/**
+ * Development only: SMTP debug lines go to the error log, prefixed "SMTP:".
+ * PHPMailer already hides the username and password at this level; this also
+ * hides the message itself, which can hold a reset link or a visitor's details.
+ */
+function mail_debug_writer(): callable
+{
+    $inBody = false;
+
+    return static function (string $line) use (&$inBody): void {
+        $line = trim($line);
+        if ($line === '') {
+            return;
+        }
+        if ($inBody) {
+            if ($line === 'CLIENT -> SERVER: .') {
+                $inBody = false;
+                error_log('SMTP: CLIENT -> SERVER: [message content hidden]');
+                error_log('SMTP: ' . $line);
+            }
+            return;
+        }
+        if (str_starts_with($line, 'SERVER -> CLIENT: 354')) {
+            $inBody = true;
+        }
+        error_log('SMTP: ' . $line);
+    };
 }
 
 /** Development: write the complete message to logs/mail/ instead of sending it. */
