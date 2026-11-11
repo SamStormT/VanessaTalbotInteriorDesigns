@@ -195,6 +195,9 @@ function cms_modules(): array
                 'ButtonLink'          => ['label' => 'Button link', 'type' => 'link', 'max' => 500, 'group' => 'Buttons'],
                 'SecondaryButtonText' => ['label' => 'Second button text', 'type' => 'text', 'max' => 100, 'group' => 'Buttons'],
                 'SecondaryButtonLink' => ['label' => 'Second button link', 'type' => 'link', 'max' => 500, 'group' => 'Buttons'],
+                // Only shown on sections that display an image (cms_section_has_image()).
+                'Image'               => ['label' => 'Image', 'type' => 'image', 'alt_field' => 'ImageAlt', 'max' => 500, 'group' => 'Image'],
+                'ImageAlt'            => ['label' => 'Image description (alt text)', 'type' => 'text', 'max' => 255, 'group' => 'Image'],
                 'Status'              => ['label' => 'Status', 'type' => 'select', 'required' => true, 'options' => ['Draft', 'Published', 'Archived'], 'group' => 'Visibility', 'permission' => 'page_sections.publish', 'help' => 'Only Published sections appear on the website.'],
             ],
         ],
@@ -363,6 +366,30 @@ function cms_page_label(string $page): string
         'portfolio-photography-gallery' => 'Portfolio: Photography',
         'portfolio-collaborators' => 'Portfolio: Collaborators',
     ][$page] ?? ucfirst($page);
+}
+
+/**
+ * Sections whose image appears on the website: every page header (the photo
+ * replaces the botanical drawing) and the About page's speaking block (it
+ * replaces the microphone).
+ */
+function cms_section_has_image(string $page, string $section): bool
+{
+    return $section === 'page-header' || ($page === 'about' && $section === 'speaking');
+}
+
+/** The section editor's fields: the image fields only where the image is shown. */
+function cms_section_module(string $page, string $section): array
+{
+    $module = cms_module('page_sections');
+    if (!cms_section_has_image($page, $section)) {
+        unset($module['fields']['Image'], $module['fields']['ImageAlt']);
+    } elseif ($section === 'page-header') {
+        $module['fields']['Image']['help'] = 'Shown behind the page heading, softened so the wording stays easy to read. Without an image, the botanical drawing is shown. A wide landscape photo works best.';
+    } else {
+        $module['fields']['Image']['help'] = 'Shown beside the speaking wording. Without an image, a microphone illustration is shown.';
+    }
+    return $module;
 }
 
 function cms_section_label(string $section): string

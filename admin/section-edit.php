@@ -7,13 +7,15 @@ require_once INCLUDES_PATH . '/cms.php';
 
 admin_guard('page_sections.edit');
 
-$module = cms_module('page_sections');
-$id     = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT) ?: 0;
-$row    = $id > 0 ? cms_load($module, $id) : null;
+$id  = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT) ?: 0;
+$row = $id > 0 ? cms_load(cms_module('page_sections'), $id) : null;
 
 if ($row === null) {
     admin_stop(404, 'Section not found', 'That section does not exist.');
 }
+
+// The image fields appear only on sections that show an image on the website.
+$module = cms_section_module($row['PageKey'], $row['SectionKey']);
 
 $self   = url('admin/section-edit.php?id=' . $id);
 $list   = url('admin/page-sections.php');

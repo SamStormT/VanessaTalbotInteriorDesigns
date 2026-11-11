@@ -15,6 +15,10 @@ $pageDescription = $pageDescription ?? SITE_TAGLINE;
 $layout          = $layout ?? 'public';
 
 $fullTitle = $pageTitle !== '' ? $pageTitle . ' | ' . SITE_NAME : SITE_NAME . ' | ' . SITE_TAGLINE;
+
+// Signed-in staff see a bar and Edit buttons on the public website. Checked
+// here, before any output, because it may open their session.
+$staff = $layout !== 'admin' && function_exists('staff_viewer') ? staff_viewer() : null;
 ?>
 <!DOCTYPE html>
 <html lang="en-ZA">
@@ -48,8 +52,18 @@ $fullTitle = $pageTitle !== '' ? $pageTitle . ' | ' . SITE_NAME : SITE_NAME . ' 
 <?php endif; ?>
     <link rel="stylesheet" href="<?= e(asset('css/responsive.css')) ?>">
 </head>
-<body class="layout-<?= e($layout) ?>">
+<body class="layout-<?= e($layout) ?><?= $staff ? ' is-staff' : '' ?>">
 <a class="skip-link" href="#main-content">Skip to content</a>
+<?php if ($staff): $mapKey = page_map_current(); ?>
+<div class="staff-bar" role="region" aria-label="Website editing">
+    <span>Signed in as <strong><?= e($staff['Name']) ?></strong></span>
+    <a href="<?= e(url('admin/dashboard.php')) ?>">Dashboard</a>
+<?php if ($mapKey !== null): ?>
+    <a href="<?= e(url('admin/pages.php') . '#page-' . $mapKey) ?>">Everything on this page</a>
+<?php endif; ?>
+    <button type="button" class="staff-bar__toggle" data-edit-toggle aria-pressed="true">Hide edit buttons</button>
+</div>
+<?php endif; ?>
 <?php
 if ($layout === 'admin') {
     echo '<div class="admin-shell">';

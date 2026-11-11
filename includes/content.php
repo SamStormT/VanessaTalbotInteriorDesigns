@@ -12,6 +12,7 @@
 declare(strict_types=1);
 
 require_once INCLUDES_PATH . '/database.php';
+require_once INCLUDES_PATH . '/page-map.php';
 
 function content_fetch(string $key, callable $query): mixed
 {
@@ -235,8 +236,23 @@ function content_frame(string $class, ?string $image, ?string $alt, string $deco
     return '<div class="' . e($class) . '"><img src="' . e($src) . '" alt="' . e($alt) . '"' . ($size === 'full' ? '' : ' loading="lazy"') . '></div>';
 }
 
+/**
+ * Opening of an inner page header: a photo behind the heading when the
+ * section has one, otherwise the botanical drawing. $edit is the block's
+ * edit buttons (shown to signed-in staff only).
+ */
+function content_hero_open(array $header, string $edit = ''): string
+{
+    $image = trim((string) ($header['Image'] ?? ''));
+    if ($image === '' || !link_is_safe($image)) {
+        return '<section class="page-hero" aria-labelledby="page-title">' . $edit . botanical('botanical page-hero__botanical');
+    }
+    return '<section class="page-hero page-hero--image" aria-labelledby="page-title">' . $edit
+         . '<img class="page-hero__image" src="' . e(image_url($image, 'full')) . '" alt="' . e($header['ImageAlt'] ?? '') . '">';
+}
+
 /** Inner page heading with breadcrumb. $crumbs is a list of [label, path] between Home and this page. */
-function content_page_hero(array $header, array $crumbs): string
+function content_page_hero(array $header, array $crumbs, string $edit = ''): string
 {
     $trail = '<li><a href="' . e(url('index.php')) . '">Home</a></li>';
     foreach ($crumbs as [$label, $path]) {
@@ -245,7 +261,7 @@ function content_page_hero(array $header, array $crumbs): string
     $heading = (string) ($header['Heading'] ?? '');
     $intro   = trim((string) ($header['Introduction'] ?? ''));
 
-    return '<section class="page-hero" aria-labelledby="page-title">' . botanical('botanical page-hero__botanical')
+    return content_hero_open($header, $edit)
          . '<div class="container"><nav class="breadcrumb" aria-label="Breadcrumb"><ol>' . $trail
          . '<li aria-current="page">' . e($heading) . '</li></ol></nav>'
          . '<h1 id="page-title">' . e($heading) . '</h1>'
@@ -254,10 +270,10 @@ function content_page_hero(array $header, array $crumbs): string
 }
 
 /** A section heading followed by its items as cards. Used for any extra section on a page. */
-function content_items_section(array $section, string $id, bool $peach): string
+function content_items_section(array $section, string $id, bool $peach, string $edit = ''): string
 {
     $count = count($section['items']);
-    $html  = '<section class="section' . ($peach ? ' section--peach' : '') . '"' . content_labelled($section, $id) . '><div class="container">'
+    $html  = '<section class="section' . ($peach ? ' section--peach' : '') . '"' . content_labelled($section, $id) . '>' . $edit . '<div class="container">'
            . content_section_header($section, $id);
 
     if ($count > 0) {
@@ -274,9 +290,9 @@ function content_items_section(array $section, string $id, bool $peach): string
 }
 
 /** Closing call-to-action banner. */
-function content_closing(array $section, string $id): string
+function content_closing(array $section, string $id, string $edit = ''): string
 {
-    return '<section class="section cta-banner"' . content_labelled($section, $id) . '><div class="container cta-banner__inner">'
+    return '<section class="section cta-banner"' . content_labelled($section, $id) . '>' . $edit . '<div class="container cta-banner__inner">'
          . content_heading($section, $id) . content_paragraphs($section['Introduction'] ?? '')
          . '<div class="btn-group btn-group--centred">'
          . content_link($section['ButtonText'] ?? '', $section['ButtonLink'] ?? '', 'btn btn--primary')

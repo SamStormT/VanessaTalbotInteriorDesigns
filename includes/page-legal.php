@@ -17,7 +17,7 @@ require_once INCLUDES_PATH . '/header.php';
 ?>
 <main id="main-content">
 
-    <?= content_page_hero(['Heading' => $page['Title']], []) ?>
+    <?= content_page_hero(['Heading' => $page['Title']], [], edit_block('legal-' . $legalSlug, 'content')) ?>
 
     <section class="section" aria-label="<?= e($page['Title']) ?>">
         <div class="container">

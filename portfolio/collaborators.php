@@ -16,10 +16,11 @@ require_once INCLUDES_PATH . '/header.php';
 ?>
 <main id="main-content">
 
-    <?= content_page_hero($header, [['Portfolio', 'portfolio.php']]) ?>
+    <?= content_page_hero($header, [['Portfolio', 'portfolio.php']], edit_block('portfolio-collaborators', 'page-header')) ?>
 
 <?php if ($section = $sections['intro'] ?? null): ?>
     <section class="section"<?= content_labelled($section, 'intro-title') ?>>
+        <?= edit_block('portfolio-collaborators', 'intro') ?>
         <div class="container">
             <?= content_section_header($section, 'intro-title') ?>
             <div class="content-narrow"><?= content_paragraphs($section['Body']) ?></div>
@@ -28,6 +29,7 @@ require_once INCLUDES_PATH . '/header.php';
 <?php endif; ?>
 
     <section class="section section--peach" aria-label="Collaborators">
+        <?= edit_block('portfolio-collaborators', 'list') ?>
         <div class="container">
 <?php if ($collaborators): ?>
             <ul class="card-grid card-grid--3">
@@ -53,7 +55,7 @@ require_once INCLUDES_PATH . '/header.php';
         </div>
     </section>
 
-    <?= isset($sections['closing']) ? content_closing($sections['closing'], 'collaborators-cta-title') : '' ?>
+    <?= isset($sections['closing']) ? content_closing($sections['closing'], 'collaborators-cta-title', edit_block('portfolio-collaborators', 'closing')) : '' ?>
 
 </main>
 <?php require_once INCLUDES_PATH . '/footer.php'; ?>

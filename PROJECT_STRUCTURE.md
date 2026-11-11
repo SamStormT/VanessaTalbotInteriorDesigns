@@ -47,6 +47,7 @@ Stack: HTML5, CSS3, JavaScript, PHP 8, MariaDB, PHPMailer (installed with Compos
 │
 ├── admin/                     Back office; every page calls admin_guard()
 │   ├── dashboard.php
+│   ├── pages.php                        Pages: every public page, its blocks, and where each is edited
 │   ├── settings.php                     Website Settings
 │   ├── homepage-content.php             Single-row sections: view and edit
 │   ├── about-content.php
@@ -83,6 +84,7 @@ Stack: HTML5, CSS3, JavaScript, PHP 8, MariaDB, PHPMailer (installed with Compos
 │   ├── media.php              Media Library: validated uploads, search, usage checks, deletion
 │   ├── media-optimise.php     GD resizing, compression, orientation and thumbnails
 │   ├── content.php            Public page content from the database, with rendering helpers
+│   ├── page-map.php           Which admin screen edits each block of each page; Edit buttons for staff
 │   ├── content-fallback.php   Saved copy of the wording, used only if the database is unreachable
 │   ├── page-service.php       Layout for individual service pages
 │   ├── page-portfolio-category.php  Layout for portfolio categories
@@ -143,6 +145,7 @@ require_once INCLUDES_PATH . '/footer.php';
 - `content.php` returns only Published records. If the database fails, it falls back to `content-fallback.php` and logs the problem.
 - All text is plain and escaped on output. Links pass through `link_is_safe()`.
 - Images are output with `image_url($path, 'full' | 'web' | 'thumb')`, which falls back to the saved path when a size doesn't exist.
+- Each block calls `edit_block('page', 'block')`. Signed-in staff see Edit buttons there that open the right admin screen; visitors get nothing. Add new blocks to `page_map()` in `page-map.php`.
 - Interface wording stays in the code: menus, form labels, "Learn more", "Enquire", system messages and the copyright line.
 
 ## How an admin page is built

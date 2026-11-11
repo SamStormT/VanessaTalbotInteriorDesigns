@@ -26,6 +26,7 @@ require_once INCLUDES_PATH . '/header.php';
 <main id="main-content">
 
     <section class="page-hero" aria-labelledby="page-title">
+        <?= edit_block('service-' . $serviceSlug, 'page-header') ?>
         <?= botanical('botanical page-hero__botanical') ?>
         <div class="container">
             <nav class="breadcrumb" aria-label="Breadcrumb">
@@ -41,6 +42,7 @@ require_once INCLUDES_PATH . '/header.php';
     </section>
 
     <section class="section" aria-label="<?= e($service['ServiceName']) ?>">
+        <?= edit_block('service-' . $serviceSlug, 'main') ?>
         <div class="container split">
             <div class="split__media">
                 <?= content_frame('art-frame art-frame--portrait art-frame--arch art-frame--peach', $service['FeaturedImage'] ?? '', $service['FeaturedImageAlt'] ?? '', icon((string) $service['Icon'], 'icon art-frame__icon')) ?>
@@ -68,11 +70,12 @@ require_once INCLUDES_PATH . '/header.php';
     </section>
 
 <?php $index = 0; foreach ($extra as $key => $section): ?>
-    <?= content_items_section($section, 'section-' . $key, $index++ % 2 === 0) ?>
+    <?= content_items_section($section, 'section-' . $key, $index++ % 2 === 0, edit_block('service-' . $serviceSlug, (string) $key)) ?>
 <?php endforeach; ?>
 
 <?php if ($serviceSlug === 'speaking-engagements' && ($engagements = site_engagements())): ?>
     <section class="section" aria-label="Engagements">
+        <?= edit_block('service-' . $serviceSlug, 'engagements') ?>
         <div class="container">
             <ul class="check-list content-narrow">
 <?php foreach ($engagements as $event):
@@ -85,7 +88,7 @@ require_once INCLUDES_PATH . '/header.php';
     </section>
 <?php endif; ?>
 
-    <?= $closing ? content_closing($closing, 'service-cta-title') : '' ?>
+    <?= $closing ? content_closing($closing, 'service-cta-title', edit_block('service-' . $serviceSlug, 'closing')) : '' ?>
 
 </main>
 <?php require_once INCLUDES_PATH . '/footer.php'; ?>

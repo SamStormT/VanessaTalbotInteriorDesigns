@@ -42,6 +42,24 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // Staff only: show or hide the Edit buttons; the choice is remembered.
+    const editToggle = document.querySelector('[data-edit-toggle]');
+    if (editToggle) {
+        const apply = (hidden) => {
+            document.body.classList.toggle('edit-hidden', hidden);
+            editToggle.textContent = hidden ? 'Show edit buttons' : 'Hide edit buttons';
+            editToggle.setAttribute('aria-pressed', String(!hidden));
+        };
+        let hidden = false;
+        try { hidden = localStorage.getItem('vt-edit-hidden') === '1'; } catch (error) { /* storage blocked */ }
+        apply(hidden);
+        editToggle.addEventListener('click', () => {
+            hidden = !hidden;
+            apply(hidden);
+            try { localStorage.setItem('vt-edit-hidden', hidden ? '1' : '0'); } catch (error) { /* storage blocked */ }
+        });
+    }
+
     // Contact form: checked in the browser first, then sent to the server,
     // which saves the message and shows the result.
     document.querySelectorAll('[data-contact-form]').forEach((form) => {

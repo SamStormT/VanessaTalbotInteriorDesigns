@@ -16,6 +16,7 @@ if ($layout === 'admin'): ?>
 <script src="<?= e(asset('js/admin.js')) ?>" defer></script>
 <?php else: ?>
 <footer class="site-footer">
+    <?= edit_block('global', 'footer') ?>
     <div class="container site-footer__inner">
         <div class="site-footer__brand">
             <p class="brand"><?= brand_logo('light') ?></p>

@@ -37,7 +37,8 @@ Signed-in staff can edit every piece of website wording without a developer.
 |---|---|
 | Website Settings | Business name, tagline, phone, email, location, whether the street address is shown, social links, footer text |
 | Homepage Content, About Content | Hero, introduction, quote, story, speaking topics, search engine details |
-| Page Sections | Headings, introductions, buttons and repeating blocks on every page, including FAQs and "how it works" steps |
+| Pages | A map of every page and block, linking to where each is edited |
+| Page Sections | Headings, introductions, buttons and repeating blocks on every page, including FAQs and "how it works" steps, and page header photos |
 | Services | Each service's wording, inclusions, client types, image and visibility |
 | About Values, Qualifications | Individual values; qualifications, certifications, memberships and awards |
 | Portfolio Projects | Projects with gallery images; publishing requires client permission |
@@ -48,6 +49,8 @@ Signed-in staff can edit every piece of website wording without a developer.
 | Contact Messages | Every enquiry, filtered by status, with a reply button and private notes |
 | Subscribers | Newsletter sign-ups, whether they confirmed, unsubscribe and erase on request |
 | Users (SuperAdmin only) | Add people by email invitation, change roles, disable and reactivate accounts, send password reset links |
+
+**Finding things:** while signed in, every block on the website shows Edit buttons that open the right admin screen.
 
 **Workflow:** content is Draft, Published or Archived, and only Published content appears on the site. Every change records who made it and when, and is written to an activity log.
 

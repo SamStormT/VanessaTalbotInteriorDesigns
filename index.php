@@ -29,6 +29,7 @@ $tileTones  = ['green', 'gold', 'peach'];
 
     <!-- Hero -->
     <section class="hero" aria-labelledby="hero-title">
+        <?= edit_block('home', 'hero') ?>
         <div class="container hero__inner">
             <div class="hero__content">
                 <?php if (!empty($home['HeroEyebrow'])): ?><p class="eyebrow"><?= e($home['HeroEyebrow']) ?></p><?php endif; ?>
@@ -52,6 +53,7 @@ $tileTones  = ['green', 'gold', 'peach'];
     <!-- Featured call-to-action -->
 <?php if (!empty($home['FeaturedCTATitle'])): ?>
     <section class="feature-cta" aria-labelledby="feature-cta-title">
+        <?= edit_block('home', 'feature-cta') ?>
         <div class="container">
             <div class="feature-cta__card">
                 <span class="feature-cta__icon"><?= icon('leaf') ?></span>
@@ -68,6 +70,7 @@ $tileTones  = ['green', 'gold', 'peach'];
     <!-- Introduction to Vanessa -->
 <?php if ($section = $sections['introduction'] ?? null): ?>
     <section class="section"<?= content_labelled($section, 'intro-title') ?>>
+        <?= edit_block('home', 'introduction') ?>
         <div class="container split">
             <div class="split__media">
                 <?= content_frame('art-frame art-frame--portrait art-frame--arch art-frame--light', $home['IntroductionImage'] ?? '', $home['IntroductionImageAlt'] ?? '', botanical('botanical art-frame__botanical')) ?>
@@ -93,6 +96,7 @@ $tileTones  = ['green', 'gold', 'peach'];
     <!-- Brand quote -->
 <?php if (!empty($home['FeaturedQuote'])): ?>
     <section class="quote-band" aria-label="Quote">
+        <?= edit_block('home', 'quote') ?>
         <div class="container">
             <span class="divider" aria-hidden="true"><?= icon('leaf') ?></span>
             <figure class="quote-band__figure">
@@ -108,6 +112,7 @@ $tileTones  = ['green', 'gold', 'peach'];
     <!-- Services overview -->
 <?php if ($section = $sections['services'] ?? null): ?>
     <section class="section section--peach"<?= content_labelled($section, 'services-title') ?>>
+        <?= edit_block('home', 'services') ?>
         <div class="container">
             <?= content_section_header($section, 'services-title') ?>
 
@@ -134,6 +139,7 @@ $tileTones  = ['green', 'gold', 'peach'];
     <!-- Featured portfolio -->
 <?php if ($section = $sections['portfolio'] ?? null): ?>
     <section class="section"<?= content_labelled($section, 'portfolio-title') ?>>
+        <?= edit_block('home', 'portfolio') ?>
         <div class="container">
             <?= content_section_header($section, 'portfolio-title') ?>
 
@@ -161,6 +167,7 @@ $tileTones  = ['green', 'gold', 'peach'];
     <!-- Latest blog -->
 <?php if ($section = $sections['blog'] ?? null): ?>
     <section class="section section--peach"<?= content_labelled($section, 'blog-title') ?>>
+        <?= edit_block('home', 'blog') ?>
         <div class="container">
             <?= content_section_header($section, 'blog-title') ?>
 
@@ -193,6 +200,7 @@ $tileTones  = ['green', 'gold', 'peach'];
     <!-- Newsletter -->
 <?php if ($section = $sections['newsletter'] ?? null): ?>
     <section id="newsletter" class="section newsletter"<?= content_labelled($section, 'newsletter-title') ?>>
+        <?= edit_block('home', 'newsletter') ?>
         <div class="container newsletter__inner">
             <div class="newsletter__text">
                 <?= content_eyebrow($section) ?>
@@ -224,6 +232,7 @@ $tileTones  = ['green', 'gold', 'peach'];
     <!-- Contact call-to-action -->
 <?php if ($section = $sections['contact-cta'] ?? null): ?>
     <section class="section cta-banner"<?= content_labelled($section, 'contact-cta-title') ?>>
+        <?= edit_block('home', 'contact-cta') ?>
         <div class="container cta-banner__inner">
             <?= content_heading($section, 'contact-cta-title') ?>
             <?= content_paragraphs($section['Introduction']) ?>

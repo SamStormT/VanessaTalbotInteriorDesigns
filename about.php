@@ -18,8 +18,7 @@ require_once INCLUDES_PATH . '/header.php';
 ?>
 <main id="main-content">
 
-    <section class="page-hero" aria-labelledby="page-title">
-        <?= botanical('botanical page-hero__botanical') ?>
+    <?= content_hero_open($sections['page-header'] ?? [], edit_block('about', 'page-header')) ?>
         <div class="container">
             <nav class="breadcrumb" aria-label="Breadcrumb">
                 <ol>
@@ -35,6 +34,7 @@ require_once INCLUDES_PATH . '/header.php';
     <!-- Vanessa's story -->
 <?php if ($section = $sections['story'] ?? null): ?>
     <section class="section"<?= content_labelled($section, 'story-title') ?>>
+        <?= edit_block('about', 'story') ?>
         <div class="container split">
             <div class="split__media">
                 <?= content_frame('art-frame art-frame--portrait art-frame--arch art-frame--peach', $about['PortraitImage'] ?? '', $about['PortraitImageAlt'] ?? '', botanical('botanical art-frame__botanical')) ?>
@@ -51,6 +51,7 @@ require_once INCLUDES_PATH . '/header.php';
     <!-- Science to interior design journey -->
 <?php if ($section = $sections['journey'] ?? null): ?>
     <section class="section section--peach"<?= content_labelled($section, 'journey-title') ?>>
+        <?= edit_block('about', 'journey') ?>
         <div class="container">
             <?= content_section_header($section, 'journey-title') ?>
 
@@ -72,6 +73,7 @@ require_once INCLUDES_PATH . '/header.php';
     $quote = $sections['quote']['items'][0] ?? null;
 ?>
     <section class="section"<?= content_labelled($section, 'philosophy-title') ?>>
+        <?= edit_block('about', 'philosophy') ?>
         <div class="container split split--reverse">
             <div class="split__media">
 <?php if ($quote): ?>
@@ -101,6 +103,7 @@ require_once INCLUDES_PATH . '/header.php';
     <!-- Values -->
 <?php if ($section = $sections['values'] ?? null): ?>
     <section class="section section--peach"<?= content_labelled($section, 'values-title') ?>>
+        <?= edit_block('about', 'values') ?>
         <div class="container">
             <?= content_section_header($section, 'values-title', $about['CoreValues'] ?? '') ?>
             <ul class="values-grid">
@@ -121,6 +124,7 @@ require_once INCLUDES_PATH . '/header.php';
     $notice = $sections['qualifications-notice'] ?? null;
 ?>
     <section class="section"<?= content_labelled($section, 'qualifications-title') ?>>
+        <?= edit_block('about', 'qualifications') ?>
         <div class="container">
             <?= content_section_header($section, 'qualifications-title', $about['Qualifications'] ?? '') ?>
 <?php if ($qualifications): ?>
@@ -149,6 +153,7 @@ require_once INCLUDES_PATH . '/header.php';
     $notice = $sections['speaking-notice'] ?? null;
 ?>
     <section class="section section--peach"<?= content_labelled($section, 'speaking-title') ?>>
+        <?= edit_block('about', 'speaking') ?>
         <div class="container split">
             <div class="split__content">
                 <?= content_eyebrow($section) ?>
@@ -177,9 +182,7 @@ require_once INCLUDES_PATH . '/header.php';
                 </div>
             </div>
             <div class="split__media">
-                <div class="art-frame art-frame--gold" aria-hidden="true">
-                    <?= icon('mic', 'icon art-frame__icon') ?>
-                </div>
+                <?= content_frame('art-frame art-frame--gold', $section['Image'] ?? '', $section['ImageAlt'] ?? '', icon('mic', 'icon art-frame__icon')) ?>
             </div>
         </div>
     </section>
@@ -188,6 +191,7 @@ require_once INCLUDES_PATH . '/header.php';
     <!-- Call-to-action -->
 <?php if ($section = $sections['closing'] ?? null): ?>
     <section class="section cta-banner"<?= content_labelled($section, 'about-cta-title') ?>>
+        <?= edit_block('about', 'closing') ?>
         <div class="container cta-banner__inner">
             <?= content_heading($section, 'about-cta-title') ?>
             <?= content_paragraphs($section['Introduction']) ?>

@@ -94,9 +94,10 @@ require_once INCLUDES_PATH . '/header.php';
 ?>
 <main id="main-content">
 
-    <?= content_page_hero($header, []) ?>
+    <?= content_page_hero($header, [], edit_block('contact', 'page-header')) ?>
 
     <section class="section" aria-label="Get in touch">
+        <?= edit_block('contact', 'get-in-touch') ?>
         <div class="container split contact-layout">
             <div class="split__content">
 <?php if ($section = $sections['details'] ?? null): ?>
@@ -201,6 +202,7 @@ require_once INCLUDES_PATH . '/header.php';
 
 <?php if ($section = $sections['faq'] ?? null): ?>
     <section class="section section--peach"<?= content_labelled($section, 'faq-title') ?>>
+        <?= edit_block('contact', 'faq') ?>
         <div class="container">
             <?= content_section_header($section, 'faq-title') ?>
             <div class="faq">

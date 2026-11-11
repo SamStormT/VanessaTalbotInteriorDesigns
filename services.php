@@ -18,8 +18,7 @@ require_once INCLUDES_PATH . '/header.php';
 ?>
 <main id="main-content">
 
-    <section class="page-hero" aria-labelledby="page-title">
-        <?= botanical('botanical page-hero__botanical') ?>
+    <?= content_hero_open($header, edit_block('services', 'page-header')) ?>
         <div class="container">
             <nav class="breadcrumb" aria-label="Breadcrumb">
                 <ol>
@@ -48,6 +47,7 @@ require_once INCLUDES_PATH . '/header.php';
     $ideal = content_lines($service['IdealFor']);
 ?>
     <section id="<?= e($slug) ?>" class="section service-section<?= $i % 2 ? ' section--peach' : '' ?>" aria-labelledby="<?= e($slug) ?>-title">
+        <?= edit_block('services', 'service', [['service', 'Edit ' . $name, $slug]]) ?>
         <div class="container split<?= $i % 2 ? ' split--reverse' : '' ?>">
             <div class="split__media">
                 <?= content_frame('art-frame art-frame--' . $tones[$i % 3], $service['FeaturedImage'] ?? '', $service['FeaturedImageAlt'] ?? '', icon((string) $service['Icon'], 'icon art-frame__icon')) ?>
@@ -88,6 +88,7 @@ require_once INCLUDES_PATH . '/header.php';
     <!-- Process -->
 <?php if ($section = $sections['process'] ?? null): ?>
     <section class="section section--white"<?= content_labelled($section, 'process-title') ?>>
+        <?= edit_block('services', 'process') ?>
         <div class="container">
             <?= content_section_header($section, 'process-title') ?>
             <ol class="process">
@@ -105,6 +106,7 @@ require_once INCLUDES_PATH . '/header.php';
     <!-- Call-to-action -->
 <?php if ($section = $sections['closing'] ?? null): ?>
     <section class="section cta-banner"<?= content_labelled($section, 'services-cta-title') ?>>
+        <?= edit_block('services', 'closing') ?>
         <div class="container cta-banner__inner">
             <?= content_heading($section, 'services-cta-title') ?>
             <?= content_paragraphs($section['Introduction']) ?>

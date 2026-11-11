@@ -9,6 +9,7 @@ $adminNav = [
         ['label' => 'Dashboard', 'path' => 'admin/dashboard.php', 'can' => 'dashboard.view'],
     ],
     'Website Content' => [
+        ['label' => 'Pages (what is where)', 'path' => 'admin/pages.php',              'can' => 'dashboard.view'],
         ['label' => 'Homepage Content',     'path' => 'admin/homepage-content.php',     'can' => 'homepage.view'],
         ['label' => 'About Content',        'path' => 'admin/about-content.php',        'can' => 'about.view'],
         ['label' => 'About Values',         'path' => 'admin/about-values.php',         'can' => 'about_items.view'],

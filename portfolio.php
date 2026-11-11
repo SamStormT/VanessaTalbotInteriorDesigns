@@ -18,10 +18,11 @@ require_once INCLUDES_PATH . '/header.php';
 ?>
 <main id="main-content">
 
-    <?= content_page_hero($header, []) ?>
+    <?= content_page_hero($header, [], edit_block('portfolio', 'page-header')) ?>
 
 <?php if ($section = $sections['categories'] ?? null): ?>
     <section class="section"<?= content_labelled($section, 'categories-title') ?>>
+        <?= edit_block('portfolio', 'categories') ?>
         <div class="container">
             <?= content_section_header($section, 'categories-title') ?>
             <ul class="portfolio-grid portfolio-grid--4">
@@ -43,6 +44,7 @@ require_once INCLUDES_PATH . '/header.php';
 
 <?php if ($featured && ($section = $sections['featured'] ?? null)): ?>
     <section class="section section--peach"<?= content_labelled($section, 'featured-title') ?>>
+        <?= edit_block('portfolio', 'featured') ?>
         <div class="container">
             <?= content_section_header($section, 'featured-title') ?>
             <ul class="portfolio-grid">
@@ -54,7 +56,7 @@ require_once INCLUDES_PATH . '/header.php';
     </section>
 <?php endif; ?>
 
-    <?= isset($sections['closing']) ? content_closing($sections['closing'], 'portfolio-cta-title') : '' ?>
+    <?= isset($sections['closing']) ? content_closing($sections['closing'], 'portfolio-cta-title', edit_block('portfolio', 'closing')) : '' ?>
 
 </main>
 <?php require_once INCLUDES_PATH . '/footer.php'; ?>

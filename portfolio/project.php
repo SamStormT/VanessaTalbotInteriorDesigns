@@ -23,6 +23,7 @@ require_once INCLUDES_PATH . '/header.php';
     <?= content_page_hero(['Heading' => $project['Title'], 'Introduction' => $project['Location'] ?? ''], [['Portfolio', 'portfolio.php']]) ?>
 
     <section class="section" aria-label="<?= e($project['Title']) ?>">
+        <?= edit_block('project', 'project', [['admin', 'Edit this project', 'admin/project-edit.php?id=' . (int) $project['ProjectID'], 'portfolio.edit']]) ?>
         <div class="container split">
             <div class="split__media">
                 <?= content_frame('art-frame art-frame--peach', $project['FeaturedImage'] ?? '', $project['FeaturedImageAlt'] ?? '', icon('leaf', 'icon art-frame__icon')) ?>

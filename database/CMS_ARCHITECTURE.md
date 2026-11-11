@@ -175,6 +175,16 @@ The order of these assignments matters: `SubscriptionStatus` must change after t
 | Forgot password | `forgot-password.php` gives the same answer for every address. Only active accounts are emailed. Limits: 3 emails per account and 10 per IP address per hour. The link expires after 60 minutes and works once. `reset-password.php` moves the token out of the address bar, requires 12 characters, ends every other session for that account, and emails a "password changed" notice |
 | Activity log | Visitor actions (`contact_message`, `newsletter_signup`, `newsletter_resubscribe`, `newsletter_confirm`, `newsletter_unsubscribe`) are logged with no user. Staff actions: message updates (field names only), deletions, unsubscribes, erasures, `password_reset_request`, `password_reset_limited`, `password_reset` |
 
+## 4c. Finding where to edit
+
+| Feature | How it works |
+|---|---|
+| Edit buttons | Signed-in staff browsing the website see a dark bar at the top and small Edit buttons on every block. Each button opens the exact admin screen for that part of the block. Only screens the person's role can open are shown. "Hide edit buttons" in the bar turns them off, and the choice is remembered |
+| Pages screen | `admin/pages.php` (Website Content → Pages) lists every public page with its blocks in order and links to where each is edited, including blocks that are hidden because they are empty or unpublished |
+| One map | Both come from `page_map()` in `includes/page-map.php` |
+| Visitors | No session is opened and nothing changes for visitors; the check only runs when the browser already has a staff session cookie |
+| Section images | `PageSections.Image` is shown on the editor only where it appears on the website: every **page header** (a photo behind the heading, softened by a peach veil; the botanical drawing returns when it's removed) and the About **speaking** block (replacing the microphone) |
+
 ## 4b. User management
 
 Only the SuperAdmin has the `users` permission, so only the SuperAdmin sees the Users screens. The rules are enforced in `includes/users.php`, inside a database transaction that locks the rows it checks, so they hold even if two changes happen at once or a screen is bypassed.

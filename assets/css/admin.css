@@ -156,6 +156,16 @@
 
 /* Users: actions in the Access panel, and a one-time link to copy */
 .admin-form + .admin-panel { margin-top: var(--space-lg); }
+
+/* Pages: what is where */
+.page-map { scroll-margin-top: 1rem; }
+.page-map__head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--space-sm); margin-bottom: var(--space-sm); }
+.page-map__head .admin-panel__title { margin: 0; }
+.page-map__blocks { margin: 0; padding-left: 1.25rem; display: grid; gap: 0.625rem; }
+.page-map__blocks li { display: grid; grid-template-columns: minmax(0, 260px) minmax(0, 1fr); gap: 0.25rem 1rem; }
+.page-map__label { font-weight: 600; color: var(--color-primary); font-size: var(--fs-sm); }
+.page-map__links { display: flex; flex-wrap: wrap; gap: 0.25rem 1rem; font-size: var(--fs-sm); }
+@media (max-width: 768px) { .page-map__blocks li { grid-template-columns: minmax(0, 1fr); } }
 .admin-inline-action { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem 1rem; margin: 0 0 var(--space-md); }
 .admin-inline-action:last-child { margin-bottom: 0; }
 .admin-inline-action .admin-help { margin: 0; }

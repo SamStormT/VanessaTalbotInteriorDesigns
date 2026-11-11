@@ -195,6 +195,8 @@ These are interface wording and site navigation rather than content, so they are
 - Email wording (`includes/mail-templates/`). Where messages are sent is set in Website Settings.
 - The footer copyright line and legal link names.
 
+**Images:** the page header on About, Services, Portfolio and its four pages, and Contact can show a photo (Page Sections → that page's "Page header" → Image). The About speaking block also takes a photo. Service pages, legal pages and single projects keep the botanical drawing in the header. Use Website Content → Pages, or the Edit buttons on the website, to find where any block is edited.
+
 A comparison of the live pages with the database confirmed that these are the only visible words not held in the database.
 
 ## 7. Verification
