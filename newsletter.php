@@ -24,8 +24,10 @@ if ($method === 'POST' && $action === 'subscribe') {
     $name   = is_string($_POST['name'] ?? null) ? trim((string) preg_replace('/[\p{Cc}\p{Cf}]+/u', ' ', $_POST['name'])) : '';
     $result = 'thanks';
 
-    if (!empty($_POST['website'])) {
-        // Hidden field that only bots fill in: answer as if it worked.
+    if (!empty($_POST['vt_check'])) {
+        // Hidden field that only bots fill in: answer as if it worked, save
+        // nothing, and note it so a real person caught by it can be spotted.
+        error_log('Newsletter sign-up ignored: spam-trap field was filled in (IP ' . client_ip() . ')');
         $result = 'thanks';
     } elseif ($email === '' || mb_strlen($email) > 254 || !filter_var($email, FILTER_VALIDATE_EMAIL) || mb_strlen($name) > 100) {
         $result = 'invalid';

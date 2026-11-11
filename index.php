@@ -210,8 +210,8 @@ $tileTones  = ['green', 'gold', 'peach'];
                     <input id="newsletter-email" name="email" type="email" autocomplete="email" maxlength="254" required aria-describedby="newsletter-status"<?= $newsletterResult === 'invalid' ? ' aria-invalid="true"' : '' ?>>
                 </div>
                 <div class="form-trap" aria-hidden="true">
-                    <label for="newsletter-website">Leave this empty</label>
-                    <input id="newsletter-website" name="website" type="text" tabindex="-1" autocomplete="off">
+                    <label for="newsletter-vt-check">Leave this blank</label>
+                    <input id="newsletter-vt-check" name="vt_check" type="text" tabindex="-1" autocomplete="off" data-lpignore="true" data-1p-ignore>
                 </div>
                 <button class="btn btn--primary" type="submit"><?= icon('mail', 'icon icon--inline') ?> Subscribe</button>
                 <p id="newsletter-status" class="form-status" role="status" aria-live="polite"><?= e(newsletter_messages()[$newsletterResult] ?? '') ?></p>

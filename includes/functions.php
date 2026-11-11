@@ -18,10 +18,16 @@ function url(string $path = ''): string
     return BASE_URL . '/' . ltrim($path, '/');
 }
 
-/** Build a URL to a file in /assets. */
+/**
+ * Build a URL to a file in /assets. The file's last-changed time is added
+ * (?v=...), so browsers fetch the new copy after every update instead of
+ * running an old cached script or stylesheet.
+ */
 function asset(string $path): string
 {
-    return url('assets/' . ltrim($path, '/'));
+    $path    = ltrim($path, '/');
+    $changed = @filemtime(ROOT_PATH . '/assets/' . $path);
+    return url('assets/' . $path) . ($changed ? '?v=' . $changed : '');
 }
 
 /**

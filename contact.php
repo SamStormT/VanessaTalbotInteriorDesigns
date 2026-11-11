@@ -25,8 +25,10 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
         $values[$key] = is_string($_POST[$key] ?? null) ? $_POST[$key] : '';
     }
 
-    if (!empty($_POST['website'])) {
-        // Hidden field that only bots fill in: answer as if it worked, save nothing.
+    if (!empty($_POST['vt_check'])) {
+        // Hidden field that only bots fill in: answer as if it worked, save
+        // nothing, and note it so a real person caught by it can be spotted.
+        error_log('Contact message ignored: spam-trap field was filled in (IP ' . client_ip() . ')');
         flash_set('success', $thanks);
         header('Location: ' . url('contact.php') . '#contact-form', true, 303);
         exit;
@@ -184,8 +186,8 @@ require_once INCLUDES_PATH . '/header.php';
                         <?= $errorText('message') ?>
                     </div>
                     <div class="form-trap" aria-hidden="true">
-                        <label for="contact-website">Leave this empty</label>
-                        <input id="contact-website" name="website" type="text" tabindex="-1" autocomplete="off">
+                        <label for="contact-vt-check">Leave this blank</label>
+                        <input id="contact-vt-check" name="vt_check" type="text" tabindex="-1" autocomplete="off" data-lpignore="true" data-1p-ignore>
                     </div>
                     <label class="form-check"><input type="checkbox" name="newsletter" value="1"<?= !empty($values['newsletter']) ? ' checked' : '' ?>> Subscribe to Newsletter</label>
                     <button class="btn btn--primary" type="submit">Send message</button>
