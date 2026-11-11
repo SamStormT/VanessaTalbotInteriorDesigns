@@ -153,6 +153,13 @@
 .admin-filter.is-active { background: var(--color-primary); border-color: var(--color-primary); color: var(--color-white); }
 .admin-filter__count { opacity: 0.75; margin-left: 0.25rem; }
 .admin-message { max-width: 70ch; overflow-wrap: anywhere; }
+
+/* Users: actions in the Access panel, and a one-time link to copy */
+.admin-form + .admin-panel { margin-top: var(--space-lg); }
+.admin-inline-action { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem 1rem; margin: 0 0 var(--space-md); }
+.admin-inline-action:last-child { margin-bottom: 0; }
+.admin-inline-action .admin-help { margin: 0; }
+.admin-copy { width: 100%; margin: 0.5rem 0; padding: 0.625rem 0.75rem; border: 1px solid var(--color-border); font-family: monospace; font-size: 0.875rem; }
 .admin-message p { margin: 0 0 1rem; }
 
 /* Statistics */
@@ -205,7 +212,8 @@
 .admin-empty .btn { margin-top: var(--space-md); }
 
 /* Tables */
-.admin-table-wrap { overflow-x: auto; background: var(--color-white); border: 1px solid var(--color-border); }
+/* position: relative keeps screen-reader-only text inside the scrolling area, so a wide table never widens the page */
+.admin-table-wrap { position: relative; overflow-x: auto; background: var(--color-white); border: 1px solid var(--color-border); }
 .admin-table { width: 100%; border-collapse: collapse; font-size: 0.9375rem; }
 .admin-table th {
     padding: 0.75rem 1rem;

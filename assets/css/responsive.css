@@ -122,6 +122,9 @@
     }
     .admin-sidebar.is-open { transform: translateX(0); }
     .admin-content { padding: var(--space-md); }
+
+    /* Read-only details: label above value instead of beside it */
+    .admin-fields > div { grid-template-columns: minmax(0, 1fr); gap: 0.125rem; }
 }
 
 @media (max-width: 600px) {

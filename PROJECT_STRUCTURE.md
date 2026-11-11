@@ -4,7 +4,7 @@
 
 Stack: HTML5, CSS3, JavaScript, PHP 8, MariaDB, PHPMailer (installed with Composer). PayFast is planned. Hosted on Xneelo Standard Hosting.
 
-> **Status: Phase 9.** Every page in the public menus reads its wording from the CMS. Images are uploaded by drag and drop from the page being edited, kept in the Media Library, and optimised automatically. The contact form, newsletter sign-up and forgot-password emails work through PHPMailer. Blog, photography store, newsletter sending and payments are not built yet.
+> **Status: Phase 10.** Every page in the public menus reads its wording from the CMS. Images are uploaded by drag and drop from the page being edited, kept in the Media Library, and optimised automatically. The contact form, newsletter sign-up and forgot-password emails work through PHPMailer. The SuperAdmin manages users from the admin area. Blog, photography store, newsletter sending and payments are not built yet.
 
 ## Folder layout
 
@@ -66,8 +66,9 @@ Stack: HTML5, CSS3, JavaScript, PHP 8, MariaDB, PHPMailer (installed with Compos
 │   ├── media-upload.php, media-list.php             JSON endpoints for drop zones and the picker
 │   ├── enquiries.php, enquiry.php                   Contact Messages: list by status, one message
 │   ├── subscribers.php                              Newsletter subscribers
+│   ├── admin-users.php, user-edit.php               Users: list, add, role, disable, password links
 │   └── (placeholders) blogs.php, blog-create.php, blog-edit.php, photography-products.php,
-│       photography-orders.php, admin-users.php
+│       photography-orders.php
 │
 ├── includes/                  Never served directly (blocked by .htaccess)
 │   ├── config.php             Reads .env; constants, error handling, paths
@@ -94,7 +95,8 @@ Stack: HTML5, CSS3, JavaScript, PHP 8, MariaDB, PHPMailer (installed with Compos
 │   ├── site-data.php          No longer used by any page; kept as the original seed source
 │   ├── mail.php               Every email: mail_send(), templates, branded layout, SMTP or log
 │   ├── mail-templates/        One file per email: contact-notification, newsletter-confirm,
-│   │                          password-reset, password-changed
+│   │                          password-reset, password-changed, account-invite
+│   ├── users.php              User management rules: create, update, disable, password links
 │   ├── enquiries.php          Contact form: validation, saving, notification
 │   ├── newsletter.php         Newsletter: subscribe, confirm, unsubscribe
 │   └── payfast.php            PayFast (placeholder)

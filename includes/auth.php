@@ -16,6 +16,7 @@ const LOGIN_MAX_PER_EMAIL      = 5;
 const LOGIN_MAX_PER_IP         = 20;
 const PASSWORD_MIN_LENGTH      = 12;
 const PASSWORD_RESET_MINUTES   = 60;
+const ACCOUNT_INVITE_MINUTES   = 4320; // 3 days to set a password on a new account
 const PASSWORD_RESET_PER_USER  = 3;   // reset emails per account per hour
 const PASSWORD_RESET_PER_IP    = 10;  // reset emails per IP address per hour
 
@@ -352,15 +353,18 @@ function password_reset_request(string $email): void
     ], ['to_name' => $user['Name']]);
 }
 
-/** Create a reset token for an account. Returns the raw token; only its hash is stored. */
-function password_reset_create(int $adminId): string
+/**
+ * Create a reset token for an account. Returns the raw token; only its hash is
+ * stored. Invitations to new users use a longer lifetime.
+ */
+function password_reset_create(int $adminId, int $minutes = PASSWORD_RESET_MINUTES): string
 {
     db_query('UPDATE PasswordResets SET UsedDate = NOW() WHERE AdminUserID = ? AND UsedDate IS NULL', [$adminId]);
 
     $token = bin2hex(random_bytes(32));
     db_query(
         'INSERT INTO PasswordResets (AdminUserID, TokenHash, ExpiryDate, RequestIP)
-         VALUES (?, ?, NOW() + INTERVAL ' . PASSWORD_RESET_MINUTES . ' MINUTE, ?)',
+         VALUES (?, ?, NOW() + INTERVAL ' . max(1, $minutes) . ' MINUTE, ?)',
         [$adminId, hash('sha256', $token), client_ip()]
     );
 

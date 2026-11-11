@@ -5,6 +5,10 @@
  * The token arrives in the link, is moved into the session, and the page
  * reloads without it, so the token doesn't stay in the address bar, browser
  * history or any Referer header.
+ *
+ * Whoever is signed in on this browser is signed out first: the link may be
+ * for someone else (for example a SuperAdmin testing an invitation), and
+ * afterwards the new password should be used on a clean sign-in page.
  */
 require_once __DIR__ . '/includes/config.php';
 require_once INCLUDES_PATH . '/auth.php';
@@ -14,6 +18,9 @@ require_once INCLUDES_PATH . '/mail.php';
 auth_start_session();
 
 if (isset($_GET['token'])) {
+    if (is_logged_in()) {
+        auth_logout(); // logged as "logout", and starts a fresh session
+    }
     $_SESSION['reset_token'] = is_string($_GET['token']) ? substr($_GET['token'], 0, 128) : '';
     header('Location: ' . url('reset-password.php'));
     exit;
@@ -63,7 +70,7 @@ require_once INCLUDES_PATH . '/header.php';
         <h1 class="login-card__title">New password</h1>
 <?php if ($reset === null): ?>
         <p class="admin-alert admin-alert--error" role="alert">This link has expired or has already been used.</p>
-        <p>Reset links work once, for <?= PASSWORD_RESET_MINUTES ?> minutes. You can ask for a new one.</p>
+        <p>Each link works once. Reset links expire after <?= PASSWORD_RESET_MINUTES ?> minutes, and new-account invitations after 3 days. You can ask for a new link, or ask the website administrator to send one.</p>
         <p><a class="btn btn--primary" href="<?= e(url('forgot-password.php')) ?>">Send a new link</a></p>
 <?php else: ?>
         <p class="login-card__intro">Choose a new password with at least <?= PASSWORD_MIN_LENGTH ?> characters. A short phrase of several words is easy to remember and hard to guess.</p>

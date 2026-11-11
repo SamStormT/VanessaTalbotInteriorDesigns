@@ -1,11 +1,11 @@
 # CMS Architecture
 
-**Status: Phase 9.**
+**Status: Phase 10.**
 
 - **Database:** 31 tables. `database/schema.sql` creates 29, and `database/migrations.sql` adds `PageSections` and `PageSectionItems`, edit stamps (`LastEditedBy`, `LastEditedDate`) on every editable content table, Media Library captions and optimisation details, and the starting content.
 - **Install:** run `php database/setup.php`.
-- **Built:** every content screen the public website needs, the Media Library, Contact Messages, Subscribers, and email (contact notifications, newsletter confirmation, password resets).
-- **Placeholders only:** blog, photography store, newsletter campaigns and user management screens.
+- **Built:** every content screen the public website needs, the Media Library, Contact Messages, Subscribers, user management, and email (contact notifications, newsletter confirmation, password resets, invitations).
+- **Placeholders only:** blog, photography store and newsletter campaigns.
 
 ## 1. How content survives deployments
 
@@ -18,7 +18,7 @@
 
 Back up the database and `uploads/` separately. Git holds neither.
 
-**Migrations so far** (Phase 9 added none; it uses existing tables): 002 edit stamps · 003 location defaults · 004 services · 005 Home and About wording · 006 page sections · 007 removal of footer menu headings · 008 rename to Colour & Design Psychology · 009 gallery image stamps · 010 service, portfolio, contact and legal page wording · 011 Media Library captions and stamps · 012 image optimisation details.
+**Migrations so far** (Phases 9 and 10 added none; they use existing tables): 002 edit stamps · 003 location defaults · 004 services · 005 Home and About wording · 006 page sections · 007 removal of footer menu headings · 008 rename to Colour & Design Psychology · 009 gallery image stamps · 010 service, portfolio, contact and legal page wording · 011 Media Library captions and stamps · 012 image optimisation details.
 
 ## 2. ERD
 
@@ -175,6 +175,27 @@ The order of these assignments matters: `SubscriptionStatus` must change after t
 | Forgot password | `forgot-password.php` gives the same answer for every address. Only active accounts are emailed. Limits: 3 emails per account and 10 per IP address per hour. The link expires after 60 minutes and works once. `reset-password.php` moves the token out of the address bar, requires 12 characters, ends every other session for that account, and emails a "password changed" notice |
 | Activity log | Visitor actions (`contact_message`, `newsletter_signup`, `newsletter_resubscribe`, `newsletter_confirm`, `newsletter_unsubscribe`) are logged with no user. Staff actions: message updates (field names only), deletions, unsubscribes, erasures, `password_reset_request`, `password_reset_limited`, `password_reset` |
 
+## 4b. User management
+
+Only the SuperAdmin has the `users` permission, so only the SuperAdmin sees the Users screens. The rules are enforced in `includes/users.php`, inside a database transaction that locks the rows it checks, so they hold even if two changes happen at once or a screen is bypassed.
+
+| Action | How it works |
+|---|---|
+| Add | Name, surname, email and role. The account starts Active with an unusable random password, and the person is emailed an invitation link to choose their own (valid 3 days, single use, stored as a hash in `PasswordResets`). Nobody else ever sees or types their password |
+| Edit | Name, surname and email (unique). Changed field names are logged |
+| Change role | Takes effect on the person's next click. Logged as `role_change` with old and new role |
+| Disable | Status becomes Inactive: signed out at once, can't sign in or receive reset emails, and any unused invitation or reset link is cancelled. Logged as `disable` |
+| Reactivate | Status becomes Active; their existing password works again. Logged as `reactivate` |
+| Reset password | Emails a 60-minute reset link; any earlier link stops working. Their current password works until they choose a new one. Logged as `password_reset_sent` |
+| Email failure | The action still happens. The link is shown once on screen to pass on privately, and the log notes it |
+| Delete | Not offered. Accounts are disabled, so names stay on past edits and in the activity log |
+
+**Protections**
+
+- **Last SuperAdmin:** the only active SuperAdmin can't be disabled or given a lower role. Another SuperAdmin must exist first.
+- **Own account:** nobody can change their own role or disable their own account. The role field isn't shown on your own account, and a role sent anyway is ignored.
+- **No elevation above your own role:** nobody can give a role higher than their own (relevant if the `users` permission is ever given to Admins).
+
 ## 5. Admin screens
 
 "Built" means a working screen. "Placeholder" means a protected page with a count and a "coming soon" notice. Every form uses CSRF protection and prepared statements. Every save, create and delete is written to `ActivityLog`.
@@ -202,7 +223,7 @@ The order of these assignments matters: `SubscriptionStatus` must change after t
 | Subscribers | `subscribers.php` | Built | Website forms only | Unsubscribe (Admin) | Erase (SuperAdmin) |
 | Newsletter Campaigns | none yet | Not built | | | |
 | Contact Messages | `enquiries.php`, `enquiry.php` | Built | Website form only | Status and private notes | Permanent delete (SuperAdmin) |
-| Users | `admin-users.php` | Placeholder | Via `setup.php` only | | |
+| Users | `admin-users.php`, `user-edit.php` | Built | Form, with email invitation | Name, email, role | Never (disable instead) |
 | Activity Log | Latest 8 entries on the dashboard, SuperAdmin only | Partial | Automatic | Never | Never |
 
 Public pages show only rows with `Status = 'Published'`. Projects also need client permission; collaborators also need a consent date.
@@ -241,7 +262,7 @@ Library
 
 System
   Website Settings
-  Users                    placeholder
+  Users                    list, add, roles, disable, reactivate, password links
 ```
 
 Menu items a role cannot use are hidden, and each page also checks permission on the server.
@@ -269,13 +290,13 @@ Menu items a role cannot use are hidden, and each page also checks permission on
 | Photography Orders (planned) | V E X | V E X | – |
 | Subscribers | V C E A D X | V C E A | – |
 | Contact Messages | V E A D | V E A | – |
-| Users (planned) | V C E A | – | – |
+| Users | V C E A | – | – |
 | Activity Log | V | – | – |
 
 - **Personal data:** Editors are kept away from subscribers, messages and orders because those hold personal data, which POPIA requires us to limit.
 - **Publishing:** Editors prepare content, and an Admin publishes it. An Editor can still change wording on content that is already Published.
 - **Fail-safe:** a permission that isn't in the map is refused for every role.
-- **For the Users screen (planned):** the last active SuperAdmin must not be demoted or deactivated, and users must not be able to change their own role.
+- **Users:** see section 4b.
 
 ## 8. Deployment notes
 

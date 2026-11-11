@@ -16,13 +16,15 @@
 | Contact form | Ready | Saved to Contact Messages and emailed to the business; spam trap and hourly limit |
 | Privacy Policy, Terms, Copyright | Built, **needs legal review** | Draft wording, editable under Legal Pages |
 | Admin sign-in, roles, activity log | Ready | Tested on the local stack and Apache. Forgot password works by email |
+| User management | Ready | SuperAdmin adds users by email invitation, changes roles, disables and reactivates, sends reset links |
 | CMS editing | Ready | Every piece of public wording is editable; see `CONTENT_MAPPING.md` |
 | Media Library | Ready | Drag and drop on every image field, library search and reuse, descriptions and captions |
 | Image optimisation | Ready | Every upload is resized, compressed and given a thumbnail; the original is kept privately |
 | Testimonials | Admin only | Can be managed, but no public page shows them yet |
 | Newsletter sign-up | Ready | Saved to Subscribers, confirmed by email, with unsubscribe |
 | Newsletter sending | **Not built** | Sign-ups are collected; nothing is sent to subscribers yet |
-| Email delivery | **Not tested on Xneelo** | Tested with a local test mail server; needs the real mailbox and DNS records |
+| Email delivery | **Partly verified** | Login to Xneelo's mail server succeeds with the `.env` settings. Delivery to real inboxes, and the DNS records that keep mail out of spam, still to check |
+| Project documents | Protected | `.htaccess` returns 404 for every `.md` file, tested on Apache |
 | Blog and photography store | Not built | Removed from the menus |
 | Production hosting | **Not tested** | Only tested locally |
 
@@ -31,7 +33,7 @@
 | # | Blocker | What's needed | Owner |
 |---|---|---|---|
 | 1 | Legal pages are unreviewed drafts | Review by a suitably qualified person; confirm Vanessa as Information Officer | Vanessa |
-| 2 | Website mailbox and email settings | Create a mailbox such as `website@` on the domain, put its details and `APP_URL` in `.env`, add SPF, DKIM and DMARC records, and send a test of each email | Samantha |
+| 2 | Email settings on the live server, and spam protection | Mailbox and SMTP settings work locally. On Xneelo: `.env` with `APP_URL` set to the https address, add a DMARC record and confirm DKIM is on (SPF exists), then send a test of each email | Samantha |
 | 3 | Where enquiries are sent | Fill in "Send contact form messages to" in Website Settings | Vanessa |
 | 4 | Privacy Policy doesn't yet describe the contact form and newsletter | Add what is collected (name, email, phone, message, IP address), why, how long it's kept, and how to unsubscribe or ask for deletion | Vanessa |
 | 5 | All wording is draft | Vanessa's review of section 3 below | Vanessa |
@@ -40,9 +42,8 @@
 | 8 | No photographs yet | Upload through the admin area | Vanessa |
 | 9 | No portfolio projects | At least a few real projects with client permission | Vanessa |
 | 10 | Stand-in logo text and fonts | Official logo files; web-licensed John Mayer and Bayshore | Vanessa |
-| 11 | No Users screen | Accounts can only be created with `setup.php` or SQL; at least one Admin besides the SuperAdmin should be set up before handover | Development |
-| 12 | Vanessa's phone and street address are in the public GitHub history | Make the repo private, or rewrite history | Samantha |
-| 13 | Which email is public: the business card and business plan use a different address from Website Settings | Confirm and update Website Settings | Vanessa |
+| 11 | Vanessa's phone and street address are in the public GitHub history | Make the repo private, or rewrite history | Samantha |
+| 12 | Which email is public: the business card and business plan use a different address from Website Settings | Confirm and update Website Settings | Vanessa |
 
 Blog and store placeholder pages still exist at their old addresses, but nothing links to them.
 
@@ -81,7 +82,8 @@ Everything below can be changed in the admin area. Page Sections are listed by p
 - [ ] Create the production database and a dedicated database user
 - [ ] Put `.env` in the folder above the website with `APP_ENV=production`
 - [ ] Run `database/setup.php` on the server (table names must not come from a Windows export)
-- [ ] Create the real SuperAdmin with a strong password; no test accounts on the server
+- [ ] Create the real SuperAdmin with `setup.php`, then add the other people from the Users screen; no test accounts on the server
+- [ ] Make a second SuperAdmin (or keep developer access) so the site can never be left without one who can manage users
 - [ ] Confirm `.htaccess` is honoured: `/.env`, `/database/`, `/includes/`, `/vendor/`, `/composer.json` and `/README.md` must return 404, a script placed in `uploads/` must not run, and nothing in `uploads/originals/` may be downloadable
 - [ ] Make sure PHP can write to `uploads/`, and exclude it from anything that mirrors files
 - [ ] Confirm Xneelo's PHP upload limits allow 10 MB files, and that PHP may use 512 MB of memory while processing a large photo
@@ -111,6 +113,7 @@ Everything below can be changed in the admin area. Page Sections are listed by p
 - **Email** depends on the mail server. If it's unreachable, messages and sign-ups are still saved and the failure is logged, but nobody is notified, so check Contact Messages in the admin area regularly.
 - **Contact Messages** has no reply-from-admin feature: replies go from Vanessa's own mailbox, using the Reply button.
 - **Activity log:** there is no full log screen yet; the dashboard shows the latest eight entries to the SuperAdmin.
+- **Users:** accounts are disabled, never deleted, so names stay on past edits and in the log. There is no "My account" page yet: people change their own password with "Forgot your password?", and a SuperAdmin changes names, emails and roles.
 
 ## 7. Recommended route to launch
 
@@ -119,6 +122,6 @@ Everything below can be changed in the admin area. Page Sections are listed by p
 | 1 | Make the repo private | Nothing further |
 | 2 | Vanessa uploads photos and replaces wording | Her content |
 | 3 | **First public launch** as a brochure site, with the contact form and newsletter sign-up working | Confirmed wording, legal review, hosting checklist, website mailbox |
-| 4 | Users screen and newsletter campaigns | Approval, Xneelo sending limits |
+| 4 | Newsletter campaigns | Approval, Xneelo sending limits |
 | 5 | Blog | Approval |
 | 6 | Photography store and PayFast | Approval, product decision, merchant account |

@@ -8,7 +8,7 @@ Vanessa Talbot Interior Designs is a bespoke website and content management syst
 
 The website reflects Vanessa Talbot's background in science and interior design: spaces that promote harmony, wellbeing and a deeper connection with nature.
 
-**Current status:** a complete brochure website, managed through the CMS, with a working contact form, newsletter sign-up and password reset by email. Newsletter sending, the blog and the photography store are planned but not yet built. See [LAUNCH_READINESS.md](LAUNCH_READINESS.md) for what remains before launch.
+**Current status:** a complete brochure website, managed through the CMS, with a working contact form, newsletter sign-up and password reset by email. The SuperAdmin manages staff accounts from the admin area. Newsletter sending, the blog and the photography store are planned but not yet built. See [LAUNCH_READINESS.md](LAUNCH_READINESS.md) for what remains before launch.
 
 ---
 
@@ -47,6 +47,7 @@ Signed-in staff can edit every piece of website wording without a developer.
 | Media Library | Every uploaded image, with search, preview, descriptions and captions |
 | Contact Messages | Every enquiry, filtered by status, with a reply button and private notes |
 | Subscribers | Newsletter sign-ups, whether they confirmed, unsubscribe and erase on request |
+| Users (SuperAdmin only) | Add people by email invitation, change roles, disable and reactivate accounts, send password reset links |
 
 **Workflow:** content is Draft, Published or Archived, and only Published content appears on the site. Every change records who made it and when, and is written to an activity log.
 
@@ -56,7 +57,7 @@ Signed-in staff can edit every piece of website wording without a developer.
 
 **Email:** contact messages are emailed to the address in Website Settings, with Reply-To set to the visitor. Staff who forget their password can reset it from the sign-in page.
 
-Planned admin areas (placeholders today): Blog, Photography Products and Orders, Newsletter Campaigns, Users.
+Planned admin areas (placeholders today): Blog, Photography Products and Orders, Newsletter Campaigns.
 
 ---
 
@@ -122,6 +123,7 @@ Configuration and secrets live only in `.env`, which Git ignores. On the live se
 - CSRF protection on every form; spam traps and hourly limits on the public forms
 - Password reset links are single-use, expire after an hour, are stored only as hashes, and never reveal whether an account exists
 - Role-based permissions checked on the server for every admin page
+- The last active SuperAdmin can't be disabled or demoted, and nobody can change their own role
 - Prepared statements for all database queries; all output escaped
 - Uploads checked by their real content, stored under generated names, and scripts blocked in `uploads/`
 - Published images are re-encoded, which removes hidden photo data such as GPS location; originals are not publicly reachable
