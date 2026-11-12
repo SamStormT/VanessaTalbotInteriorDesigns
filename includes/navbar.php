@@ -22,6 +22,7 @@ $navItems = [
     ]],
     ['label' => 'Photography', 'path' => 'portfolio/photography-gallery.php'],
     ['label' => 'Speaking',    'path' => 'services/speaking-engagements.php'],
+    ['label' => 'Blog',        'path' => 'blog.php'],
     ['label' => 'Contact',     'path' => 'contact.php'],
 ];
 ?>

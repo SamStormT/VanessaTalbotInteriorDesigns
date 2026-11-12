@@ -220,9 +220,14 @@ label {
     padding-inline: clamp(1.25rem, 5vw, 2.5rem);
 }
 
+/* !important so form styles (such as width: 100% on inputs) can't make hidden elements wide */
 .visually-hidden {
     position: absolute !important;
-    width: 1px; height: 1px;
+    width: 1px !important; height: 1px !important;
+    min-height: 0 !important;
+    padding: 0 !important;
+    margin: -1px !important;
+    border: 0 !important;
     overflow: hidden;
     clip: rect(0 0 0 0);
     white-space: nowrap;
@@ -1212,3 +1217,87 @@ label {
 .edit-here__link:focus-visible { background: var(--color-golden-yellow); color: var(--color-primary); }
 .site-footer .edit-here__link { background: var(--color-golden-yellow); color: var(--color-primary); }
 .edit-hidden .edit-here { display: none; }
+
+/* --------------------------------------------------------------------------
+   Blog
+   -------------------------------------------------------------------------- */
+.blog-tools {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-md);
+    margin-bottom: var(--space-lg);
+}
+.blog-categories .tag-list { margin: 0; }
+.blog-categories .tag-list li { padding: 0; }
+.blog-categories .tag-list a { display: block; padding: 0.35rem 1rem; border-radius: 999px; }
+.blog-categories .tag-list a:hover { background: var(--color-peach-light); }
+.blog-categories .tag-list li:has(.is-active) { background: var(--color-primary); border-color: var(--color-primary); }
+.blog-categories .tag-list a.is-active { color: var(--color-white); }
+.blog-categories__count { opacity: 0.7; }
+.blog-search { display: flex; gap: 0.5rem; flex: 0 1 360px; min-width: 0; }
+.blog-search input {
+    flex: 1;
+    min-width: 0;
+    min-height: 42px;
+    padding: 0.5rem 0.875rem;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
+    background: var(--color-white);
+    font: inherit;
+}
+.blog-search input:focus-visible { border-color: var(--color-primary); }
+.blog-results { margin-bottom: var(--space-lg); }
+.blog-results__title { margin-bottom: 0.5rem; }
+.blog-results__count { color: var(--color-text-muted); }
+
+.blog-grid { margin: 0; padding: 0; list-style: none; }
+.card.blog-card { padding: 0; overflow: hidden; }
+.blog-card__image { aspect-ratio: 3 / 2; border-radius: 0; border: 0; }
+.blog-card__body { display: flex; flex-direction: column; flex: 1; padding: clamp(1.5rem, 2.5vw, 2rem); }
+.blog-card .card__title { font-size: 1.1875rem; }
+
+.blog-featured {
+    position: relative;
+    display: grid;
+    grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+    margin-bottom: clamp(2rem, 4vw, 3rem);
+    background: var(--color-white);
+    box-shadow: var(--shadow-sm, 0 2px 12px rgba(36, 58, 57, 0.06));
+}
+.blog-featured__image { aspect-ratio: 4 / 3; height: 100%; border-radius: 0; border: 0; }
+.blog-featured__body { display: flex; flex-direction: column; justify-content: center; padding: clamp(1.75rem, 4vw, 3rem); }
+.blog-featured__title { font-size: clamp(1.5rem, 2.5vw, 2rem); margin-bottom: 0.75rem; }
+.blog-featured:hover .card__link,
+.blog-featured:focus-within .card__link { text-decoration: underline; text-underline-offset: 4px; }
+
+.pagination {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-md);
+    margin-top: var(--space-xl);
+}
+.pagination__status { font-size: var(--fs-sm); color: var(--color-text-muted); }
+
+.blog-post__meta { margin: 0; color: var(--color-text-muted); font-size: var(--fs-sm); }
+.blog-post__body { padding-top: clamp(2.5rem, 5vw, 4rem); }
+.blog-post__image { margin: 0 0 var(--space-lg); }
+.blog-post__image .art-frame { aspect-ratio: 3 / 2; border: 0; }
+.blog-post__lead { margin-bottom: var(--space-lg); }
+.blog-post__content { max-width: none; }
+.blog-post__content p,
+.blog-post__content li { font-size: 1.0625rem; line-height: 1.8; }
+.blog-post__back { margin-top: var(--space-xl); }
+.icon--flip { transform: scaleX(-1); }
+
+.preview-banner {
+    margin: 0;
+    padding: 0.75rem 1rem;
+    background: var(--color-golden-yellow);
+    color: var(--color-primary);
+    text-align: center;
+    font-size: var(--fs-sm);
+}

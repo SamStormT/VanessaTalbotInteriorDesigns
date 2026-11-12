@@ -122,12 +122,15 @@
     }
     .admin-sidebar.is-open { transform: translateX(0); }
     .admin-content { padding: var(--space-md); }
+    .blog-featured { grid-template-columns: minmax(0, 1fr); }
 
     /* Read-only details: label above value instead of beside it */
     .admin-fields > div { grid-template-columns: minmax(0, 1fr); gap: 0.125rem; }
 }
 
 @media (max-width: 600px) {
+    .blog-featured { grid-template-columns: minmax(0, 1fr); }
+    .blog-search { flex-basis: 100%; }
     .card-grid--3,
     .portfolio-grid,
     .portfolio-grid--4,

@@ -24,6 +24,12 @@ if ($method === 'POST' && $action === 'subscribe') {
     $name   = is_string($_POST['name'] ?? null) ? trim((string) preg_replace('/[\p{Cc}\p{Cf}]+/u', ' ', $_POST['name'])) : '';
     $result = 'thanks';
 
+    // Where the form was: recorded as the subscriber's source, and where the
+    // page returns to without JavaScript. Only known values are accepted.
+    $source = ($_POST['source'] ?? '') === 'blog' ? 'Blog' : 'Homepage Section';
+    $return = is_string($_POST['return'] ?? null) && preg_match('#^(blog\.php|blog/blog-post\.php\?slug=[a-z0-9-]+)$#', $_POST['return'])
+        ? $_POST['return'] : 'index.php';
+
     if (!empty($_POST['vt_check'])) {
         // Hidden field that only bots fill in: answer as if it worked, save
         // nothing, and note it so a real person caught by it can be spotted.
@@ -36,7 +42,7 @@ if ($method === 'POST' && $action === 'subscribe') {
             if (newsletter_rate_limited(client_ip())) {
                 $result = 'busy';
             } else {
-                newsletter_subscribe($email, $name, 'Homepage Section');
+                newsletter_subscribe($email, $name, $source);
             }
         } catch (Throwable $error) {
             error_log('Newsletter sign-up failed: ' . $error->getMessage());
@@ -52,7 +58,8 @@ if ($method === 'POST' && $action === 'subscribe') {
         exit;
     }
 
-    header('Location: ' . url('index.php?newsletter=' . $result . '#newsletter'), true, 303);
+    $separator = str_contains($return, '?') ? '&' : '?';
+    header('Location: ' . url($return . $separator . 'newsletter=' . $result . '#newsletter'), true, 303);
     exit;
 }
 

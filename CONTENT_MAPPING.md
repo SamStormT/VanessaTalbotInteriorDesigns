@@ -55,7 +55,8 @@ Fields marked *(empty)* exist but have nothing to hold yet.
 | Home | Featured portfolio | Photography Gallery tile | `PageSectionItems` | `home/portfolio#photography-gallery` | `Title`, `Text`, `Icon`, `Link` |
 | Home | Latest blog | Small heading | `PageSections` | `home/blog` | `Eyebrow` |
 | Home | Latest blog | Heading | `PageSections` | `home/blog` | `Heading` |
-| Home | Latest blog | Posts, once written | `BlogPosts` | Latest published | `Title`, `Excerpt`, `Slug`, `PublishedDate` *(empty)* |
+| Home | Latest blog | Three newest published posts | `BlogPosts` | Latest published | `Title`, `Excerpt`, `FeaturedImage`, `PublishedDate` |
+| Home | Latest blog | Button | `PageSections` | `home/blog` | `ButtonText`, `ButtonLink` |
 | Home | Latest blog, no posts yet | Message heading | `PageSections` | `home/blog-empty` | `Heading` |
 | Home | Latest blog, no posts yet | Message | `PageSections` | `home/blog-empty` | `Introduction` |
 | Home | Latest blog, no posts yet | Topic: Biophilic design | `PageSectionItems` | `home/blog-empty#biophilic-design` | `Title` |
@@ -67,6 +68,12 @@ Fields marked *(empty)* exist but have nothing to hold yet.
 | Home | Newsletter | Heading | `PageSections` | `home/newsletter` | `Heading` |
 | Home | Newsletter | Paragraph | `PageSections` | `home/newsletter` | `Introduction` |
 | Home | Newsletter | Privacy note | `PageSections` | `home/newsletter` | `Body` |
+| Blog | Page header | Heading, introduction, header image | `PageSections` | `blog/page-header` | `Heading`, `Introduction`, `Image` |
+| Blog | No posts yet | Heading, message | `PageSections` | `blog/empty` | `Heading`, `Introduction` |
+| Blog | Search finds nothing | Heading, message | `PageSections` | `blog/no-results` | `Heading`, `Introduction` |
+| Blog | Newsletter | Same wording as the home page | `PageSections` | `home/newsletter` | |
+| Blog article | Newsletter under each article | Small heading, heading, paragraph | `PageSections` | `blog/post-newsletter` | `Eyebrow`, `Heading`, `Introduction` |
+| Blog | Articles and categories | Everything else | `BlogPosts`, `BlogCategories` | Blog Posts, Blog Categories in the admin | |
 | Home | Closing call to action | Heading | `PageSections` | `home/contact-cta` | `Heading` |
 | Home | Closing call to action | Paragraph | `PageSections` | `home/contact-cta` | `Introduction` |
 | Home | Closing call to action | First button | `PageSections` | `home/contact-cta` | `ButtonText`, `ButtonLink` |

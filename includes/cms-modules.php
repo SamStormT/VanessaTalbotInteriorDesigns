@@ -260,6 +260,47 @@ function cms_modules(): array
             ],
         ],
 
+        'blog_categories' => [
+            'title'      => 'Blog Categories',
+            'table'      => 'BlogCategories',
+            'key'        => 'CategoryID',
+            'label'      => 'CategoryName',
+            'permission' => 'blogs',
+            'list_page'  => 'admin/blog-categories.php',
+            'edit_page'  => 'admin/blog-category-edit.php',
+            'order'      => 't.CategoryName',
+            'list'       => ['CategoryName', 'Description'],
+            'empty'      => 'Add categories to group blog posts, such as Biophilic design or Wellbeing at home.',
+            'fields'     => [
+                'CategoryName' => ['label' => 'Name', 'type' => 'text', 'required' => true, 'max' => 100],
+                'Slug'         => ['label' => 'Web address', 'type' => 'slug', 'auto_from' => 'CategoryName', 'max' => 200, 'help' => 'Leave blank to create one from the name.'],
+                'Description'  => ['label' => 'Description', 'type' => 'textarea', 'max' => 1000, 'help' => 'Shown at the top of the blog when this category is chosen.'],
+            ],
+        ],
+
+        // Posts use their own screens (admin/blogs.php, admin/blog-edit.php),
+        // which fill in the category list and the author. See includes/blog.php.
+        'blog_posts' => [
+            'title'      => 'Blog Posts',
+            'table'      => 'BlogPosts',
+            'key'        => 'BlogID',
+            'label'      => 'Title',
+            'permission' => 'blogs',
+            'list_page'  => 'admin/blogs.php',
+            'edit_page'  => 'admin/blog-edit.php',
+            'fields'     => [
+                'Title'            => ['label' => 'Title', 'type' => 'text', 'required' => true, 'max' => 255, 'group' => 'Article'],
+                'Slug'             => ['label' => 'Web address', 'type' => 'slug', 'auto_from' => 'Title', 'max' => 200, 'group' => 'Article', 'help' => 'Leave blank to create one from the title. Changing it later breaks links people have shared.'],
+                'CategoryID'       => ['label' => 'Category', 'type' => 'select', 'options' => [], 'group' => 'Article'],
+                'Excerpt'          => ['label' => 'Summary', 'type' => 'textarea', 'max' => 500, 'group' => 'Article', 'help' => 'One or two sentences, shown on the blog page and the home page.'],
+                'Content'          => ['label' => 'Article', 'type' => 'textarea', 'max' => 100000, 'group' => 'Article', 'help' => 'Leave a blank line between paragraphs. Start a line with "## " for a heading, or "- " for a bullet point.'],
+                'FeaturedImage'    => ['label' => 'Featured image', 'type' => 'image', 'alt_field' => 'FeaturedImageAlt', 'max' => 500, 'group' => 'Featured image'],
+                'FeaturedImageAlt' => ['label' => 'Image description (alt text)', 'type' => 'text', 'max' => 255, 'group' => 'Featured image'],
+                'IsFeatured'       => ['label' => 'Feature this post at the top of the blog page', 'type' => 'checkbox', 'group' => 'Publishing', 'permission' => 'blogs.publish'],
+                'Status'           => ['label' => 'Status', 'type' => 'select', 'required' => true, 'options' => ['Draft', 'Published', 'Archived'], 'group' => 'Publishing', 'permission' => 'blogs.publish', 'help' => 'Draft: only staff can see it. Published: on the website. Archived: taken off the website but kept.'],
+            ] + $meta,
+        ],
+
         'collaborators' => [
             'title'      => 'Collaborators',
             'table'      => 'Collaborators',
@@ -354,7 +395,7 @@ function cms_icon_options(): array
 function cms_page_label(string $page): string
 {
     return [
-        'home' => 'Home', 'about' => 'About', 'services' => 'Services', 'global' => 'All pages', 'contact' => 'Contact', 'portfolio' => 'Portfolio',
+        'home' => 'Home', 'about' => 'About', 'services' => 'Services', 'global' => 'All pages', 'contact' => 'Contact', 'portfolio' => 'Portfolio', 'blog' => 'Blog',
         'service-biophilic-design' => 'Service: Biophilic Design',
         'service-colour-psychology' => 'Service: Colour & Design Psychology',
         'service-photography-services' => 'Service: Photography',

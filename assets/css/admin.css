@@ -306,7 +306,8 @@ fieldset.admin-panel > .admin-panel__title + * { clear: both; }
 .media-field__buttons { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-md); margin-top: 0.625rem; }
 .media-field__status { grid-column: 1 / -1; margin: 0; font-size: 0.8125rem; font-weight: 600; color: var(--color-primary); }
 .media-field__status:empty { display: none; }
-.media-drop { border: 1px dashed var(--color-accent-dark); background: var(--color-peach-light); transition: background-color var(--transition), border-color var(--transition); }
+/* position: relative keeps the hidden file input inside the drop zone, so it never widens the page */
+.media-drop { position: relative; border: 1px dashed var(--color-accent-dark); background: var(--color-peach-light); transition: background-color var(--transition), border-color var(--transition); }
 .media-drop label { display: block; padding: 1.125rem 1rem; text-align: center; cursor: pointer; }
 .media-drop--wide { margin-bottom: var(--space-lg); }
 .media-drop--wide label { padding: 2.25rem 1rem; }

@@ -8,7 +8,7 @@ Vanessa Talbot Interior Designs is a bespoke website and content management syst
 
 The website reflects Vanessa Talbot's background in science and interior design: spaces that promote harmony, wellbeing and a deeper connection with nature.
 
-**Current status:** a complete brochure website, managed through the CMS, with a working contact form, newsletter sign-up and password reset by email. The SuperAdmin manages staff accounts from the admin area. Newsletter sending, the blog and the photography store are planned but not yet built. See [LAUNCH_READINESS.md](LAUNCH_READINESS.md) for what remains before launch.
+**Current status:** a complete brochure website, managed through the CMS, with a working contact form, newsletter sign-up and password reset by email. The SuperAdmin manages staff accounts from the admin area. The blog is built, with categories, search and a draft-to-published workflow. Newsletter sending and the photography store are planned but not yet built. See [LAUNCH_READINESS.md](LAUNCH_READINESS.md) for what remains before launch.
 
 ---
 
@@ -22,7 +22,7 @@ The website reflects Vanessa Talbot's background in science and interior design:
 | Contact: details, location, frequently asked questions, enquiry form | Built; messages are saved and emailed to the business |
 | Newsletter sign-up (home page, and a tick-box on the contact form) | Built; confirmed by email, with an unsubscribe link |
 | Privacy Policy, Terms and Conditions, Copyright Notice | Built, draft wording |
-| Blog | Planned. Not linked from the menus |
+| Blog: articles, categories, search, single article with related posts and newsletter sign-up | Built; in the main menu |
 | Photography store, cart, checkout and PayFast | Planned. Not linked from the menus |
 
 If the database is unreachable, public pages show a saved copy of the wording instead of an error.
@@ -47,6 +47,7 @@ Signed-in staff can edit every piece of website wording without a developer.
 | Legal Pages | Privacy Policy, Terms, Copyright |
 | Media Library | Every uploaded image, with search, preview, descriptions and captions |
 | Contact Messages | Every enquiry, filtered by status, with a reply button and private notes |
+| Blog Posts, Blog Categories | Articles with featured images from the Media Library, categories, featured post, draft preview, search engine details |
 | Subscribers | Newsletter sign-ups, whether they confirmed, unsubscribe and erase on request |
 | Users (SuperAdmin only) | Add people by email invitation, change roles, disable and reactivate accounts, send password reset links |
 
@@ -60,7 +61,7 @@ Signed-in staff can edit every piece of website wording without a developer.
 
 **Email:** contact messages are emailed to the address in Website Settings, with Reply-To set to the visitor. Staff who forget their password can reset it from the sign-in page.
 
-Planned admin areas (placeholders today): Blog, Photography Products and Orders, Newsletter Campaigns.
+Planned admin areas (placeholders today): Photography Products and Orders, Newsletter Campaigns.
 
 ---
 

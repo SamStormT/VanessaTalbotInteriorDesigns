@@ -1,20 +1,9 @@
 <?php
 /**
- * Search (placeholder)
+ * Old address for blog search: the blog page now has search built in.
  */
 require_once __DIR__ . '/../includes/config.php';
 
-$pageTitle       = 'Search';
-$pageDescription = SITE_TAGLINE;
-
-require_once INCLUDES_PATH . '/header.php';
-?>
-<main id="main-content" class="page page--blog-search">
-    <section class="section">
-        <div class="container">
-            <h1>Search</h1>
-            <p class="placeholder-note">Placeholder: content coming in a later phase.</p>
-        </div>
-    </section>
-</main>
-<?php require_once INCLUDES_PATH . '/footer.php'; ?>
+$query = is_string($_GET['q'] ?? null) ? mb_substr(trim($_GET['q']), 0, 100) : '';
+header('Location: ' . url('blog.php' . ($query !== '' ? '?q=' . rawurlencode($query) : '')), true, 301);
+exit;

@@ -1,11 +1,11 @@
 # CMS Architecture
 
-**Status: Phase 10.**
+**Status: Phase 11.**
 
 - **Database:** 31 tables. `database/schema.sql` creates 29, and `database/migrations.sql` adds `PageSections` and `PageSectionItems`, edit stamps (`LastEditedBy`, `LastEditedDate`) on every editable content table, Media Library captions and optimisation details, and the starting content.
 - **Install:** run `php database/setup.php`.
-- **Built:** every content screen the public website needs, the Media Library, Contact Messages, Subscribers, user management, and email (contact notifications, newsletter confirmation, password resets, invitations).
-- **Placeholders only:** blog, photography store and newsletter campaigns.
+- **Built:** every content screen the public website needs, the blog, the Media Library, Contact Messages, Subscribers, user management, and email (contact notifications, newsletter confirmation, password resets, invitations).
+- **Placeholders only:** photography store and newsletter campaigns.
 
 ## 1. How content survives deployments
 
@@ -18,7 +18,7 @@
 
 Back up the database and `uploads/` separately. Git holds neither.
 
-**Migrations so far** (Phases 9 and 10 added none; they use existing tables): 002 edit stamps · 003 location defaults · 004 services · 005 Home and About wording · 006 page sections · 007 removal of footer menu headings · 008 rename to Colour & Design Psychology · 009 gallery image stamps · 010 service, portfolio, contact and legal page wording · 011 Media Library captions and stamps · 012 image optimisation details.
+**Migrations so far:** 002 edit stamps · 003 location defaults · 004 services · 005 Home and About wording · 006 page sections · 007 removal of footer menu headings · 008 rename to Colour & Design Psychology · 009 gallery image stamps · 010 service, portfolio, contact and legal page wording · 011 Media Library captions and stamps · 012 image optimisation details · 013 blog (category edit stamps, "Blog" subscriber source, blog page wording, starting categories).
 
 ## 2. ERD
 
@@ -50,7 +50,7 @@ Every editable content table also has `LastEditedBy` → `AdminUsers`. Those lin
 - **Staff and security.** `AdminUsers` links to password resets, the activity log, uploads, and everything staff author, handle or edit.
 - **Page wording.** `PageSections` hold headings, introductions and buttons for any page, found by `PageKey` and `SectionKey`. `PageSectionItems` hold their repeating blocks.
 - **Portfolio.** A project owns many gallery images and can be linked from testimonials.
-- **Blog** (not built). A post has one author and at most one category.
+- **Blog.** A post has one author (who created it) and at most one category.
 - **Store** (not built). One checkout is one order. An order contains many items, and each item is a product with an optional print option. Payments attach to the order.
 - **Newsletter** (not built). `CampaignRecipients` joins campaigns and subscribers, one row per person per campaign.
 
@@ -175,6 +175,20 @@ The order of these assignments matters: `SubscriptionStatus` must change after t
 | Forgot password | `forgot-password.php` gives the same answer for every address. Only active accounts are emailed. Limits: 3 emails per account and 10 per IP address per hour. The link expires after 60 minutes and works once. `reset-password.php` moves the token out of the address bar, requires 12 characters, ends every other session for that account, and emails a "password changed" notice |
 | Activity log | Visitor actions (`contact_message`, `newsletter_signup`, `newsletter_resubscribe`, `newsletter_confirm`, `newsletter_unsubscribe`) are logged with no user. Staff actions: message updates (field names only), deletions, unsubscribes, erasures, `password_reset_request`, `password_reset_limited`, `password_reset` |
 
+## 4d. Blog
+
+| Part | How it works |
+|---|---|
+| Writing | Title, web address (made from the title), category, summary, article, featured image from the Media Library, search engine title and description. Article formatting is plain text: a blank line between paragraphs, `## ` for a heading, `- ` for bullet points |
+| Workflow | Draft (staff only), Published (on the website), Archived (taken off, kept). Editors write and edit; their posts are always Drafts, and an Admin publishes. `PublishedDate` is stamped the first time a post is published and kept if it is archived and re-published |
+| Preview | Signed-in staff can open a Draft or Archived post on the website, with a "Preview" banner; search engines are told not to index it. Visitors get "page not found" |
+| Featured | An Admin can tick "Feature this post": the newest featured post leads page one of the blog |
+| Blog page | `blog.php`: 9 posts a page, newest first; category filter (only categories with posts are shown); search across title, summary, article and category, where every word must match |
+| Article page | `blog/blog-post.php?slug=`: breadcrumb with category, date, reading time, author, featured image, summary, article, a newsletter sign-up, and up to three related posts (same category first) |
+| Home page | The three newest posts replace the "coming soon" notice once anything is published |
+| Activity log | `create`, `update` (field names), and `publish`, `archive`, `unpublish` with the before and after status |
+| Subscribers | Blog sign-up forms record the subscriber's source as **Blog**. Sending new posts to subscribers is part of the newsletter campaigns phase |
+
 ## 4c. Finding where to edit
 
 | Feature | How it works |
@@ -228,7 +242,8 @@ Only the SuperAdmin has the `users` permission, so only the SuperAdmin sees the 
 | Project Images | `project-image-edit.php`, gallery drop zone | Built | Drop or form | Form | Permanent delete |
 | Collaborators | `collaborators.php`, `collaborator-edit.php` | Built | Form | Form | Permanent delete |
 | Media Library | `media-library.php`, `media-edit.php` | Built | Upload | Description, caption, category | Only when unused |
-| Blog Posts and Categories | `blogs.php`, `blog-create.php`, `blog-edit.php` | Placeholder | | | |
+| Blog Posts | `blogs.php`, `blog-edit.php` | Built | Form | Form | Permanent delete (Admin); archive instead to keep it |
+| Blog Categories | `blog-categories.php`, `blog-category-edit.php` | Built | Form | Form | Permanent delete (Admin); posts keep, uncategorised |
 | Photography Products and Orders | `photography-products.php`, `photography-orders.php` | Placeholder | | | |
 | Subscribers | `subscribers.php` | Built | Website forms only | Unsubscribe (Admin) | Erase (SuperAdmin) |
 | Newsletter Campaigns | none yet | Not built | | | |
@@ -257,7 +272,8 @@ Website Content
 Portfolio & Blog
   Portfolio Projects       gallery inside each project
   Collaborators
-  Blogs                    placeholder
+  Blog Posts               list, write, preview, publish
+  Blog Categories
 
 Photography
   Photography Products     placeholder
@@ -295,7 +311,7 @@ Menu items a role cannot use are hidden, and each page also checks permission on
 | Speaking Engagements | V C E P A D | V C E P A D | V C E |
 | Legal Pages | V E P | V E P | V |
 | Media Library | V C E D | V C E D | V C E |
-| Blog (planned) | V C E P A D | V C E P A D | V C E |
+| Blog posts and categories | V C E P A D | V C E P A D | V C E |
 | Photography Products (planned) | V C E P A D | V C E P A | V E |
 | Photography Orders (planned) | V E X | V E X | – |
 | Subscribers | V C E A D X | V C E A | – |

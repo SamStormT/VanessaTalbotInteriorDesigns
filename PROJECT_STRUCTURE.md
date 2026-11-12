@@ -4,7 +4,7 @@
 
 Stack: HTML5, CSS3, JavaScript, PHP 8, MariaDB, PHPMailer (installed with Composer). PayFast is planned. Hosted on Xneelo Standard Hosting.
 
-> **Status: Phase 10.** Every page in the public menus reads its wording from the CMS. Images are uploaded by drag and drop from the page being edited, kept in the Media Library, and optimised automatically. The contact form, newsletter sign-up and forgot-password emails work through PHPMailer. The SuperAdmin manages users from the admin area. Blog, photography store, newsletter sending and payments are not built yet.
+> **Status: Phase 11.** Every page in the public menus reads its wording from the CMS. Images are uploaded by drag and drop from the page being edited, kept in the Media Library, and optimised automatically. The contact form, newsletter sign-up and forgot-password emails work through PHPMailer. The SuperAdmin manages users from the admin area. The blog is built. Photography store, newsletter sending and payments are not built yet.
 
 ## Folder layout
 
@@ -25,7 +25,7 @@ Stack: HTML5, CSS3, JavaScript, PHP 8, MariaDB, PHPMailer (installed with Compos
 ├── logout.php                 Sign-out (POST with CSRF token only)
 ├── speaking.php               Redirects to services/speaking-engagements.php
 ├── photography.php            Redirects to the photography gallery until the store exists
-├── blog.php                   Placeholder, not linked (blog not built)
+├── blog.php                   Blog: all articles, ?category=slug, ?q=search, pages of 9
 │
 ├── services/                  One file per service; all use includes/page-service.php
 │   ├── biophilic-design.php
@@ -42,7 +42,9 @@ Stack: HTML5, CSS3, JavaScript, PHP 8, MariaDB, PHPMailer (installed with Compos
 │   ├── collaborators.php
 │   └── project.php            Single project, found by ?slug=
 │
-├── blog/                      Placeholders, not linked (blog not built)
+├── blog/
+│   ├── blog-post.php          One article, ?slug=; staff can preview drafts
+│   └── category.php, search.php, archive.php   Old addresses; redirect to blog.php
 ├── photography/               Placeholders, not linked (store not built)
 │
 ├── admin/                     Back office; every page calls admin_guard()
@@ -68,7 +70,9 @@ Stack: HTML5, CSS3, JavaScript, PHP 8, MariaDB, PHPMailer (installed with Compos
 │   ├── enquiries.php, enquiry.php                   Contact Messages: list by status, one message
 │   ├── subscribers.php                              Newsletter subscribers
 │   ├── admin-users.php, user-edit.php               Users: list, add, role, disable, password links
-│   └── (placeholders) blogs.php, blog-create.php, blog-edit.php, photography-products.php,
+│   ├── blogs.php, blog-edit.php                     Blog posts: list, write, edit (blog-create.php redirects)
+│   ├── blog-categories.php, blog-category-edit.php  Blog categories
+│   └── (placeholders) photography-products.php,
 │       photography-orders.php
 │
 ├── includes/                  Never served directly (blocked by .htaccess)
@@ -101,6 +105,8 @@ Stack: HTML5, CSS3, JavaScript, PHP 8, MariaDB, PHPMailer (installed with Compos
 │   ├── users.php              User management rules: create, update, disable, password links
 │   ├── enquiries.php          Contact form: validation, saving, notification
 │   ├── newsletter.php         Newsletter: subscribe, confirm, unsubscribe
+│   ├── newsletter-form.php    The sign-up form shared by the home page and the blog
+│   ├── blog.php               Blog queries, search, cards and publishing rules
 │   └── payfast.php            PayFast (placeholder)
 │
 ├── assets/

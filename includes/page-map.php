@@ -36,7 +36,7 @@ function page_map(): array
             'quote'        => ['Quote', [['admin', 'Quote', 'admin/homepage-content.php', 'homepage.view']]],
             'services'     => ['Services overview', [$section('home', 'services', 'Heading and button'), ['admin', 'Service cards', 'admin/services.php', 'services.view']]],
             'portfolio'    => ['Portfolio highlights', [$section('home', 'portfolio', 'Heading, tiles and tile images')]],
-            'blog'         => ['Blog', [$section('home', 'blog', 'Heading'), $section('home', 'blog-empty', 'Coming soon notice')]],
+            'blog'         => ['Latest blog posts', [$section('home', 'blog', 'Heading and button'), ['admin', 'Blog posts', 'admin/blogs.php', 'blogs.view'], $section('home', 'blog-empty', 'Notice while there are no posts')]],
             'newsletter'   => ['Newsletter sign-up', [$section('home', 'newsletter')]],
             'contact-cta'  => ['Contact call to action', [$section('home', 'contact-cta', 'Wording, client types and buttons')]],
         ]],
@@ -100,6 +100,22 @@ function page_map(): array
             'closing'     => ['Closing call to action', [$section($key, 'closing')]],
         ]];
     }
+
+    $map['blog'] = ['title' => 'Blog', 'path' => 'blog.php', 'blocks' => [
+        'page-header' => ['Page header', [$section('blog', 'page-header', 'Heading and header image')]],
+        'posts'       => ['Articles, categories and search', [
+            ['admin', 'Blog posts', 'admin/blogs.php', 'blogs.view'],
+            ['admin', 'Categories', 'admin/blog-categories.php', 'blogs.view'],
+            $section('blog', 'empty', 'Notice while there are no posts'),
+            $section('blog', 'no-results', 'Notice when a search finds nothing'),
+        ]],
+        'newsletter'  => ['Newsletter sign-up (same wording as the home page)', [$section('home', 'newsletter')]],
+    ]];
+
+    $map['blog-post'] = ['title' => 'Blog: single article', 'path' => null, 'blocks' => [
+        'post'       => ['Article, image and summary', [['admin', 'Blog posts', 'admin/blogs.php', 'blogs.view']]],
+        'newsletter' => ['Newsletter sign-up under each article', [$section('blog', 'post-newsletter')]],
+    ]];
 
     $map['project'] = ['title' => 'Portfolio: single project', 'path' => null, 'blocks' => [
         'project' => ['Project, images and gallery', [$projects]],
@@ -243,6 +259,9 @@ function page_map_current(): ?string
     $path = current_path();
     if ($path === 'portfolio/project.php') {
         return 'project';
+    }
+    if ($path === 'blog/blog-post.php') {
+        return 'blog-post';
     }
     foreach (page_map() as $key => $page) {
         if ($page['path'] === $path) {

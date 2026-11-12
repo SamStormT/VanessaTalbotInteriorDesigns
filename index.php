@@ -4,20 +4,19 @@
  */
 require_once __DIR__ . '/includes/config.php';
 require_once INCLUDES_PATH . '/content.php';
-require_once INCLUDES_PATH . '/newsletter.php';
+require_once INCLUDES_PATH . '/newsletter-form.php';
+require_once INCLUDES_PATH . '/blog.php';
 
 $home     = site_home();
 
-// Result of a newsletter sign-up sent without JavaScript (see newsletter.php).
-$newsletterResult = is_string($_GET['newsletter'] ?? null) ? $_GET['newsletter'] : '';
 $sections = site_sections('home');
 $services = site_services();
 
 $pageTitle       = $home['MetaTitle'] ?? '';
 $pageDescription = ($home['MetaDescription'] ?? '') ?: SITE_TAGLINE;
 
-// Latest blog posts. Loaded from the database in a later phase; empty until then.
-$latestPosts = [];
+// The three newest published blog posts.
+$latestPosts = blog_latest(3);
 
 require_once INCLUDES_PATH . '/header.php';
 
@@ -172,15 +171,14 @@ $tileTones  = ['green', 'gold', 'peach'];
             <?= content_section_header($section, 'blog-title') ?>
 
 <?php if ($latestPosts): ?>
-            <ul class="card-grid card-grid--3">
-<?php foreach ($latestPosts as $post): ?>
-                <li class="card card--post">
-                    <p class="card__meta"><?= e($post['category']) ?> &middot; <time datetime="<?= e($post['date']) ?>"><?= e(date('j F Y', strtotime($post['date']))) ?></time></p>
-                    <h3 class="card__title"><a class="card__link" href="<?= e(url('blog/blog-post.php?slug=' . urlencode($post['slug']))) ?>"><?= e($post['title']) ?></a></h3>
-                    <p><?= e($post['excerpt']) ?></p>
-                </li>
+            <ul class="card-grid card-grid--3 blog-grid">
+<?php foreach ($latestPosts as $index => $post): ?>
+                <?= blog_card($post, $index) ?>
 <?php endforeach; ?>
             </ul>
+            <p class="section-footer">
+                <?= content_link($section['ButtonText'], $section['ButtonLink'], 'btn btn--dark') ?>
+            </p>
 <?php elseif ($empty = $sections['blog-empty'] ?? null): ?>
             <div class="empty-state">
                 <span class="empty-state__icon"><?= icon('pen') ?></span>
@@ -208,23 +206,7 @@ $tileTones  = ['green', 'gold', 'peach'];
                 <?= content_paragraphs($section['Introduction']) ?>
             </div>
 
-            <form class="newsletter__form" action="<?= e(url('newsletter.php')) ?>" method="post" data-newsletter-form novalidate>
-                <div class="form-field">
-                    <label for="newsletter-name">First name</label>
-                    <input id="newsletter-name" name="name" type="text" autocomplete="given-name" maxlength="100">
-                </div>
-                <div class="form-field">
-                    <label for="newsletter-email">Email address <span class="required" aria-hidden="true">*</span></label>
-                    <input id="newsletter-email" name="email" type="email" autocomplete="email" maxlength="254" required aria-describedby="newsletter-status"<?= $newsletterResult === 'invalid' ? ' aria-invalid="true"' : '' ?>>
-                </div>
-                <div class="form-trap" aria-hidden="true">
-                    <label for="newsletter-vt-check">Leave this blank</label>
-                    <input id="newsletter-vt-check" name="vt_check" type="text" tabindex="-1" autocomplete="off" data-lpignore="true" data-1p-ignore>
-                </div>
-                <button class="btn btn--primary" type="submit"><?= icon('mail', 'icon icon--inline') ?> Subscribe</button>
-                <p id="newsletter-status" class="form-status" role="status" aria-live="polite"><?= e(newsletter_messages()[$newsletterResult] ?? '') ?></p>
-                <p class="form-note"><?= content_with_link($section['Body'], 'Privacy Policy', 'privacy-policy.php') ?></p>
-            </form>
+            <?= newsletter_form('newsletter', 'home', 'index.php', $section['Body']) ?>
         </div>
     </section>
 <?php endif; ?>

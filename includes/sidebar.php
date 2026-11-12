@@ -23,7 +23,8 @@ $adminNav = [
     'Portfolio & Blog' => [
         ['label' => 'Portfolio Projects', 'path' => 'admin/portfolio-projects.php', 'can' => 'portfolio.view'],
         ['label' => 'Collaborators',      'path' => 'admin/collaborators.php',      'can' => 'collaborators.view'],
-        ['label' => 'Blogs',              'path' => 'admin/blogs.php',              'can' => 'blogs.view'],
+        ['label' => 'Blog Posts',         'path' => 'admin/blogs.php',              'can' => 'blogs.view'],
+        ['label' => 'Blog Categories',    'path' => 'admin/blog-categories.php',    'can' => 'blogs.view'],
     ],
     'Photography' => [
         ['label' => 'Photography Products', 'path' => 'admin/photography-products.php', 'can' => 'products.view'],

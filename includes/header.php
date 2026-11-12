@@ -7,6 +7,7 @@
  *   $pageDescription  string  Meta description
  *   $layout           string  'public' (default) or 'admin'
  *   $noindex          bool    Keep this page out of search engines
+ *   $pageImage        string  Image for link previews when shared (an uploads/ path)
  *   $activeNav        string  Admin only: sidebar item to highlight
  */
 
@@ -40,6 +41,9 @@ $staff = $layout !== 'admin' && function_exists('staff_viewer') ? staff_viewer()
     <meta property="og:site_name" content="<?= e(SITE_NAME) ?>">
     <meta property="og:title" content="<?= e($fullTitle) ?>">
     <meta property="og:description" content="<?= e($pageDescription) ?>">
+<?php if (!empty($pageImage) && APP_URL !== '' && link_is_safe((string) $pageImage)): ?>
+    <meta property="og:image" content="<?= e(APP_URL . image_url((string) $pageImage, 'web')) ?>">
+<?php endif; ?>
 <?php endif; ?>
 
     <link rel="preconnect" href="https://fonts.googleapis.com">

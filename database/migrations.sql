@@ -906,3 +906,62 @@ ALTER TABLE MediaLibrary
     ADD COLUMN IF NOT EXISTS Optimisation ENUM('Optimised','Unchanged','Failed') NULL;
 
 INSERT IGNORE INTO SchemaMigrations (MigrationName) VALUES ('012_media_optimisation');
+
+
+-- --------------------------------------------------------------------------
+-- 013: Blog. Edit stamps on categories (like every other editable table),
+-- "Blog" as a subscriber source, the blog page's starting wording, a link
+-- from the home page's blog section, and starting categories taken from the
+-- topics already listed on the home page. Wording and categories run once
+-- and only fill what is empty, so later edits are never overwritten.
+-- --------------------------------------------------------------------------
+ALTER TABLE BlogCategories
+    ADD COLUMN IF NOT EXISTS LastEditedBy INT UNSIGNED NULL,
+    ADD COLUMN IF NOT EXISTS LastEditedDate DATETIME NULL,
+    ADD CONSTRAINT fk_BlogCategories_LastEditedBy FOREIGN KEY IF NOT EXISTS fk_BlogCategories_LastEditedBy (LastEditedBy)
+        REFERENCES AdminUsers (AdminUserID) ON UPDATE CASCADE ON DELETE SET NULL;
+
+ALTER TABLE Subscribers
+    MODIFY Source ENUM('Newsletter Popup','Footer Subscribe','Homepage Section','Contact Form','Admin Added','Import','Blog') NOT NULL;
+
+INSERT IGNORE INTO PageSections (PageKey, SectionKey, Eyebrow, Heading, Introduction, DisplayOrder, Status)
+SELECT 'blog', 'page-header', NULL, 'Blog', 'Practical ideas on biophilic design, colour and design psychology, and wellbeing at home and at work, with the stories behind the photographs.', 10, 'Published'
+FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM SchemaMigrations WHERE MigrationName = '013_blog');
+
+INSERT IGNORE INTO PageSections (PageKey, SectionKey, Eyebrow, Heading, Introduction, DisplayOrder, Status)
+SELECT 'blog', 'empty', NULL, 'The first articles are on their way', 'Vanessa will be sharing practical ideas on biophilic design, the psychology of colour, nature-centred wellbeing and the stories behind her photography. Join the newsletter below to be the first to read them.', 20, 'Published'
+FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM SchemaMigrations WHERE MigrationName = '013_blog');
+
+INSERT IGNORE INTO PageSections (PageKey, SectionKey, Eyebrow, Heading, Introduction, DisplayOrder, Status)
+SELECT 'blog', 'no-results', NULL, 'No articles found', 'Try a different word, or browse all articles.', 30, 'Published'
+FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM SchemaMigrations WHERE MigrationName = '013_blog');
+
+INSERT IGNORE INTO PageSections (PageKey, SectionKey, Eyebrow, Heading, Introduction, DisplayOrder, Status)
+SELECT 'blog', 'post-newsletter', 'Newsletter', 'Enjoyed this article?', 'New articles, seasonal ideas and first news of workshops and talks, straight to your inbox.', 40, 'Published'
+FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM SchemaMigrations WHERE MigrationName = '013_blog');
+
+UPDATE PageSections SET ButtonText = 'Read the blog', ButtonLink = 'blog.php'
+WHERE PageKey = 'home' AND SectionKey = 'blog' AND ButtonText IS NULL AND ButtonLink IS NULL
+  AND NOT EXISTS (SELECT 1 FROM SchemaMigrations WHERE MigrationName = '013_blog');
+
+INSERT IGNORE INTO BlogCategories (CategoryName, Slug, Description)
+SELECT 'Biophilic design', 'biophilic-design', 'Bringing nature into the places we live and work.'
+FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM SchemaMigrations WHERE MigrationName = '013_blog');
+
+INSERT IGNORE INTO BlogCategories (CategoryName, Slug, Description)
+SELECT 'Colour & design psychology', 'colour-design-psychology', 'How colour, light and layout shape the way a space feels.'
+FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM SchemaMigrations WHERE MigrationName = '013_blog');
+
+INSERT IGNORE INTO BlogCategories (CategoryName, Slug, Description)
+SELECT 'Wellbeing at home', 'wellbeing-at-home', 'Calmer, healthier homes, one room at a time.'
+FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM SchemaMigrations WHERE MigrationName = '013_blog');
+
+INSERT IGNORE INTO BlogCategories (CategoryName, Slug, Description)
+SELECT 'Healthier workspaces', 'healthier-workspaces', 'Offices and studios that support focus and wellbeing.'
+FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM SchemaMigrations WHERE MigrationName = '013_blog');
+
+INSERT IGNORE INTO BlogCategories (CategoryName, Slug, Description)
+SELECT 'Photography', 'photography', 'The stories behind the photographs.'
+FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM SchemaMigrations WHERE MigrationName = '013_blog');
+
+INSERT IGNORE INTO SchemaMigrations (MigrationName) VALUES ('013_blog');

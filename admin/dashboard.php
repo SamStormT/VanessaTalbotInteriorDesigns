@@ -34,6 +34,13 @@ $activity = can('activity.view')
 // Actions taken by website visitors rather than staff (see activity_log_visitor()).
 $visitorActions = ['contact_message', 'newsletter_signup', 'newsletter_resubscribe', 'newsletter_confirm', 'newsletter_unsubscribe'];
 
+// Blog drafts waiting for someone who can publish them.
+$draftPosts = can('blogs.publish')
+    ? db_all("SELECT p.BlogID, p.Title, p.LastEditedDate, p.CreatedDate, CONCAT(a.Name, ' ', a.Surname) AS AuthorName
+              FROM BlogPosts p LEFT JOIN AdminUsers a ON a.AdminUserID = p.AuthorID
+              WHERE p.Status = 'Draft' ORDER BY COALESCE(p.LastEditedDate, p.CreatedDate) DESC LIMIT 5")
+    : [];
+
 $latestMessages = can('messages.view')
     ? db_all("SELECT MessageID, Name, Surname, EnquiryType, CreatedDate FROM ContactMessages WHERE Status = 'New' ORDER BY CreatedDate DESC LIMIT 5")
     : [];
@@ -107,12 +114,30 @@ require_once INCLUDES_PATH . '/header.php';
     </div>
 <?php endif; ?>
 
+<?php if ($draftPosts !== []): ?>
+    <h2 class="admin-section-title">Blog drafts waiting to be published</h2>
+    <div class="admin-table-wrap">
+        <table class="admin-table">
+            <thead><tr><th scope="col">Title</th><th scope="col">Author</th><th scope="col">Last changed</th><th scope="col"><span class="visually-hidden">Actions</span></th></tr></thead>
+            <tbody>
+<?php foreach ($draftPosts as $draft): ?>
+                <tr>
+                    <td><?= e($draft['Title']) ?></td>
+                    <td><?= e(trim((string) $draft['AuthorName']) ?: 'A former user') ?></td>
+                    <td><?= e(cms_format_date($draft['LastEditedDate'] ?? $draft['CreatedDate'])) ?></td>
+                    <td class="admin-table__actions"><a class="btn btn--outline btn--small" href="<?= e(url('admin/blog-edit.php?id=' . (int) $draft['BlogID'])) ?>">Review<span class="visually-hidden"> <?= e($draft['Title']) ?></span></a></td>
+                </tr>
+<?php endforeach; ?>
+            </tbody>
+        </table>
+    </div>
+<?php endif; ?>
+
+<?php if (can('orders.view')): ?>
     <h2 class="admin-section-title">Coming soon</h2>
     <div class="admin-empty-grid">
-<?php if (can('orders.view')): ?>
         <?= admin_empty_state('No orders yet', 'Photography orders will appear here.', 'camera') ?>
-<?php endif; ?>
-        <?= admin_empty_state('No drafts waiting', 'Draft blog posts and projects will appear here.', 'pen') ?>
     </div>
+<?php endif; ?>
 </main>
 <?php require_once INCLUDES_PATH . '/footer.php'; ?>

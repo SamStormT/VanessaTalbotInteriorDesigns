@@ -25,7 +25,8 @@
 | Newsletter sending | **Not built** | Sign-ups are collected; nothing is sent to subscribers yet |
 | Email delivery | **Partly verified** | Login to Xneelo's mail server succeeds with the `.env` settings. Delivery to real inboxes, and the DNS records that keep mail out of spam, still to check |
 | Project documents | Protected | `.htaccess` returns 404 for every `.md` file, tested on Apache |
-| Blog and photography store | Not built | Removed from the menus |
+| Blog | Ready | Articles, categories, search, featured post, draft preview; in the main menu. Shows "first articles are on their way" until posts are published |
+| Photography store | Not built | Removed from the menus |
 | Production hosting | **Not tested** | Only tested locally |
 
 ## 2. Launch blockers
@@ -45,7 +46,7 @@
 | 11 | Vanessa's phone and street address are in the public GitHub history | Make the repo private, or rewrite history | Samantha |
 | 12 | Which email is public: the business card and business plan use a different address from Website Settings | Confirm and update Website Settings | Vanessa |
 
-Blog and store placeholder pages still exist at their old addresses, but nothing links to them.
+Store placeholder pages still exist at their old addresses, but nothing links to them. Old blog addresses redirect to the blog page.
 
 ## 3. Placeholder content Vanessa must replace
 
@@ -105,7 +106,8 @@ Everything below can be changed in the admin area. Page Sections are listed by p
 ## 6. Known limitations
 
 - **Database values:** `PortfolioCategory` and `EnquiryType` still store `Colour Psychology` internally. Admin and public forms display Colour & Design Psychology, and the web address stays `colour-psychology`.
-- **Menus:** Photography points to the portfolio gallery, Speaking to its service page, and Blog is removed. These need revisiting when those features are built.
+- **Menus:** Photography points to the portfolio gallery and Speaking to its service page. These need revisiting when the store is built.
+- **Blog formatting:** articles are plain text with headings and bullet points. Links and pictures inside an article are not supported yet; each post has one featured image.
 - **Sections:** new page sections are added by a developer. On service pages a new section appears automatically. On other pages, the order is set by the design.
 - **Editors and live content:** an Editor changing an already Published record changes the site immediately. Only new records wait for an Admin.
 - **Images:** HEIC photos from iPhones are not accepted, and photos over about 50 megapixels are refused. Speaking Engagement and Testimonial images are stored but not yet shown publicly. Images uploaded before optimisation stay full size until `php database/optimise-media.php` is run.
@@ -123,5 +125,5 @@ Everything below can be changed in the admin area. Page Sections are listed by p
 | 2 | Vanessa uploads photos and replaces wording | Her content |
 | 3 | **First public launch** as a brochure site, with the contact form and newsletter sign-up working | Confirmed wording, legal review, hosting checklist, website mailbox |
 | 4 | Newsletter campaigns | Approval, Xneelo sending limits |
-| 5 | Blog | Approval |
+| 5 | Blog | Done |
 | 6 | Photography store and PayFast | Approval, product decision, merchant account |
