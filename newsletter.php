@@ -17,6 +17,25 @@ $method = $_SERVER['REQUEST_METHOD'] ?? 'GET';
 $action = is_string($_POST['action'] ?? null) ? $_POST['action'] : 'subscribe';
 
 // ---------------------------------------------------------------------------
+// One-click unsubscribe (RFC 8058): email apps such as Gmail offer an
+// "Unsubscribe" button that posts "List-Unsubscribe=One-Click" to the
+// address in the newsletter's List-Unsubscribe header.
+// ---------------------------------------------------------------------------
+if ($method === 'POST' && isset($_GET['unsubscribe']) && ($_POST['List-Unsubscribe'] ?? '') === 'One-Click') {
+    $token = is_string($_GET['unsubscribe']) ? $_GET['unsubscribe'] : '';
+    try {
+        $result = newsletter_unsubscribe($token);
+    } catch (Throwable $error) {
+        error_log('One-click unsubscribe failed: ' . $error->getMessage());
+        $result = 'error';
+    }
+    http_response_code($result === 'invalid' ? 404 : ($result === 'error' ? 500 : 200));
+    header('Content-Type: text/plain; charset=UTF-8');
+    echo $result === 'done' || $result === 'already' ? 'Unsubscribed.' : 'Not found.';
+    exit;
+}
+
+// ---------------------------------------------------------------------------
 // Sign-up
 // ---------------------------------------------------------------------------
 if ($method === 'POST' && $action === 'subscribe') {

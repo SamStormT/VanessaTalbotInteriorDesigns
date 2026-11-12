@@ -1301,3 +1301,56 @@ label {
     text-align: center;
     font-size: var(--fs-sm);
 }
+
+/* --------------------------------------------------------------------------
+   Formatted articles (includes/rich-text.php)
+   -------------------------------------------------------------------------- */
+.rich-text strong { font-weight: 700; color: var(--color-primary); }
+.rich-text a:not(.btn) { color: var(--color-accent-text); text-decoration: underline; text-underline-offset: 3px; }
+.rich-text h3 { margin-top: var(--space-lg); font-size: 1.25rem; }
+.rich-text ul,
+.rich-text ol { margin: 0 0 var(--space-md); padding-left: 1.5rem; }
+.rich-text ul { list-style: disc; }
+.rich-text ol { list-style: decimal; }
+.rich-text li { margin-bottom: 0.4rem; padding-left: 0.25rem; }
+.rich-text li::marker { color: var(--color-earthy-gold); }
+
+.rich-figure { margin: var(--space-lg) 0; }
+.rich-figure img { display: block; width: 100%; height: auto; border-radius: var(--radius); }
+.rich-figure figcaption { margin-top: 0.5rem; font-size: var(--fs-sm); color: var(--color-accent-text); }
+
+.rich-quote {
+    margin: var(--space-xl) 0;
+    padding: 0.5rem 0 0.5rem 1.75rem;
+    border-left: 3px solid var(--color-golden-yellow);
+}
+.rich-quote blockquote { margin: 0; }
+.rich-quote p {
+    margin: 0;
+    font-family: var(--font-display);
+    font-size: clamp(1.35rem, 2.4vw, 1.75rem);
+    line-height: 1.45;
+    color: var(--color-primary);
+}
+.rich-quote figcaption { margin-top: 0.75rem; font-family: var(--font-script); font-size: 1.75rem; color: var(--color-accent-text); }
+
+.rich-section {
+    margin: var(--space-lg) 0;
+    padding: clamp(1.5rem, 3vw, 2.25rem);
+    border-radius: var(--radius);
+    background: var(--color-soft-peach);
+}
+.rich-section > :last-child { margin-bottom: 0; }
+.rich-section--white { background: var(--color-white); border: 1px solid var(--color-border); }
+.rich-section--green,
+.rich-section--gold { color: var(--color-white); }
+.rich-section--green { background: var(--color-forest-green); }
+.rich-section--gold { background: var(--color-earthy-gold); }
+.rich-section--green :is(h2, h3, p, li, strong),
+.rich-section--gold :is(h2, h3, p, li, strong) { color: var(--color-white); }
+.rich-section--green a:not(.btn),
+.rich-section--gold a:not(.btn) { color: var(--color-soft-peach); }
+.rich-section--green .btn--primary,
+.rich-section--gold .btn--primary { background: var(--color-soft-peach); border-color: var(--color-soft-peach); color: var(--color-primary); }
+.rich-button { margin: var(--space-lg) 0; }
+.rich-more { display: block; }

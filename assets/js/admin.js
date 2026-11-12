@@ -177,6 +177,9 @@ document.querySelectorAll('form[data-confirm]').forEach((form) => {
         return new Promise((resolve) => { pickerResolve = resolve; });
     }
 
+    // Shared with the article editor below.
+    window.vtChooseImage = chooseFromLibrary;
+
     // ---- Image field on a form ----
     document.querySelectorAll('[data-media-field]').forEach((field) => {
         const value = field.querySelector('[data-media-value]');
@@ -267,4 +270,234 @@ document.querySelectorAll('form[data-confirm]').forEach((form) => {
             }));
         });
     });
+})();
+
+// ---------------------------------------------------------------------------
+// Article editor: toolbar buttons insert simple formatting marks into the
+// text box (see includes/rich-text.php), and Preview shows how it will look.
+// ---------------------------------------------------------------------------
+(() => {
+    const csrf = document.querySelector('meta[name="csrf-token"]')?.content ?? '';
+
+    document.querySelectorAll('[data-rich-editor]').forEach((editor) => {
+        const box = editor.querySelector('textarea');
+        const toolbar = editor.querySelector('.rich-toolbar');
+        const preview = editor.querySelector('.rich-preview');
+        const previewButton = editor.querySelector('[data-rich="preview"]');
+        toolbar.hidden = false;
+
+        const selection = () => box.value.slice(box.selectionStart, box.selectionEnd);
+
+        /** Selected words for bold, links, headings and buttons: one line at most.
+            With several lines selected, insert after them instead. */
+        const selected = () => {
+            const text = selection();
+            if (text.includes('\n')) {
+                box.setSelectionRange(box.selectionEnd, box.selectionEnd);
+                return '';
+            }
+            return text;
+        };
+
+        /** Replace the selection with text, then select part of it (or place the cursor). */
+        function insert(text, selectFrom = text.length, selectTo = selectFrom) {
+            const start = box.selectionStart;
+            box.setRangeText(text, start, box.selectionEnd, 'end');
+            box.focus();
+            box.setSelectionRange(start + selectFrom, start + selectTo);
+            box.dispatchEvent(new Event('input'));
+        }
+
+        /** Text that must sit on its own lines: add line breaks around it if needed. */
+        function insertBlock(text, selectFrom, selectTo) {
+            const before = box.value.slice(0, box.selectionStart);
+            const after = box.value.slice(box.selectionEnd);
+            const lead = before === '' || before.endsWith('\n\n') ? '' : (before.endsWith('\n') ? '\n' : '\n\n');
+            const tail = after === '' || after.startsWith('\n\n') ? '' : (after.startsWith('\n') ? '\n' : '\n\n');
+            const from = selectFrom ?? text.length;
+            insert(lead + text + tail, lead.length + from, lead.length + (selectTo ?? from));
+        }
+
+        /** Words typed straight after a [[picture]], [[button]] or [[section]] line
+            would break it, so start a new paragraph first. */
+        function leaveBlockLine() {
+            const lastLine = box.value.slice(0, box.selectionStart).split('\n').pop();
+            if (/^\s*\[\[.*\]\]\s*$/.test(lastLine)) {
+                insert('\n\n');
+            }
+        }
+
+        /** Wrap the selection in marks, or insert sample words to type over. */
+        function wrap(mark, sample) {
+            leaveBlockLine();
+            const words = selected() || sample;
+            insert(mark + words + mark, mark.length, mark.length + words.length);
+        }
+
+        /** Start each selected line with a prefix (for lists). */
+        function prefixLines(prefix, sample) {
+            const text = selection() || sample; // lists work on whole lines
+            const lines = text.split('\n').map((line) => (line.trim() === '' ? line : prefix + line.replace(/^\s*(?:[-*•]|>)\s+/, '')));
+            const joined = lines.join('\n');
+            insertBlock(joined, 0, joined.length);
+        }
+
+        const actions = {
+            bold: () => wrap('**', 'bold words'),
+            italic: () => wrap('_', 'italic words'),
+            heading: () => {
+                const words = selected() || 'Heading';
+                insertBlock('## ' + words, 3, 3 + words.length);
+            },
+            list: () => prefixLines('- ', 'First point\nSecond point'),
+            quote: () => {
+                const words = selected() || 'A sentence worth remembering.';
+                insertBlock('> ' + words + '\n> — Name', 2, 2 + words.length);
+            },
+            link: () => {
+                const address = window.prompt('Link to which page? For example contact.php, or a full https:// address.', 'https://');
+                if (!address || address.trim() === 'https://') return;
+                leaveBlockLine();
+                const words = selected() || 'link words';
+                insert('[' + words + '](' + address.trim() + ')', 1, 1 + words.length);
+            },
+            button: () => {
+                const words = selected() || 'Book a consultation';
+                insertBlock('[[button ' + words + ' | contact.php]]', 9, 9 + words.length);
+            },
+            section: () => {
+                const answer = (window.prompt('Section colour: peach, green, gold or white', 'peach') || 'peach').trim().toLowerCase();
+                const style = ['peach', 'green', 'gold', 'white'].includes(answer) ? answer : 'peach';
+                const words = selection() || 'Text inside the highlighted section.'; // may be several lines
+                const open = '[[section ' + style + ']]\n';
+                insertBlock(open + words + '\n[[/section]]', open.length, open.length + words.length);
+            },
+            more: () => insertBlock('[[more]]'),
+            image: async () => {
+                if (!window.vtChooseImage) return;
+                const start = box.selectionStart;
+                const end = box.selectionEnd;
+                const item = await window.vtChooseImage();
+                if (!item) return;
+                box.focus();
+                box.setSelectionRange(start, end);
+                insertBlock('[[image ' + item.path + (item.caption ? ' | ' + item.caption : '') + ']]');
+            },
+            preview: async () => {
+                if (previewButton.getAttribute('aria-pressed') === 'true') {
+                    preview.hidden = true;
+                    box.hidden = false;
+                    previewButton.setAttribute('aria-pressed', 'false');
+                    previewButton.textContent = 'Preview';
+                    box.focus();
+                    return;
+                }
+                preview.innerHTML = '<p><em>Loading preview…</em></p>';
+                preview.hidden = false;
+                box.hidden = true;
+                previewButton.setAttribute('aria-pressed', 'true');
+                previewButton.textContent = 'Back to editing';
+                try {
+                    const body = new URLSearchParams({ csrf_token: csrf, text: box.value });
+                    const response = await fetch(editor.dataset.previewUrl, { method: 'POST', body, credentials: 'same-origin' });
+                    const result = await response.json();
+                    if (result.ok) {
+                        preview.innerHTML = result.html;
+                    } else {
+                        preview.textContent = result.message || 'Preview not available.';
+                    }
+                } catch (error) {
+                    preview.textContent = 'Preview not available. Please try again.';
+                }
+            },
+        };
+
+        toolbar.addEventListener('click', (event) => {
+            const button = event.target.closest('[data-rich]');
+            if (!button || !actions[button.dataset.rich]) return;
+            if (button.dataset.rich !== 'preview' && previewButton.getAttribute('aria-pressed') === 'true') {
+                actions.preview(); // back to editing first
+            }
+            actions[button.dataset.rich]();
+        });
+
+        // Keyboard shortcuts for the two most common marks.
+        box.addEventListener('keydown', (event) => {
+            if (!(event.ctrlKey || event.metaKey)) return;
+            if (event.key === 'b') { event.preventDefault(); actions.bold(); }
+            if (event.key === 'i') { event.preventDefault(); actions.italic(); }
+        });
+    });
+})();
+
+// ---------------------------------------------------------------------------
+// Newsletter sending: while the campaign page is open, send batch after
+// batch and show progress. Stops at the hourly limit or on an error, with a
+// Resume button; reloads the page when everything has been sent.
+// ---------------------------------------------------------------------------
+(() => {
+    const panel = document.querySelector('[data-campaign-progress]');
+    if (!panel || panel.dataset.sending !== '1') return;
+
+    const csrf = document.querySelector('meta[name="csrf-token"]')?.content ?? '';
+    const bar = panel.querySelector('progress');
+    const text = panel.querySelector('[data-progress-text]');
+    const help = panel.querySelector('[data-progress-help]');
+    const resume = panel.querySelector('[data-progress-resume]');
+    let running = false;
+
+    const warnOnLeave = (event) => { event.preventDefault(); event.returnValue = ''; };
+
+    function show(result) {
+        const finished = result.sent + result.failed + result.skipped;
+        bar.max = result.total;
+        bar.value = finished;
+        text.textContent = `${result.sent} sent · ${result.failed} failed · ${result.skipped} skipped (unsubscribed while sending) · ${result.pending + result.sending} waiting`;
+    }
+
+    function stop(message) {
+        running = false;
+        window.removeEventListener('beforeunload', warnOnLeave);
+        help.textContent = message;
+        resume.hidden = false;
+    }
+
+    async function run() {
+        if (running) return;
+        running = true;
+        resume.hidden = true;
+        help.textContent = 'Sending… please keep this page open.';
+        window.addEventListener('beforeunload', warnOnLeave);
+
+        while (running) {
+            let result;
+            try {
+                const body = new URLSearchParams({ csrf_token: csrf, id: panel.dataset.campaignId });
+                const response = await fetch(panel.dataset.campaignProgress, { method: 'POST', body, credentials: 'same-origin' });
+                result = await response.json();
+            } catch (error) {
+                stop('The connection was interrupted. Press Resume to carry on; nobody will be emailed twice.');
+                return;
+            }
+            if (!result.ok) {
+                stop(result.message);
+                return;
+            }
+            show(result);
+            if (result.done) {
+                window.removeEventListener('beforeunload', warnOnLeave);
+                help.textContent = result.message;
+                window.location.reload();
+                return;
+            }
+            if (result.paused) {
+                stop(result.message);
+                return;
+            }
+            await new Promise((resolve) => setTimeout(resolve, 1500)); // be gentle with the mail server
+        }
+    }
+
+    resume.addEventListener('click', run);
+    run();
 })();

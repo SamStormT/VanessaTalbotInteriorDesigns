@@ -53,6 +53,12 @@ function cms_validate(array $module, array $input, array $existing = []): array
         $value = is_string($raw) ? trim(str_replace("\r\n", "\n", $raw)) : '';
         $label = $field['label'];
 
+        // Text pasted from some old programs isn't UTF-8; refuse it clearly instead of failing to save.
+        if (!mb_check_encoding($value, 'UTF-8')) {
+            $errors[$name] = "$label contains characters that couldn't be read. Please retype any special characters, such as dashes or quotes.";
+            continue;
+        }
+
         if ($value === '') {
             if (!empty($field['required'])) {
                 $errors[$name] = "$label is required.";
@@ -277,6 +283,8 @@ function cms_render_control(string $name, array $field, string $value, ?string $
             $control .= '<option value="' . e($option) . '"' . ($option === $value ? ' selected' : '') . '>' . e($field['option_labels'][$option] ?? $option) . '</option>';
         }
         $control .= '</select>';
+    } elseif (!empty($field['rich'])) {
+        $control = cms_rich_editor($attrs, $value, ($field['max'] ?? 0) > 20000 ? 18 : 8);
     } elseif (in_array($field['type'], ['textarea', 'lines'], true)) {
         $rows    = ($field['max'] ?? 0) > 5000 ? 8 : 4;
         $control = '<textarea rows="' . $rows . '" ' . $attrs . '>' . e($value) . '</textarea>';
@@ -289,6 +297,49 @@ function cms_render_control(string $name, array $field, string $value, ?string $
     }
 
     return '<div class="admin-field">' . $label . $control . $help . $message . '</div>';
+}
+
+/**
+ * A text box for formatted articles (see includes/rich-text.php): a toolbar
+ * that inserts the formatting marks, a "how it looks" preview, and a short
+ * guide. Without JavaScript it is an ordinary text box.
+ */
+function cms_rich_editor(string $attrs, string $value, int $rows = 18): string
+{
+    $buttons = [
+        ['bold', 'Bold', '<strong>B</strong>'],
+        ['italic', 'Italic', '<em>I</em>'],
+        ['link', 'Link', 'Link'],
+        ['heading', 'Heading', 'Heading'],
+        ['list', 'Bullet list', 'List'],
+        ['quote', 'Pull quote', 'Quote'],
+        ['image', 'Picture from the Media Library', 'Picture'],
+        ['section', 'Highlighted section', 'Section'],
+        ['button', 'Button', 'Button'],
+        ['more', 'Newsletter "read more" point', 'Read more'],
+    ];
+    $toolbar = '<div class="rich-toolbar" role="toolbar" aria-label="Formatting" hidden>';
+    foreach ($buttons as [$action, $label, $text]) {
+        $toolbar .= '<button type="button" class="rich-toolbar__button" data-rich="' . $action . '" title="' . e($label) . '" aria-label="' . e($label) . '">' . $text . '</button>';
+    }
+    $toolbar .= '<button type="button" class="rich-toolbar__button rich-toolbar__preview" data-rich="preview" aria-pressed="false">Preview</button></div>';
+
+    $guide = '<details class="rich-guide"><summary>Formatting guide</summary><dl>'
+           . '<div><dt>Paragraphs</dt><dd>Leave a blank line between them.</dd></div>'
+           . '<div><dt>**bold**, _italic_</dt><dd>Text between two stars is bold; between underscores is italic.</dd></div>'
+           . '<div><dt>## Heading, ### Smaller heading</dt><dd>At the start of a line.</dd></div>'
+           . '<div><dt>- item</dt><dd>A bullet point (also * or •). Use 1. for numbered points.</dd></div>'
+           . '<div><dt>[words](contact.php)</dt><dd>A link to a page on this site, or a full https:// address.</dd></div>'
+           . '<div><dt>&gt; quote</dt><dd>A pull quote. Add a last line &gt; — Name for who said it.</dd></div>'
+           . '<div><dt>[[image …]]</dt><dd>A picture from the Media Library, with an optional caption after |.</dd></div>'
+           . '<div><dt>[[section green]] … [[/section]]</dt><dd>A highlighted block: peach, green, gold or white.</dd></div>'
+           . '<div><dt>[[button Words | page]]</dt><dd>A button, for example [[button Book a consultation | contact.php]].</dd></div>'
+           . '<div><dt>[[more]]</dt><dd>Newsletters show the article up to this point, then a Read more button.</dd></div>'
+           . '</dl></details>';
+
+    return '<div class="rich-editor" data-rich-editor data-preview-url="' . e(url('admin/rich-preview.php')) . '">' . $toolbar
+         . '<textarea rows="' . $rows . '" ' . $attrs . '>' . e($value) . '</textarea>'
+         . '<div class="rich-preview content-document rich-text" hidden aria-live="polite"></div>' . $guide . '</div>';
 }
 
 /** Drop zone, preview and library button. The path is held in a hidden field. */

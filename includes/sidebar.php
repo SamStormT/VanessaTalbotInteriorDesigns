@@ -30,6 +30,9 @@ $adminNav = [
         ['label' => 'Photography Products', 'path' => 'admin/photography-products.php', 'can' => 'products.view'],
         ['label' => 'Photography Orders',   'path' => 'admin/photography-orders.php',   'can' => 'orders.view'],
     ],
+    'Marketing' => [
+        ['label' => 'Newsletter Campaigns', 'path' => 'admin/campaigns.php', 'can' => 'subscribers.view'],
+    ],
     'Audience' => [
         ['label' => 'Subscribers',      'path' => 'admin/subscribers.php', 'can' => 'subscribers.view'],
         ['label' => 'Contact Messages', 'path' => 'admin/enquiries.php',   'can' => 'messages.view'],

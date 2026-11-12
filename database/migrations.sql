@@ -965,3 +965,59 @@ SELECT 'Photography', 'photography', 'The stories behind the photographs.'
 FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM SchemaMigrations WHERE MigrationName = '013_blog');
 
 INSERT IGNORE INTO SchemaMigrations (MigrationName) VALUES ('013_blog');
+
+
+-- --------------------------------------------------------------------------
+-- 014: Newsletter campaigns. Campaign content (greeting, introduction,
+-- featured article, quote, read-more button, supporting content), the link
+-- to the blog post it came from, a Ready status and a Sending status, safe
+-- resumable sending (each recipient row is claimed before it is emailed),
+-- a Skipped result for people who unsubscribed mid-send, and a history of
+-- test emails. Structure only: no content changes.
+-- --------------------------------------------------------------------------
+ALTER TABLE NewsletterCampaigns
+    MODIFY Status ENUM('Draft','Ready','Scheduled','Sending','Sent','Archived') NOT NULL DEFAULT 'Draft',
+    ADD COLUMN IF NOT EXISTS BlogID INT UNSIGNED NULL AFTER CampaignName,
+    ADD COLUMN IF NOT EXISTS PreviewText VARCHAR(255) NULL AFTER Subject,
+    ADD COLUMN IF NOT EXISTS Greeting VARCHAR(150) NULL,
+    ADD COLUMN IF NOT EXISTS IntroMessage TEXT NULL,
+    ADD COLUMN IF NOT EXISTS FeatureTitle VARCHAR(255) NULL,
+    ADD COLUMN IF NOT EXISTS FeatureSummary TEXT NULL,
+    ADD COLUMN IF NOT EXISTS FeatureImage VARCHAR(500) NULL,
+    ADD COLUMN IF NOT EXISTS FeatureImageAlt VARCHAR(255) NULL,
+    ADD COLUMN IF NOT EXISTS FeatureBody MEDIUMTEXT NULL,
+    ADD COLUMN IF NOT EXISTS ReadMoreText VARCHAR(100) NULL,
+    ADD COLUMN IF NOT EXISTS ReadMoreLink VARCHAR(500) NULL,
+    ADD COLUMN IF NOT EXISTS QuoteText TEXT NULL,
+    ADD COLUMN IF NOT EXISTS QuoteAuthor VARCHAR(150) NULL,
+    ADD COLUMN IF NOT EXISTS SendStartedDate DATETIME NULL,
+    ADD COLUMN IF NOT EXISTS LastEditedBy INT UNSIGNED NULL,
+    ADD COLUMN IF NOT EXISTS LastEditedDate DATETIME NULL,
+    ADD CONSTRAINT fk_NewsletterCampaigns_Blog FOREIGN KEY IF NOT EXISTS fk_NewsletterCampaigns_Blog (BlogID)
+        REFERENCES BlogPosts (BlogID) ON UPDATE CASCADE ON DELETE SET NULL,
+    ADD CONSTRAINT fk_NewsletterCampaigns_LastEditedBy FOREIGN KEY IF NOT EXISTS fk_NewsletterCampaigns_LastEditedBy (LastEditedBy)
+        REFERENCES AdminUsers (AdminUserID) ON UPDATE CASCADE ON DELETE SET NULL;
+
+ALTER TABLE CampaignRecipients
+    MODIFY Status ENUM('Pending','Sending','Sent','Failed','Skipped') NOT NULL DEFAULT 'Pending',
+    ADD COLUMN IF NOT EXISTS ClaimToken CHAR(32) NULL,
+    ADD COLUMN IF NOT EXISTS ClaimedDate DATETIME NULL,
+    ADD KEY IF NOT EXISTS idx_CampaignRecipients_Claim (ClaimToken);
+
+CREATE TABLE IF NOT EXISTS CampaignTestSends (
+    TestID       INT UNSIGNED NOT NULL AUTO_INCREMENT,
+    CampaignID   INT UNSIGNED NOT NULL,
+    SentTo       VARCHAR(254) NOT NULL,
+    SentBy       INT UNSIGNED NULL,
+    SentDate     DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    Successful   TINYINT(1) NOT NULL DEFAULT 0,
+    ErrorMessage VARCHAR(500) NULL,
+    PRIMARY KEY (TestID),
+    KEY idx_CampaignTestSends_Campaign (CampaignID, SentDate),
+    CONSTRAINT fk_CampaignTestSends_Campaign FOREIGN KEY (CampaignID)
+        REFERENCES NewsletterCampaigns (CampaignID) ON UPDATE CASCADE ON DELETE CASCADE,
+    CONSTRAINT fk_CampaignTestSends_SentBy FOREIGN KEY (SentBy)
+        REFERENCES AdminUsers (AdminUserID) ON UPDATE CASCADE ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+INSERT IGNORE INTO SchemaMigrations (MigrationName) VALUES ('014_newsletter_campaigns');

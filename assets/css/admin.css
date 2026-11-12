@@ -360,3 +360,84 @@ fieldset.admin-panel > .admin-panel__title + * { clear: both; }
 .login-form { display: grid; gap: 1.125rem; }
 .login-card__link { margin: var(--space-md) 0 0; text-align: center; font-size: 0.875rem; }
 .login-form .btn { width: 100%; margin-top: var(--space-sm); }
+
+/* Article editor (cms_rich_editor) */
+.rich-editor { max-width: 900px; }
+.admin-field .rich-editor textarea { max-width: none; border-radius: 0; }
+.rich-editor textarea { font-family: ui-monospace, 'Cascadia Mono', Consolas, monospace; font-size: 0.875rem; line-height: 1.6; }
+.rich-toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem;
+    padding: 0.375rem;
+    border: 1px solid var(--color-border);
+    border-bottom: 0;
+    background: var(--color-peach-light);
+}
+.rich-toolbar[hidden] { display: none; }
+.rich-toolbar__button {
+    min-height: 34px;
+    padding: 0.25rem 0.7rem;
+    border: 1px solid transparent;
+    border-radius: var(--radius);
+    background: var(--color-white);
+    color: var(--color-primary);
+    font: inherit;
+    font-size: 0.8125rem;
+    cursor: pointer;
+}
+.rich-toolbar__button:hover,
+.rich-toolbar__button:focus-visible { border-color: var(--color-primary); }
+.rich-toolbar__preview { margin-left: auto; background: var(--color-primary); color: var(--color-white); }
+.rich-toolbar__preview[aria-pressed="true"] { background: var(--color-golden-yellow); color: var(--color-primary); }
+.rich-preview {
+    min-height: 18rem;
+    max-width: none;
+    padding: 1.25rem 1.5rem;
+    border: 1px solid var(--color-border);
+    background: var(--color-white);
+}
+.rich-guide { margin-top: 0.5rem; font-size: var(--fs-sm); }
+.rich-guide summary { cursor: pointer; color: var(--color-accent-text); }
+.rich-guide dl { display: grid; gap: 0.4rem; margin: 0.75rem 0 0; }
+.rich-guide dl > div { display: grid; grid-template-columns: minmax(0, 240px) minmax(0, 1fr); gap: 0.75rem; }
+.rich-guide dt { font-family: ui-monospace, Consolas, monospace; font-size: 0.8125rem; color: var(--color-primary); }
+.rich-guide dd { margin: 0; }
+@media (max-width: 600px) { .rich-guide dl > div { grid-template-columns: minmax(0, 1fr); gap: 0; } }
+
+/* Newsletter campaigns */
+.admin-badge--campaign-draft { background: var(--color-white); }
+.admin-badge--campaign-ready { background: var(--color-golden-yellow); border-color: var(--color-golden-yellow); color: var(--color-primary); }
+.admin-badge--campaign-sending { background: var(--color-peach-light); border-color: var(--color-primary); }
+.admin-badge--campaign-sent { background: var(--color-primary); border-color: var(--color-primary); color: var(--color-white); }
+.admin-badge--campaign-archived { border-color: var(--color-border); color: var(--color-text-muted); }
+.campaign-steps {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin: 0 0 var(--space-md);
+    padding: 0;
+    list-style: none;
+    counter-reset: step;
+    font-size: var(--fs-sm);
+}
+.campaign-steps li { counter-increment: step; padding: 0.3rem 0.8rem; border: 1px solid var(--color-border); background: var(--color-white); color: var(--color-text-muted); }
+.campaign-steps li::before { content: counter(step) ". "; }
+.campaign-steps li.is-current { border-color: var(--color-primary); color: var(--color-primary); font-weight: 600; }
+.campaign-progress { width: 100%; height: 14px; accent-color: var(--color-primary); }
+.campaign-test { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 0.75rem 1rem; }
+.campaign-test .admin-field { flex: 1 1 260px; margin: 0; }
+.campaign-subtitle { margin: var(--space-md) 0 0.5rem; font-size: 0.9375rem; }
+.campaign-tests { margin: 0; padding: 0; list-style: none; display: grid; gap: 0.4rem; font-size: var(--fs-sm); }
+.campaign-send { border-top: 3px solid var(--color-golden-yellow); }
+.campaign-meta { margin-bottom: var(--space-sm); }
+.campaign-preview .admin-filters button { font: inherit; cursor: pointer; }
+.campaign-preview__frame {
+    display: block;
+    max-width: 100%;
+    min-height: 600px;
+    margin-top: var(--space-sm);
+    border: 1px solid var(--color-border);
+    background: #F9F0EA;
+    transition: width var(--transition);
+}

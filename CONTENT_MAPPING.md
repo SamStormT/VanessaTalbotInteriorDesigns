@@ -74,6 +74,7 @@ Fields marked *(empty)* exist but have nothing to hold yet.
 | Blog | Newsletter | Same wording as the home page | `PageSections` | `home/newsletter` | |
 | Blog article | Newsletter under each article | Small heading, heading, paragraph | `PageSections` | `blog/post-newsletter` | `Eyebrow`, `Heading`, `Introduction` |
 | Blog | Articles and categories | Everything else | `BlogPosts`, `BlogCategories` | Blog Posts, Blog Categories in the admin | |
+| Newsletter email | Every part | Per campaign | `NewsletterCampaigns` | Marketing → Newsletter Campaigns | Contact details and social links come from `WebsiteSettings` |
 | Home | Closing call to action | Heading | `PageSections` | `home/contact-cta` | `Heading` |
 | Home | Closing call to action | Paragraph | `PageSections` | `home/contact-cta` | `Introduction` |
 | Home | Closing call to action | First button | `PageSections` | `home/contact-cta` | `ButtonText`, `ButtonLink` |

@@ -4,7 +4,7 @@
 
 Stack: HTML5, CSS3, JavaScript, PHP 8, MariaDB, PHPMailer (installed with Composer). PayFast is planned. Hosted on Xneelo Standard Hosting.
 
-> **Status: Phase 11.** Every page in the public menus reads its wording from the CMS. Images are uploaded by drag and drop from the page being edited, kept in the Media Library, and optimised automatically. The contact form, newsletter sign-up and forgot-password emails work through PHPMailer. The SuperAdmin manages users from the admin area. The blog is built. Photography store, newsletter sending and payments are not built yet.
+> **Status: Phase 12.** Every page in the public menus reads its wording from the CMS. Images are uploaded by drag and drop from the page being edited, kept in the Media Library, and optimised automatically. The contact form, newsletter sign-up and forgot-password emails work through PHPMailer. The SuperAdmin manages users from the admin area. The blog is built, with formatted articles. Newsletter campaigns are built from blog posts. Photography store and payments are not built yet.
 
 ## Folder layout
 
@@ -70,6 +70,9 @@ Stack: HTML5, CSS3, JavaScript, PHP 8, MariaDB, PHPMailer (installed with Compos
 │   ├── enquiries.php, enquiry.php                   Contact Messages: list by status, one message
 │   ├── subscribers.php                              Newsletter subscribers
 │   ├── admin-users.php, user-edit.php               Users: list, add, role, disable, password links
+│   ├── campaigns.php, campaign-edit.php             Newsletter campaigns: list; write, test, ready, send, archive
+│   ├── campaign-preview.php, campaign-send.php      Email preview (computer/phone/text); batch sending (JSON)
+│   ├── rich-preview.php                             Article editor's Preview button (JSON)
 │   ├── blogs.php, blog-edit.php                     Blog posts: list, write, edit (blog-create.php redirects)
 │   ├── blog-categories.php, blog-category-edit.php  Blog categories
 │   └── (placeholders) photography-products.php,
@@ -103,6 +106,8 @@ Stack: HTML5, CSS3, JavaScript, PHP 8, MariaDB, PHPMailer (installed with Compos
 │   ├── mail-templates/        One file per email: contact-notification, newsletter-confirm,
 │   │                          password-reset, password-changed, account-invite
 │   ├── users.php              User management rules: create, update, disable, password links
+│   ├── rich-text.php          Article formatting (bold, links, lists, quotes, pictures, sections, buttons) for web and email
+│   ├── campaigns.php          Newsletter campaigns: content from blog posts, the branded email, tests, safe batch sending
 │   ├── enquiries.php          Contact form: validation, saving, notification
 │   ├── newsletter.php         Newsletter: subscribe, confirm, unsubscribe
 │   ├── newsletter-form.php    The sign-up form shared by the home page and the blog
@@ -126,6 +131,7 @@ Stack: HTML5, CSS3, JavaScript, PHP 8, MariaDB, PHPMailer (installed with Compos
 │   ├── migrations.sql         Migrations 002 to 012: page sections, edit stamps, seed content, image details
 │   ├── setup.php              Command-line install; safe to re-run; creates the first SuperAdmin
 │   ├── optimise-media.php     Command-line: optimise images uploaded before Phase 8; safe to re-run
+│   ├── send-campaigns.php     Command-line or cron: carry on sending any campaign that is Sending
 │   └── CMS_ARCHITECTURE.md    Database design, admin screens, permissions
 │
 ├── vendor/                    PHPMailer, installed by Composer; ignored by Git; must be deployed

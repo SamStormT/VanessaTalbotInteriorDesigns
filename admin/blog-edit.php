@@ -86,6 +86,9 @@ require_once INCLUDES_PATH . '/header.php';
         <a class="btn btn--outline btn--small" href="<?= e($list) ?>">All posts</a>
 <?php if (!$creating): ?>
         <a class="btn btn--outline btn--small" href="<?= e(blog_post_url((string) $row['Slug'])) ?>" target="_blank" rel="noopener"><?= $row['Status'] === 'Published' ? 'View on website' : 'Preview' ?><span class="visually-hidden"> (opens in a new tab)</span></a>
+<?php if ($row['Status'] === 'Published' && can('subscribers.create')): ?>
+        <a class="btn btn--primary btn--small" href="<?= e(url('admin/campaign-edit.php?from_post=' . (int) $row['BlogID'])) ?>">Create campaign from this post</a>
+<?php endif; ?>
 <?php endif; ?>
     </div>
 

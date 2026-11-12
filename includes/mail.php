@@ -45,12 +45,18 @@ function mail_problem(): ?string
  */
 function absolute_url(string $path): string
 {
+    return mail_origin() . url($path);
+}
+
+/** The site's origin (https://domain) for links in emails. See absolute_url(). */
+function mail_origin(): string
+{
     $origin = APP_URL;
     if ($origin === '' && APP_ENV === 'development') {
         $https  = !empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off';
         $origin = ($https ? 'https://' : 'http://') . ($_SERVER['HTTP_HOST'] ?? 'localhost');
     }
-    return $origin . url($path);
+    return $origin;
 }
 
 // ---------------------------------------------------------------------------
@@ -162,19 +168,34 @@ function mail_layout(string $heading, string $body, string $footer): string
  */
 function mail_send(string $to, string $template, array $data = [], array $options = []): bool
 {
-    $problem = mail_problem();
-    if ($problem !== null) {
-        error_log('Email not sent (' . $template . '): ' . $problem);
-        return false;
-    }
-    if (!filter_var($to, FILTER_VALIDATE_EMAIL)) {
-        error_log('Email not sent (' . $template . '): invalid recipient address');
-        return false;
-    }
-
     try {
         $message = mail_render($template, $data);
-        $mail    = mail_create();
+    } catch (Throwable $error) {
+        error_log('Email not sent (' . $template . '): ' . $error->getMessage());
+        return false;
+    }
+    return mail_deliver($to, $template, $message, $options) === null;
+}
+
+/**
+ * Send an already-built message: ['subject' => ..., 'html' => ..., 'text' => ...].
+ * Used by mail_send() and by newsletter campaigns, which build their own
+ * complete HTML. Returns null on success, or the reason it failed (also logged).
+ */
+function mail_deliver(string $to, string $label, array $message, array $options = []): ?string
+{
+    $problem = mail_problem();
+    if ($problem === null && !filter_var($to, FILTER_VALIDATE_EMAIL)) {
+        $problem = 'invalid recipient address';
+    }
+    if ($problem !== null) {
+        error_log('Email not sent (' . $label . '): ' . $problem);
+        return $problem;
+    }
+
+    $mail = null;
+    try {
+        $mail = mail_create();
 
         $mail->addAddress($to, (string) ($options['to_name'] ?? ''));
         if (!empty($options['reply_to']) && filter_var($options['reply_to'], FILTER_VALIDATE_EMAIL)) {
@@ -184,23 +205,24 @@ function mail_send(string $to, string $template, array $data = [], array $option
             $mail->addCustomHeader((string) $name, str_replace(["\r", "\n"], '', (string) $value));
         }
 
-        $mail->Subject = $message['subject'];
+        $mail->Subject = trim(str_replace(["\r", "\n"], ' ', (string) $message['subject']));
         $mail->isHTML(true);
-        $mail->Body    = $message['html'];
-        $mail->AltBody = $message['text'];
+        $mail->Body    = (string) $message['html'];
+        $mail->AltBody = (string) $message['text'];
 
         if (MAIL_MAILER === 'log') {
-            return mail_write_to_log($mail, $template);
+            return mail_write_to_log($mail, $label) ? null : 'could not write the email to the log';
         }
 
         $mail->send();
-        return true;
+        return null;
     } catch (MailException $error) {
-        error_log('Email not sent (' . $template . ' to ' . mail_domain($to) . '): ' . ($mail->ErrorInfo ?? '') . ' ' . $error->getMessage());
+        $reason = trim(($mail->ErrorInfo ?? '') . ' ' . $error->getMessage());
     } catch (Throwable $error) {
-        error_log('Email not sent (' . $template . ' to ' . mail_domain($to) . '): ' . $error->getMessage());
+        $reason = $error->getMessage();
     }
-    return false;
+    error_log('Email not sent (' . $label . ' to ' . mail_domain($to) . '): ' . $reason);
+    return mb_substr($reason, 0, 480);
 }
 
 /**

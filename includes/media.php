@@ -166,11 +166,26 @@ function media_usage(string $path): array
         ['PhotographyProducts', 'PreviewImage', 'Photography products'],
     ];
 
+    $places[] = ['NewsletterCampaigns', 'FeatureImage', 'Newsletter campaigns'];
+
+    // Pictures placed inside formatted text, as [[image path | caption]].
+    $inline = [
+        ['BlogPosts', 'Content', 'Inside blog articles'],
+        ['NewsletterCampaigns', 'FeatureBody', 'Inside newsletter campaigns'],
+        ['NewsletterCampaigns', 'Content', 'Inside newsletter campaigns'],
+    ];
+
     $used = [];
     foreach ($places as [$table, $column, $label]) {
         $count = (int) db_value("SELECT COUNT(*) FROM `$table` WHERE `$column` = ?", [$path]);
         if ($count > 0) {
             $used[] = $count > 1 ? "$label ($count)" : $label;
+        }
+    }
+    $like = '%[[image ' . addcslashes($path, '%_\\') . '%';
+    foreach ($inline as [$table, $column, $label]) {
+        if ((int) db_value("SELECT COUNT(*) FROM `$table` WHERE `$column` LIKE ?", [$like]) > 0 && !in_array($label, $used, true)) {
+            $used[] = $label;
         }
     }
     return $used;

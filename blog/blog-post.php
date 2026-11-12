@@ -8,6 +8,7 @@
 require_once __DIR__ . '/../includes/config.php';
 require_once INCLUDES_PATH . '/blog.php';
 require_once INCLUDES_PATH . '/newsletter-form.php';
+require_once INCLUDES_PATH . '/rich-text.php';
 
 $slug  = is_string($_GET['slug'] ?? null) ? $_GET['slug'] : '';
 $staff = staff_viewer();
@@ -70,8 +71,8 @@ require_once INCLUDES_PATH . '/header.php';
 <?php if (trim((string) $post['Excerpt']) !== ''): ?>
                 <p class="lead blog-post__lead"><?= e($post['Excerpt']) ?></p>
 <?php endif; ?>
-                <div class="content-document blog-post__content">
-                    <?= content_document($post['Content']) ?>
+                <div class="content-document rich-text blog-post__content">
+                    <?= rich_render($post['Content']) ?>
                 </div>
                 <p class="blog-post__back"><a class="text-link" href="<?= e(url('blog.php')) ?>"><?= icon('arrow', 'icon icon--inline icon--flip') ?> All articles</a></p>
             </div>

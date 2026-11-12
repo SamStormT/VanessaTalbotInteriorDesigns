@@ -17,7 +17,10 @@ $counts = [
     ['label' => 'Testimonials',         'can' => 'testimonials.view', 'url' => 'admin/testimonials.php',         'sql' => 'SELECT COUNT(*) FROM Testimonials'],
     ['label' => 'Blog Posts',           'can' => 'blogs.view',        'url' => 'admin/blogs.php',                'sql' => 'SELECT COUNT(*) FROM BlogPosts'],
     ['label' => 'Media Files',          'can' => 'media.view',        'url' => 'admin/media-library.php',        'sql' => 'SELECT COUNT(*) FROM MediaLibrary'],
-    ['label' => 'Subscribers',          'can' => 'subscribers.view',  'url' => 'admin/subscribers.php',          'sql' => "SELECT COUNT(*) FROM Subscribers WHERE SubscriptionStatus = 'Subscribed'"],
+    // Counted live, so an unsubscribe shows here straight away.
+    ['label' => 'Confirmed Subscribers', 'can' => 'subscribers.view', 'url' => 'admin/subscribers.php?show=confirmed', 'sql' => "SELECT COUNT(*) FROM Subscribers WHERE SubscriptionStatus = 'Subscribed' AND ConfirmedDate IS NOT NULL"],
+    ['label' => 'Unsubscribed (30 days)', 'can' => 'subscribers.view', 'url' => 'admin/subscribers.php?show=unsubscribed', 'sql' => "SELECT COUNT(*) FROM Subscribers WHERE SubscriptionStatus = 'Unsubscribed' AND UnsubscribedDate >= NOW() - INTERVAL 30 DAY"],
+    ['label' => 'Campaigns Sent',       'can' => 'subscribers.view',  'url' => 'admin/campaigns.php?status=Sent',  'sql' => "SELECT COUNT(*) FROM NewsletterCampaigns WHERE SentDate IS NOT NULL"],
     ['label' => 'New Messages',         'can' => 'messages.view',     'url' => 'admin/enquiries.php',            'sql' => "SELECT COUNT(*) FROM ContactMessages WHERE Status = 'New'"],
     ['label' => 'Users',                'can' => 'users.view',        'url' => 'admin/admin-users.php',          'sql' => "SELECT COUNT(*) FROM AdminUsers WHERE Status = 'Active'"],
 ];

@@ -293,7 +293,7 @@ function cms_modules(): array
                 'Slug'             => ['label' => 'Web address', 'type' => 'slug', 'auto_from' => 'Title', 'max' => 200, 'group' => 'Article', 'help' => 'Leave blank to create one from the title. Changing it later breaks links people have shared.'],
                 'CategoryID'       => ['label' => 'Category', 'type' => 'select', 'options' => [], 'group' => 'Article'],
                 'Excerpt'          => ['label' => 'Summary', 'type' => 'textarea', 'max' => 500, 'group' => 'Article', 'help' => 'One or two sentences, shown on the blog page and the home page.'],
-                'Content'          => ['label' => 'Article', 'type' => 'textarea', 'max' => 100000, 'group' => 'Article', 'help' => 'Leave a blank line between paragraphs. Start a line with "## " for a heading, or "- " for a bullet point.'],
+                'Content'          => ['label' => 'Article', 'type' => 'textarea', 'rich' => true, 'max' => 100000, 'group' => 'Article', 'help' => 'Plain text works: leave a blank line between paragraphs. Use the buttons above the box for bold, links, headings, lists, quotes, pictures, highlighted sections, buttons and the newsletter "read more" point.'],
                 'FeaturedImage'    => ['label' => 'Featured image', 'type' => 'image', 'alt_field' => 'FeaturedImageAlt', 'max' => 500, 'group' => 'Featured image'],
                 'FeaturedImageAlt' => ['label' => 'Image description (alt text)', 'type' => 'text', 'max' => 255, 'group' => 'Featured image'],
                 'IsFeatured'       => ['label' => 'Feature this post at the top of the blog page', 'type' => 'checkbox', 'group' => 'Publishing', 'permission' => 'blogs.publish'],

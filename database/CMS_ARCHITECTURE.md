@@ -1,11 +1,11 @@
 # CMS Architecture
 
-**Status: Phase 11.**
+**Status: Phase 12.**
 
 - **Database:** 31 tables. `database/schema.sql` creates 29, and `database/migrations.sql` adds `PageSections` and `PageSectionItems`, edit stamps (`LastEditedBy`, `LastEditedDate`) on every editable content table, Media Library captions and optimisation details, and the starting content.
 - **Install:** run `php database/setup.php`.
 - **Built:** every content screen the public website needs, the blog, the Media Library, Contact Messages, Subscribers, user management, and email (contact notifications, newsletter confirmation, password resets, invitations).
-- **Placeholders only:** photography store and newsletter campaigns.
+- **Placeholders only:** photography store.
 
 ## 1. How content survives deployments
 
@@ -18,7 +18,7 @@
 
 Back up the database and `uploads/` separately. Git holds neither.
 
-**Migrations so far:** 002 edit stamps · 003 location defaults · 004 services · 005 Home and About wording · 006 page sections · 007 removal of footer menu headings · 008 rename to Colour & Design Psychology · 009 gallery image stamps · 010 service, portfolio, contact and legal page wording · 011 Media Library captions and stamps · 012 image optimisation details · 013 blog (category edit stamps, "Blog" subscriber source, blog page wording, starting categories).
+**Migrations so far:** 002 edit stamps · 003 location defaults · 004 services · 005 Home and About wording · 006 page sections · 007 removal of footer menu headings · 008 rename to Colour & Design Psychology · 009 gallery image stamps · 010 service, portfolio, contact and legal page wording · 011 Media Library captions and stamps · 012 image optimisation details · 013 blog (category edit stamps, "Blog" subscriber source, blog page wording, starting categories) · 014 newsletter campaigns (campaign content columns, link to a blog post, Ready and Sending statuses, claimed recipient rows, Skipped result, test send history).
 
 ## 2. ERD
 
@@ -52,7 +52,7 @@ Every editable content table also has `LastEditedBy` → `AdminUsers`. Those lin
 - **Portfolio.** A project owns many gallery images and can be linked from testimonials.
 - **Blog.** A post has one author (who created it) and at most one category.
 - **Store** (not built). One checkout is one order. An order contains many items, and each item is a product with an optional print option. Payments attach to the order.
-- **Newsletter** (not built). `CampaignRecipients` joins campaigns and subscribers, one row per person per campaign.
+- **Newsletter.** A campaign may come from one blog post (`BlogID`, set to empty if the post is deleted). `CampaignRecipients` joins campaigns and subscribers, one row per person per campaign. `CampaignTestSends` keeps every test email.
 
 **Standalone tables**
 
@@ -179,7 +179,7 @@ The order of these assignments matters: `SubscriptionStatus` must change after t
 
 | Part | How it works |
 |---|---|
-| Writing | Title, web address (made from the title), category, summary, article, featured image from the Media Library, search engine title and description. Article formatting is plain text: a blank line between paragraphs, `## ` for a heading, `- ` for bullet points |
+| Writing | Title, web address (made from the title), category, summary, article, featured image from the Media Library, search engine title and description. Article formatting is plain text plus simple marks, inserted by the editor's toolbar: `**bold**`, `_italic_`, `## ` headings, bullet and numbered lists (no blank line needed), `[words](page)` links, `> ` pull quotes, `[[image …]]` pictures from the Media Library, `[[section green]]…[[/section]]` highlighted blocks, `[[button Words | page]]` and `[[more]]` (where newsletters stop). Rendered by `includes/rich-text.php`; everything is escaped, links are limited to site pages, https, mailto and tel, and pictures must be in the Media Library |
 | Workflow | Draft (staff only), Published (on the website), Archived (taken off, kept). Editors write and edit; their posts are always Drafts, and an Admin publishes. `PublishedDate` is stamped the first time a post is published and kept if it is archived and re-published |
 | Preview | Signed-in staff can open a Draft or Archived post on the website, with a "Preview" banner; search engines are told not to index it. Visitors get "page not found" |
 | Featured | An Admin can tick "Feature this post": the newest featured post leads page one of the blog |
@@ -187,7 +187,24 @@ The order of these assignments matters: `SubscriptionStatus` must change after t
 | Article page | `blog/blog-post.php?slug=`: breadcrumb with category, date, reading time, author, featured image, summary, article, a newsletter sign-up, and up to three related posts (same category first) |
 | Home page | The three newest posts replace the "coming soon" notice once anything is published |
 | Activity log | `create`, `update` (field names), and `publish`, `archive`, `unpublish` with the before and after status |
-| Subscribers | Blog sign-up forms record the subscriber's source as **Blog**. Sending new posts to subscribers is part of the newsletter campaigns phase |
+| Subscribers | Blog sign-up forms record the subscriber's source as **Blog**. Any published post can become a newsletter campaign (section 4e) |
+
+## 4e. Newsletter campaigns
+
+| Part | How it works |
+|---|---|
+| Who | The Subscribers permissions: Admins and the SuperAdmin create, edit, test, send and archive; only the SuperAdmin deletes, and only unsent campaigns. Editors have no access (subscriber data is personal information) |
+| From a blog post | "Create campaign from this post" on a published post fills in: campaign name and subject (the title), inbox preview text (the summary), featured article title, summary and image, the article preview (everything before `[[more]]`, or the opening paragraphs), the Read more link to the post, and the article's first pull quote. The home page quote is used otherwise. A "How I can help" block lists the published services in the design's green |
+| Content | Subject, inbox preview text, greeting (`{first_name}`, or "there" when no name is known), introduction, featured article, quote, and "More in this issue" (formatted text). Everything stays editable until sending |
+| Statuses | Draft → Ready (checked: subject, introduction, article or content, read-more link) → Sending → Sent → Archived. Editing a Ready campaign returns it to Draft |
+| Preview | The email exactly as sent, at computer and phone width, and the plain-text version |
+| Tests | Sent to any address (default: your own), marked [TEST], counted against the hourly limit, and kept in the test history. The send box warns if there has been no test since the last change |
+| Sending | Type SEND to confirm. Every confirmed, subscribed person at that moment becomes a recipient row. Batches of 10 go out while the page is open (Resume carries on; nobody is emailed twice). Each person is checked again just before sending, so anyone who unsubscribes mid-send is Skipped. A row interrupted mid-send becomes Failed rather than being re-sent; Retry failed emails tries those again |
+| Limits | `NEWSLETTER_HOURLY_LIMIT` (default 200) caps campaign and test emails per hour; sending pauses at the limit |
+| Email | Branded template following the newsletter concept: logo (`assets/images/logo-email.png` when supplied, lettering otherwise), tagline in script on peach, greeting and introduction on gold, featured article with Read more button, quote on peach, supporting blocks, "Feel free to contact me" with phone, email, website and social links from Website Settings, and a footer explaining why they receive it, with an unsubscribe link. Single column, 600px wide, adapts to phones |
+| Unsubscribe | Every email has a personal unsubscribe link and `List-Unsubscribe` / `List-Unsubscribe-Post` headers, so email apps can offer one-click unsubscribe. Unsubscribing takes effect immediately, including on the dashboard counts |
+| History | Each campaign keeps its sent date, recipient count, per-person result (sent, failed, skipped) and test history. The activity log records create, update, ready, test_send, send_start, send_complete, send_retry, archive and restore |
+| Not built | Open and click tracking, automation and drip sequences, scheduled sending |
 
 ## 4c. Finding where to edit
 
@@ -246,7 +263,7 @@ Only the SuperAdmin has the `users` permission, so only the SuperAdmin sees the 
 | Blog Categories | `blog-categories.php`, `blog-category-edit.php` | Built | Form | Form | Permanent delete (Admin); posts keep, uncategorised |
 | Photography Products and Orders | `photography-products.php`, `photography-orders.php` | Placeholder | | | |
 | Subscribers | `subscribers.php` | Built | Website forms only | Unsubscribe (Admin) | Erase (SuperAdmin) |
-| Newsletter Campaigns | none yet | Not built | | | |
+| Newsletter Campaigns | `campaigns.php`, `campaign-edit.php`, `campaign-preview.php` | Built | Form, or from a blog post | Until sent | Unsent drafts only (SuperAdmin); archive otherwise |
 | Contact Messages | `enquiries.php`, `enquiry.php` | Built | Website form only | Status and private notes | Permanent delete (SuperAdmin) |
 | Users | `admin-users.php`, `user-edit.php` | Built | Form, with email invitation | Name, email, role | Never (disable instead) |
 | Activity Log | Latest 8 entries on the dashboard, SuperAdmin only | Partial | Automatic | Never | Never |
@@ -278,6 +295,9 @@ Portfolio & Blog
 Photography
   Photography Products     placeholder
   Photography Orders       placeholder
+
+Marketing
+  Newsletter Campaigns     write, preview, test, send
 
 Audience
   Subscribers              list, filters, search, unsubscribe, erase
@@ -330,6 +350,6 @@ Menu items a role cannot use are hidden, and each page also checks permission on
 - **MariaDB 10.2.1 or newer** is needed, or the `CHECK` rules are ignored.
 - **First SuperAdmin:** `php database/setup.php` creates it. On a host with no command line, `php database/setup.php --print-admin-sql` prints an INSERT to paste into phpMyAdmin.
 - **Uploads:** PHP must be able to write to `uploads/`, and the PHP upload limit must allow 10 MB files.
-- **Email:** `.env` needs `APP_URL` and the `MAIL_*` settings, and `vendor/` (PHPMailer) must be deployed. Check Xneelo's outbound email limits and cron access before building newsletter sending.
+- **Email:** `.env` needs `APP_URL` and the `MAIL_*` settings, and `vendor/` (PHPMailer) must be deployed. Set `NEWSLETTER_HOURLY_LIMIT` below Xneelo's hourly sending limit. If cron is available, run `php database/send-campaigns.php` every 10 to 15 minutes so sends finish without a browser.
 - **Retention:** decide how long to keep `LoginAttempts`, `ActivityLog` and IP addresses. These are personal data under POPIA.
 - **Analytics:** store only the Google Analytics Measurement ID, and add a cookie notice.
