@@ -91,13 +91,13 @@ require_once INCLUDES_PATH . '/header.php';
 
 <?php if ($featured): ?>
             <article class="blog-featured">
-                <?= content_frame('art-frame blog-featured__image art-frame--peach', $featured['FeaturedImage'] ?? '', $featured['FeaturedImageAlt'] ?? '', icon('pen', 'icon art-frame__icon'), 'full') ?>
+                <?= content_frame('art-frame blog-featured__image art-frame--peach', $featured['FeaturedImage'] ?? '', $featured['FeaturedImageAlt'] ?? '', icon('pen', 'icon art-frame__icon'), 'full', ed_record('blog_posts', 'admin/blog-edit.php', (int) ($featured['BlogID'] ?? 0), 'FeaturedImage', 'blogs.edit')) ?>
                 <div class="blog-featured__body">
                     <p class="eyebrow">Featured<?= $featured['CategoryName'] ? ' &middot; ' . e($featured['CategoryName']) : '' ?></p>
-                    <h2 class="blog-featured__title"><a class="card__link" href="<?= e(blog_post_url($featured['Slug'])) ?>"><?= e($featured['Title']) ?></a></h2>
+                    <h2 class="blog-featured__title"<?= ed_record('blog_posts', 'admin/blog-edit.php', (int) ($featured['BlogID'] ?? 0), 'Title', 'blogs.edit') ?>><a class="card__link" href="<?= e(blog_post_url($featured['Slug'])) ?>"><?= e($featured['Title']) ?></a></h2>
                     <p class="card__meta"><?= blog_date($featured['PublishedDate']) ?> &middot; <?= blog_reading_minutes($featured['Content']) ?> min read</p>
 <?php if (trim((string) $featured['Excerpt']) !== ''): ?>
-                    <p><?= e($featured['Excerpt']) ?></p>
+                    <p<?= ed_record('blog_posts', 'admin/blog-edit.php', (int) ($featured['BlogID'] ?? 0), 'Excerpt', 'blogs.edit') ?>><?= e($featured['Excerpt']) ?></p>
 <?php endif; ?>
                     <span class="card__more" aria-hidden="true">Read the article <?= icon('arrow', 'icon icon--inline') ?></span>
                 </div>
@@ -137,7 +137,7 @@ require_once INCLUDES_PATH . '/header.php';
             <div class="newsletter__text">
                 <?= content_eyebrow($homeNewsletter) ?>
                 <?= content_heading($homeNewsletter, 'newsletter-title') ?>
-                <?= content_paragraphs($homeNewsletter['Introduction']) ?>
+                <?= content_paragraphs($homeNewsletter['Introduction'], '', ed_section($homeNewsletter, 'Introduction')) ?>
             </div>
             <?= newsletter_form('newsletter', 'blog', 'blog.php', $homeNewsletter['Body']) ?>
         </div>

@@ -100,34 +100,36 @@ require_once INCLUDES_PATH . '/header.php';
         <?= edit_block('contact', 'get-in-touch') ?>
         <div class="container split contact-layout">
             <div class="split__content">
+<?= hidden_block('contact', 'details', $sections) ?>
 <?php if ($section = $sections['details'] ?? null): ?>
                 <?= content_eyebrow($section) ?>
                 <?= content_heading($section, 'details-title') ?>
-                <?= content_paragraphs($section['Introduction']) ?>
+                <?= content_paragraphs($section['Introduction'], '', ed_section($section, 'Introduction')) ?>
                 <ul class="contact-list">
 <?php if ($phone !== ''): ?>
-                    <li><?= icon('chat') ?><span><strong>Phone</strong> <a href="tel:<?= e(preg_replace('/[^0-9+]/', '', $phone)) ?>"><?= e($phone) ?></a></span></li>
+                    <li<?= ed_setting('Phone') ?>><?= icon('chat') ?><span><strong>Phone</strong> <a href="tel:<?= e(preg_replace('/[^0-9+]/', '', $phone)) ?>"><?= e($phone) ?></a></span></li>
 <?php endif; ?>
 <?php if ($email !== ''): ?>
-                    <li><?= icon('mail') ?><span><strong>Email</strong> <a href="mailto:<?= e($email) ?>"><?= e($email) ?></a></span></li>
+                    <li<?= ed_setting('Email') ?>><?= icon('mail') ?><span><strong>Email</strong> <a href="mailto:<?= e($email) ?>"><?= e($email) ?></a></span></li>
 <?php endif; ?>
                 </ul>
 <?php if ($social): ?>
                 <ul class="tag-list" aria-label="Social media">
 <?php foreach ($social as $network => $link): ?>
-                    <li><a href="<?= e(content_url($link)) ?>" rel="noopener"><?= e($network) ?></a></li>
+                    <li<?= ed_setting($network) ?>><a href="<?= e(content_url($link)) ?>" rel="noopener"><?= e($network) ?></a></li>
 <?php endforeach; ?>
                 </ul>
 <?php endif; ?>
 <?php endif; ?>
 
+<?= hidden_block('contact', 'location', $sections) ?>
 <?php if ($section = $sections['location'] ?? null): ?>
                 <div class="contact-location">
                     <?= content_eyebrow($section) ?>
                     <?= content_heading($section, 'location-title') ?>
-                    <?= content_paragraphs($section['Introduction']) ?>
+                    <?= content_paragraphs($section['Introduction'], '', ed_section($section, 'Introduction')) ?>
 <?php if ($street || $place): ?>
-                    <address>
+                    <address<?= ed_setting('AddressLine1') ?>>
 <?php foreach ($street as $line): ?>
                         <?= e($line) ?><br>
 <?php endforeach; ?>
@@ -138,11 +140,12 @@ require_once INCLUDES_PATH . '/header.php';
 <?php endif; ?>
             </div>
 
+<?= hidden_block('contact', 'form', $sections) ?>
 <?php if ($section = $sections['form'] ?? null): ?>
             <div class="contact-form-wrap" id="contact-form">
                 <?= content_eyebrow($section) ?>
                 <?= content_heading($section, 'form-title') ?>
-                <?= content_paragraphs($section['Introduction']) ?>
+                <?= content_paragraphs($section['Introduction'], '', ed_section($section, 'Introduction')) ?>
                 <form class="newsletter__form contact-form" action="<?= e(url('contact.php')) ?>#contact-form" method="post" data-contact-form novalidate>
                     <?= csrf_field() ?>
 <?php if ($status !== null): ?>
@@ -200,6 +203,7 @@ require_once INCLUDES_PATH . '/header.php';
         </div>
     </section>
 
+<?= hidden_block('contact', 'faq', $sections) ?>
 <?php if ($section = $sections['faq'] ?? null): ?>
     <section class="section section--peach"<?= content_labelled($section, 'faq-title') ?>>
         <?= edit_block('contact', 'faq') ?>
@@ -208,8 +212,8 @@ require_once INCLUDES_PATH . '/header.php';
             <div class="faq">
 <?php foreach ($section['items'] as $item): ?>
                 <details class="faq__item">
-                    <summary><?= e($item['Title']) ?></summary>
-                    <?= content_paragraphs($item['Text']) ?>
+                    <summary<?= ed_item($item, 'Title') ?>><?= e($item['Title']) ?></summary>
+                    <?= content_paragraphs($item['Text'], '', ed_item($item, 'Text')) ?>
                 </details>
 <?php endforeach; ?>
             </div>

@@ -54,7 +54,7 @@ require_once INCLUDES_PATH . '/header.php';
                         <li aria-current="page"><?= e($post['Title']) ?></li>
                     </ol>
                 </nav>
-                <h1 id="page-title"><?= e($post['Title']) ?></h1>
+                <h1 id="page-title"<?= ed_record('blog_posts', 'admin/blog-edit.php', (int) $post['BlogID'], 'Title', 'blogs.edit') ?>><?= e($post['Title']) ?></h1>
                 <p class="blog-post__meta">
                     <?= $post['PublishedDate'] ? blog_date($post['PublishedDate']) . ' &middot; ' : '' ?><?= blog_reading_minutes($post['Content']) ?> min read<?= trim((string) $post['AuthorName']) !== '' ? ' &middot; By ' . e($post['AuthorName']) : '' ?>
                 </p>
@@ -65,13 +65,13 @@ require_once INCLUDES_PATH . '/header.php';
             <div class="container content-narrow">
 <?php if (trim((string) $post['FeaturedImage']) !== ''): ?>
                 <figure class="blog-post__image">
-                    <?= content_frame('art-frame', $post['FeaturedImage'], $post['FeaturedImageAlt'] ?? '', '', 'full') ?>
+                    <?= content_frame('art-frame', $post['FeaturedImage'], $post['FeaturedImageAlt'] ?? '', '', 'full', ed_record('blog_posts', 'admin/blog-edit.php', (int) $post['BlogID'], 'FeaturedImage', 'blogs.edit')) ?>
                 </figure>
 <?php endif; ?>
 <?php if (trim((string) $post['Excerpt']) !== ''): ?>
-                <p class="lead blog-post__lead"><?= e($post['Excerpt']) ?></p>
+                <p class="lead blog-post__lead"<?= ed_record('blog_posts', 'admin/blog-edit.php', (int) $post['BlogID'], 'Excerpt', 'blogs.edit') ?>><?= e($post['Excerpt']) ?></p>
 <?php endif; ?>
-                <div class="content-document rich-text blog-post__content">
+                <div class="content-document rich-text blog-post__content"<?= ed_record('blog_posts', 'admin/blog-edit.php', (int) $post['BlogID'], 'Content', 'blogs.edit') ?>>
                     <?= rich_render($post['Content']) ?>
                 </div>
                 <p class="blog-post__back"><a class="text-link" href="<?= e(url('blog.php')) ?>"><?= icon('arrow', 'icon icon--inline icon--flip') ?> All articles</a></p>
@@ -86,7 +86,7 @@ require_once INCLUDES_PATH . '/header.php';
             <div class="newsletter__text">
                 <?= content_eyebrow($signup) ?>
                 <?= content_heading($signup, 'newsletter-title') ?>
-                <?= content_paragraphs($signup['Introduction']) ?>
+                <?= content_paragraphs($signup['Introduction'], '', ed_section($signup, 'Introduction')) ?>
             </div>
             <?= newsletter_form('newsletter', 'blog', $return, site_sections('home')['newsletter']['Body'] ?? null) ?>
         </div>

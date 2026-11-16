@@ -190,7 +190,7 @@ function cms_record_edit_page(string $key, ?callable $below = null): void
 
     echo '<main id="main-content" class="admin-content">';
     if (!$creating) {
-        echo '<div class="admin-toolbar">', cms_last_edited($row), '</div>';
+        echo '<div class="admin-toolbar">', cms_last_edited($row), cms_history_link($module, $id), '</div>';
     }
     echo cms_render_form($module, $row, $errors, $list, $posted);
     if (!$creating && can($module['permission'] . '.delete')) {

@@ -1021,3 +1021,26 @@ CREATE TABLE IF NOT EXISTS CampaignTestSends (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 INSERT IGNORE INTO SchemaMigrations (MigrationName) VALUES ('014_newsletter_campaigns');
+
+
+-- --------------------------------------------------------------------------
+-- 015: Version history. Before any CMS save changes a record, the previous
+-- values of the changed fields are kept here, so a change can be undone
+-- ("Restore this version"). Up to 50 versions are kept per record.
+-- --------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS ContentVersions (
+    VersionID   BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+    TableName   VARCHAR(64) NOT NULL,
+    RecordID    BIGINT UNSIGNED NOT NULL,
+    OldValues   MEDIUMTEXT NOT NULL COMMENT 'JSON: field => value before the change',
+    NewValues   MEDIUMTEXT NOT NULL COMMENT 'JSON: field => value after the change',
+    ChangedBy   INT UNSIGNED NULL,
+    ChangedDate DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    Note        VARCHAR(255) NULL,
+    PRIMARY KEY (VersionID),
+    KEY idx_ContentVersions_Record (TableName, RecordID, VersionID),
+    CONSTRAINT fk_ContentVersions_ChangedBy FOREIGN KEY (ChangedBy)
+        REFERENCES AdminUsers (AdminUserID) ON UPDATE CASCADE ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+INSERT IGNORE INTO SchemaMigrations (MigrationName) VALUES ('015_content_versions');

@@ -441,3 +441,66 @@ fieldset.admin-panel > .admin-panel__title + * { clear: both; }
     background: #F9F0EA;
     transition: width var(--transition);
 }
+
+/* Arriving from an Edit button on the website: the field is scrolled into view and highlighted. */
+.admin-field[id^="row-"],
+#items { scroll-margin-top: 1.5rem; }
+.admin-field.is-pointed,
+.admin-section-title.is-pointed {
+    border-radius: var(--radius);
+    animation: vt-pointed 2.6s ease-out 1;
+}
+@keyframes vt-pointed {
+    0%, 35% { background: #F6E2D4; box-shadow: 0 0 0 8px #F6E2D4, 0 0 0 10px var(--color-golden-yellow); }
+    100% { background: transparent; box-shadow: 0 0 0 8px transparent, 0 0 0 10px transparent; }
+}
+@media (prefers-reduced-motion: reduce) {
+    .admin-field.is-pointed,
+    .admin-section-title.is-pointed { animation: none; outline: 2px solid var(--color-golden-yellow); outline-offset: 6px; }
+}
+
+/* Character counts */
+.admin-count { margin: 0.3rem 0 0; font-size: 0.75rem; color: var(--color-text-muted); }
+.admin-count.is-over { color: #8C5A00; font-weight: 600; }
+
+/* History */
+.history-entry__head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0.5rem 1rem; }
+.history-entry__head .admin-panel__title { margin: 0; }
+.history-entry__head .admin-meta { flex: 1 1 100%; margin: 0; order: 3; }
+.history-entry__details { margin-top: var(--space-sm); }
+.history-entry__details summary { cursor: pointer; color: var(--color-accent-text); font-size: var(--fs-sm); }
+.history-table th[scope="row"] {
+    width: 22%;
+    white-space: normal;
+    font-family: inherit;
+    font-size: var(--fs-sm);
+    font-weight: 600;
+    letter-spacing: 0;
+    text-transform: none;
+    vertical-align: top;
+    border-bottom: 1px solid var(--color-border);
+}
+.history-table tr:last-child th[scope="row"] { border-bottom: 0; }
+.history-table td { vertical-align: top; width: 39%; }
+.history-text { display: block; max-height: 12rem; overflow: auto; font-size: var(--fs-sm); }
+/* Phones: each field stacks its before and after instead of three squeezed columns. */
+@media (max-width: 640px) {
+    .history-table thead { display: none; }
+    .history-table tr { display: block; padding: 0.75rem 0; border-bottom: 1px solid var(--color-border); }
+    .history-table tr:last-child { border-bottom: 0; }
+    .history-table th[scope="row"],
+    .history-table td { display: block; width: auto; padding: 0.25rem 0.75rem; border-bottom: 0; }
+    .history-table td::before {
+        content: attr(data-label);
+        display: block;
+        font-size: 0.75rem;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--color-accent-text);
+    }
+}
+
+/* Back to the website after editing */
+.return-bar { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem 1rem; margin: 0 0 var(--space-md); padding: 0.6rem 1rem; border-left: 3px solid var(--color-golden-yellow); background: var(--color-white); font-size: var(--fs-sm); }
+.return-bar a { font-weight: 600; color: var(--color-primary); }
+.return-bar__forget { margin-left: auto; border: 0; background: none; color: var(--color-text-muted); font: inherit; text-decoration: underline; cursor: pointer; }

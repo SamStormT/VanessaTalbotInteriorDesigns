@@ -48,7 +48,7 @@ require_once INCLUDES_PATH . '/header.php';
 ?>
 <main id="main-content" class="admin-content">
 <?php if (!$creating): ?>
-    <div class="admin-toolbar"><?= cms_last_edited($row) ?></div>
+    <div class="admin-toolbar"><?= cms_last_edited($row) ?><?= cms_history_link($module, (int) $row[$module['key']]) ?></div>
 <?php endif; ?>
     <?= cms_render_form($module, $row, $errors, $back, $posted) ?>
 <?php if (!$creating && can('page_sections.delete')): ?>

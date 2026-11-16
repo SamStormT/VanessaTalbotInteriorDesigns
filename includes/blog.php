@@ -114,7 +114,7 @@ function blog_post(string $slug, bool $preview): ?array
 function blog_related(array $post): array
 {
     return content_fetch('blog_related', static fn() => db_all(
-        "SELECT p.Title, p.Slug, p.Excerpt, p.FeaturedImage, p.FeaturedImageAlt, p.PublishedDate, c.CategoryName
+        "SELECT p.BlogID, p.Title, p.Slug, p.Excerpt, p.FeaturedImage, p.FeaturedImageAlt, p.PublishedDate, c.CategoryName
          FROM BlogPosts p LEFT JOIN BlogCategories c ON c.CategoryID = p.CategoryID
          WHERE p.Status = 'Published' AND p.BlogID <> ?
          ORDER BY (p.CategoryID <=> ?) DESC, p.PublishedDate DESC LIMIT 3",
@@ -142,13 +142,15 @@ function blog_card(array $post, int $index = 0, string $headingTag = 'h3'): stri
 {
     $tones = ['green', 'gold', 'peach'];
     $meta  = array_filter([e($post['CategoryName'] ?? ''), blog_date($post['PublishedDate'] ?? null)]);
+    $id    = isset($post['BlogID']) ? (int) $post['BlogID'] : null;
+    $ed    = static fn(string $field): string => ed_record('blog_posts', 'admin/blog-edit.php', $id, $field, 'blogs.edit');
 
     return '<li class="card card--post blog-card">'
-         . content_frame('art-frame blog-card__image art-frame--' . $tones[$index % 3], $post['FeaturedImage'] ?? '', $post['FeaturedImageAlt'] ?? '', icon('pen', 'icon art-frame__icon'))
+         . content_frame('art-frame blog-card__image art-frame--' . $tones[$index % 3], $post['FeaturedImage'] ?? '', $post['FeaturedImageAlt'] ?? '', icon('pen', 'icon art-frame__icon'), 'web', $ed('FeaturedImage'))
          . '<div class="blog-card__body">'
          . ($meta ? '<p class="card__meta">' . implode(' &middot; ', $meta) . '</p>' : '')
-         . '<' . $headingTag . ' class="card__title"><a class="card__link" href="' . e(blog_post_url((string) $post['Slug'])) . '">' . e($post['Title']) . '</a></' . $headingTag . '>'
-         . (trim((string) ($post['Excerpt'] ?? '')) !== '' ? '<p>' . e($post['Excerpt']) . '</p>' : '')
+         . '<' . $headingTag . ' class="card__title"' . $ed('Title') . '><a class="card__link" href="' . e(blog_post_url((string) $post['Slug'])) . '">' . e($post['Title']) . '</a></' . $headingTag . '>'
+         . (trim((string) ($post['Excerpt'] ?? '')) !== '' ? '<p' . $ed('Excerpt') . '>' . e($post['Excerpt']) . '</p>' : '')
          . '<span class="card__more" aria-hidden="true">Read more ' . icon('arrow', 'icon icon--inline') . '</span>'
          . '</div></li>';
 }

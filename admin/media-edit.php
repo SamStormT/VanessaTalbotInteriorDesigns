@@ -43,7 +43,7 @@ require_once INCLUDES_PATH . '/header.php';
 ?>
 <main id="main-content" class="admin-content">
     <?= cms_flash() ?>
-    <div class="admin-toolbar"><?= cms_last_edited($row) ?></div>
+    <div class="admin-toolbar"><?= cms_last_edited($row) ?><?= cms_history_link($module, (int) $row[$module['key']]) ?></div>
 
     <section class="admin-panel media-detail">
         <img class="media-detail__image" src="<?= e(image_url($row['FilePath'], 'web')) ?>" alt="<?= e($row['AltText'] ?? '') ?>">

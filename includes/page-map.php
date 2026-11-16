@@ -8,10 +8,14 @@
  *   - the admin "Pages" screen (admin/pages.php).
  *
  * A target is one of:
- *   ['section', label, PageKey, SectionKey]   a Page Sections record
- *   ['admin',   label, path, permission]      a fixed admin screen
- *   ['service', label, slug]                  one service's edit screen
- *   ['legal',   label, slug]                  one legal page's edit screen
+ *   ['section', label, PageKey, SectionKey, at]  a Page Sections record
+ *   ['admin',   label, path, permission]          a fixed admin screen (path may end #row-Field)
+ *   ['service', label, slug, field]              one service's edit screen
+ *   ['legal',   label, slug, field]              one legal page's edit screen
+ *
+ * "at" / "field" opens the screen scrolled to that field (#row-Field), or
+ * to the repeating items ("items"). Every field on an admin form has an
+ * anchor id="row-Field" (see includes/cms.php).
  *
  * Visitors never see any of this: edit_block() returns nothing unless the
  * person viewing is signed in, and only shows screens their role can open.
@@ -21,39 +25,44 @@ declare(strict_types=1);
 
 function page_map(): array
 {
-    $home      = ['admin', 'Homepage Content', 'admin/homepage-content.php', 'homepage.view'];
-    $about     = ['admin', 'About Content', 'admin/about-content.php', 'about.view'];
-    $settings  = ['admin', 'Website Settings', 'admin/settings.php', 'settings.view'];
-    $services  = ['admin', 'Services', 'admin/services.php', 'services.view'];
-    $projects  = ['admin', 'Portfolio Projects', 'admin/portfolio-projects.php', 'portfolio.view'];
-    $section   = static fn(string $page, string $key, string $label = 'Section wording'): array => ['section', $label, $page, $key];
+    // Screens that list records. Item-level pages are reached from these.
+    $services = ['admin', 'Services', 'admin/services.php', 'services.view'];
+    $projects = ['admin', 'Portfolio Projects', 'admin/portfolio-projects.php', 'portfolio.view'];
+
+    // One field on a single-record screen, opened in edit mode at that field.
+    $home     = static fn(string $label, string $field): array => ['admin', $label, 'admin/homepage-content.php?edit=1#row-' . $field, 'homepage.edit'];
+    $about    = static fn(string $label, string $field): array => ['admin', $label, 'admin/about-content.php?edit=1#row-' . $field, 'about.edit'];
+    $setting  = static fn(string $label, string $field): array => ['admin', $label, 'admin/settings.php?edit=1#row-' . $field, 'settings.edit'];
+
+    // A Page Sections record; $at is a field ('Image') or 'items' for its repeating items.
+    $section  = static fn(string $page, string $key, string $label = 'Section wording', string $at = ''): array => ['section', $label, $page, $key, $at];
 
     $map = [
         'home' => ['title' => 'Home', 'path' => 'index.php', 'blocks' => [
-            'hero'         => ['Hero: heading, wording, buttons and main image', [['admin', 'Hero wording and image', 'admin/homepage-content.php', 'homepage.view'], ['admin', 'Tagline', 'admin/settings.php', 'settings.view']]],
-            'feature-cta'  => ['Featured box', [['admin', 'Featured box wording and link', 'admin/homepage-content.php', 'homepage.view'], $section('home', 'feature-cta', 'Button text')]],
-            'introduction' => ['Introduction to Vanessa', [$section('home', 'introduction', 'Wording and three foundations'), ['admin', 'Introduction image', 'admin/homepage-content.php', 'homepage.view']]],
-            'quote'        => ['Quote', [['admin', 'Quote', 'admin/homepage-content.php', 'homepage.view']]],
+            'hero'         => ['Hero: heading, wording, buttons and main image', [$home('Hero wording', 'HeroEyebrow'), $home('Hero image', 'HeroImage'), $home('Hero buttons', 'CTA1Text'), $setting('Tagline', 'Tagline')]],
+            'feature-cta'  => ['Featured box', [$home('Featured box wording and link', 'FeaturedCTATitle'), $section('home', 'feature-cta', 'Button text', 'ButtonText')]],
+            'introduction' => ['Introduction to Vanessa', [$section('home', 'introduction', 'Wording'), $section('home', 'introduction', 'Three foundations', 'items'), $home('Introduction image', 'IntroductionImage')]],
+            'quote'        => ['Quote', [$home('Quote', 'FeaturedQuote')]],
             'services'     => ['Services overview', [$section('home', 'services', 'Heading and button'), ['admin', 'Service cards', 'admin/services.php', 'services.view']]],
-            'portfolio'    => ['Portfolio highlights', [$section('home', 'portfolio', 'Heading, tiles and tile images')]],
+            'portfolio'    => ['Portfolio highlights', [$section('home', 'portfolio', 'Heading and button'), $section('home', 'portfolio', 'Tiles and tile images', 'items')]],
             'blog'         => ['Latest blog posts', [$section('home', 'blog', 'Heading and button'), ['admin', 'Blog posts', 'admin/blogs.php', 'blogs.view'], $section('home', 'blog-empty', 'Notice while there are no posts')]],
             'newsletter'   => ['Newsletter sign-up', [$section('home', 'newsletter')]],
-            'contact-cta'  => ['Contact call to action', [$section('home', 'contact-cta', 'Wording, client types and buttons')]],
+            'contact-cta'  => ['Contact call to action', [$section('home', 'contact-cta', 'Wording and buttons'), $section('home', 'contact-cta', 'Client types', 'items')]],
         ]],
         'about' => ['title' => 'About', 'path' => 'about.php', 'blocks' => [
-            'page-header'    => ['Page header', [$section('about', 'page-header', 'Heading and header image'), ['admin', 'Tagline', 'admin/settings.php', 'settings.view']]],
-            'story'          => ["Vanessa's story", [$section('about', 'story', 'Heading'), ['admin', 'Story and portrait', 'admin/about-content.php', 'about.view']]],
-            'journey'        => ['Journey steps', [$section('about', 'journey', 'Heading and steps')]],
-            'philosophy'     => ['Philosophy', [$section('about', 'philosophy', 'Wording and list'), $section('about', 'quote', 'Quote')]],
-            'values'         => ['Values', [$section('about', 'values', 'Heading'), ['admin', 'Introduction', 'admin/about-content.php', 'about.view'], ['admin', 'Values', 'admin/about-values.php', 'about_items.view']]],
-            'qualifications' => ['Qualifications', [$section('about', 'qualifications', 'Heading'), ['admin', 'Introduction', 'admin/about-content.php', 'about.view'], ['admin', 'Qualifications', 'admin/qualifications.php', 'about_items.view'], $section('about', 'qualifications-notice', 'Notice while empty')]],
-            'speaking'       => ['Speaking', [$section('about', 'speaking', 'Wording, buttons and image'), ['admin', 'Speaking topics', 'admin/about-content.php', 'about.view'], ['admin', 'Engagements', 'admin/speaking-engagements.php', 'speaking.view'], $section('about', 'speaking-notice', 'Notice while empty')]],
+            'page-header'    => ['Page header', [$section('about', 'page-header', 'Heading'), $section('about', 'page-header', 'Header image', 'Image'), $setting('Tagline', 'Tagline')]],
+            'story'          => ["Vanessa's story", [$section('about', 'story', 'Heading'), $about('Story', 'Biography'), $about('Portrait', 'PortraitImage')]],
+            'journey'        => ['Journey steps', [$section('about', 'journey', 'Heading'), $section('about', 'journey', 'Steps', 'items')]],
+            'philosophy'     => ['Philosophy', [$section('about', 'philosophy', 'Wording'), $section('about', 'philosophy', 'List', 'items'), $section('about', 'quote', 'Quote', 'items')]],
+            'values'         => ['Values', [$section('about', 'values', 'Heading'), $about('Introduction', 'CoreValues'), ['admin', 'Values', 'admin/about-values.php', 'about_items.view']]],
+            'qualifications' => ['Qualifications', [$section('about', 'qualifications', 'Heading'), $about('Introduction', 'Qualifications'), ['admin', 'Qualifications', 'admin/qualifications.php', 'about_items.view'], $section('about', 'qualifications-notice', 'Notice while empty')]],
+            'speaking'       => ['Speaking', [$section('about', 'speaking', 'Wording and buttons'), $section('about', 'speaking', 'Speaking image', 'Image'), $about('Speaking topics', 'SpeakingTopics'), ['admin', 'Engagements', 'admin/speaking-engagements.php', 'speaking.view'], $section('about', 'speaking-notice', 'Notice while empty')]],
             'closing'        => ['Closing call to action', [$section('about', 'closing')]],
         ]],
         'services' => ['title' => 'Services', 'path' => 'services.php', 'blocks' => [
-            'page-header' => ['Page header', [$section('services', 'page-header', 'Heading and header image'), $section('services', 'seo', 'Search engine details')]],
+            'page-header' => ['Page header', [$section('services', 'page-header', 'Heading'), $section('services', 'page-header', 'Header image', 'Image'), $section('services', 'seo', 'Search engine details')]],
             'service'     => ['Each service', [$services]],
-            'process'     => ['How it works', [$section('services', 'process', 'Heading and steps')]],
+            'process'     => ['How it works', [$section('services', 'process', 'Heading'), $section('services', 'process', 'Steps', 'items')]],
             'closing'     => ['Closing call to action', [$section('services', 'closing')]],
         ]],
     ];
@@ -65,12 +74,12 @@ function page_map(): array
     ];
     foreach ($servicePages as $slug => $name) {
         $blocks = [
-            'page-header' => ['Page header', [['service', 'Name and introduction', $slug]]],
-            'main'        => ['Description, image and inclusions', [['service', 'Service details and image', $slug]]],
-            'approach'    => ['How it works', [$section('service-' . $slug, 'approach', 'Heading and steps')]],
+            'page-header' => ['Page header', [['service', 'Name and introduction', $slug, 'ServiceName']]],
+            'main'        => ['Description, image and inclusions', [['service', 'Description', $slug, 'FullDescription'], ['service', 'Image', $slug, 'FeaturedImage'], ['service', "What's included", $slug, 'IncludedItems']]],
+            'approach'    => ['How it works', [$section('service-' . $slug, 'approach', 'Heading'), $section('service-' . $slug, 'approach', 'Steps', 'items')]],
         ];
         if ($slug === 'biophilic-design') {
-            $blocks['specialised'] = ['Specialised services', [$section('service-' . $slug, 'specialised', 'Heading and items')]];
+            $blocks['specialised'] = ['Specialised services', [$section('service-' . $slug, 'specialised', 'Heading'), $section('service-' . $slug, 'specialised', 'Items', 'items')]];
         }
         if ($slug === 'speaking-engagements') {
             $blocks['engagements'] = ['Engagements', [['admin', 'Engagements', 'admin/speaking-engagements.php', 'speaking.view']]];
@@ -80,8 +89,8 @@ function page_map(): array
     }
 
     $map['portfolio'] = ['title' => 'Portfolio', 'path' => 'portfolio.php', 'blocks' => [
-        'page-header' => ['Page header', [$section('portfolio', 'page-header', 'Heading and header image')]],
-        'categories'  => ['Categories', [$section('portfolio', 'categories', 'Heading, tiles and tile images')]],
+        'page-header' => ['Page header', [$section('portfolio', 'page-header', 'Heading'), $section('portfolio', 'page-header', 'Header image', 'Image')]],
+        'categories'  => ['Categories', [$section('portfolio', 'categories', 'Heading'), $section('portfolio', 'categories', 'Tiles and tile images', 'items')]],
         'featured'    => ['Featured projects', [$section('portfolio', 'featured', 'Heading'), $projects]],
         'closing'     => ['Closing call to action', [$section('portfolio', 'closing')]],
     ]];
@@ -94,7 +103,7 @@ function page_map(): array
     ];
     foreach ($categories as $key => [$title, $path, $list]) {
         $map[$key] = ['title' => $title, 'path' => $path, 'blocks' => [
-            'page-header' => ['Page header', [$section($key, 'page-header', 'Heading and header image')]],
+            'page-header' => ['Page header', [$section($key, 'page-header', 'Heading'), $section($key, 'page-header', 'Header image', 'Image')]],
             'intro'       => ['Introduction', [$section($key, 'intro')]],
             'list'        => [$key === 'portfolio-collaborators' ? 'Collaborators' : 'Projects', [$list, $section($key, 'empty', 'Notice while empty')]],
             'closing'     => ['Closing call to action', [$section($key, 'closing')]],
@@ -102,7 +111,7 @@ function page_map(): array
     }
 
     $map['blog'] = ['title' => 'Blog', 'path' => 'blog.php', 'blocks' => [
-        'page-header' => ['Page header', [$section('blog', 'page-header', 'Heading and header image')]],
+        'page-header' => ['Page header', [$section('blog', 'page-header', 'Heading'), $section('blog', 'page-header', 'Header image', 'Image')]],
         'posts'       => ['Articles, categories and search', [
             ['admin', 'Blog posts', 'admin/blogs.php', 'blogs.view'],
             ['admin', 'Categories', 'admin/blog-categories.php', 'blogs.view'],
@@ -122,24 +131,27 @@ function page_map(): array
     ]];
 
     $map['contact'] = ['title' => 'Contact', 'path' => 'contact.php', 'blocks' => [
-        'page-header' => ['Page header', [$section('contact', 'page-header', 'Heading and header image')]],
+        'page-header' => ['Page header', [$section('contact', 'page-header', 'Heading'), $section('contact', 'page-header', 'Header image', 'Image')]],
         'get-in-touch' => ['Contact details, location and enquiry form', [
             $section('contact', 'details', 'Contact details wording'),
+            $setting('Phone and email', 'Phone'),
+            $setting('Social links', 'Facebook'),
             $section('contact', 'location', 'Location wording'),
+            $setting('Address', 'AddressLine1'),
             $section('contact', 'form', 'Form wording'),
-            ['admin', 'Phone, email, address, social links and where messages go', 'admin/settings.php', 'settings.view'],
+            $setting('Where messages go', 'EnquiryEmail'),
         ]],
-        'faq'         => ['Frequently asked questions', [$section('contact', 'faq', 'Heading and questions')]],
+        'faq'         => ['Frequently asked questions', [$section('contact', 'faq', 'Heading'), $section('contact', 'faq', 'Questions', 'items')]],
     ]];
 
     foreach (['privacy-policy' => 'Privacy Policy', 'terms-and-conditions' => 'Terms and Conditions', 'copyright' => 'Copyright Notice'] as $slug => $title) {
         $map['legal-' . $slug] = ['title' => $title, 'path' => $slug . '.php', 'blocks' => [
-            'content' => ['Title and wording', [['legal', 'Page wording', $slug]]],
+            'content' => ['Title and wording', [['legal', 'Page wording', $slug, 'Content']]],
         ]];
     }
 
     $map['global'] = ['title' => 'Every page: footer', 'path' => null, 'blocks' => [
-        'footer' => ['Footer', [$section('global', 'footer', 'Footer wording and button'), $settings]],
+        'footer' => ['Footer', [$section('global', 'footer', 'Footer wording and button'), $setting('Copyright line', 'FooterCopyright')]],
     ]];
 
     return $map;
@@ -187,8 +199,17 @@ function page_map_link(array $target): ?array
         'admin'   => [$target[2], $target[3]],
         default   => [null, null],
     };
+    if ($path === null) {
+        return null;
+    }
 
-    return $path === null ? null : ['label' => $label, 'url' => url($path), 'permission' => $permission];
+    // Open the screen at the field: "items" is the repeating-items list, anything else a field.
+    $at = $type === 'section' ? (string) ($target[4] ?? '') : (in_array($type, ['service', 'legal'], true) ? (string) ($target[3] ?? '') : '');
+    if ($at !== '') {
+        $path .= $at === 'items' ? '#items' : '#row-' . $at;
+    }
+
+    return ['label' => $label, 'url' => url($path), 'permission' => $permission];
 }
 
 // ---------------------------------------------------------------------------
@@ -269,4 +290,141 @@ function page_map_current(): ?string
         }
     }
     return null;
+}
+
+// ---------------------------------------------------------------------------
+// Click-to-edit: every heading, paragraph, button and picture on the website
+// carries data-edit="admin address#row-Field" for signed-in staff. Hovering
+// it shows "Edit: Hero subtitle", which opens that exact field. Visitors get
+// nothing. All of these return '' unless the viewer may edit that thing.
+// ---------------------------------------------------------------------------
+
+/** The attributes for one editable thing. $permission is the right needed to open $path. */
+function edit_attr(string $path, string $permission, string $label): string
+{
+    $viewer = staff_viewer();
+    if ($viewer === null || !role_can($viewer['Role'], $permission)) {
+        return '';
+    }
+    return ' data-edit="' . e(url($path)) . '" data-edit-label="' . e($label) . '"';
+}
+
+/** A field's label from the admin forms, such as "Hero subtitle". */
+function edit_label(string $module, string $field, string $fallback = ''): string
+{
+    if (staff_viewer() === null) {
+        return '';
+    }
+    require_once INCLUDES_PATH . '/cms-modules.php';
+    static $labels = [];
+    $labels[$module] ??= array_map(static fn(array $f): string => (string) ($f['label'] ?? ''), cms_modules()[$module]['fields'] ?? []);
+    return $labels[$module][$field] ?? ($fallback ?: $field);
+}
+
+/** A field of a Page Sections record (the section row from site_sections()). */
+function ed_section(?array $section, string $field): string
+{
+    if ($section === null || empty($section['SectionID']) || staff_viewer() === null) {
+        return '';
+    }
+    $where = trim(cms_safe_label((string) $section['SectionKey']));
+    $label = $field === 'Image' ? 'Image' : edit_label('page_sections', $field);
+    return edit_attr('admin/section-edit.php?id=' . (int) $section['SectionID'] . '#row-' . $field, 'page_sections.edit', $label . ' (' . strtolower($where) . ')');
+}
+
+/** A field of one repeating item in a section (a step, a tile, a question). */
+function ed_item(?array $item, string $field = 'Title'): string
+{
+    if ($item === null || empty($item['ItemID']) || staff_viewer() === null) {
+        return '';
+    }
+    $name  = trim((string) ($item['Title'] ?? '')) ?: 'item';
+    $label = ['Title' => 'Title', 'Text' => 'Text', 'Image' => 'Image', 'Link' => 'Link', 'Icon' => 'Icon'][$field] ?? $field;
+    return edit_attr('admin/item-edit.php?id=' . (int) $item['ItemID'] . '#row-' . $field, 'page_sections.edit', $label . ': ' . mb_strimwidth($name, 0, 40, '…'));
+}
+
+/** A field of Homepage Content, About Content or Website Settings. */
+function ed_home(string $field): string
+{
+    return staff_viewer() === null ? '' : edit_attr('admin/homepage-content.php?edit=1#row-' . $field, 'homepage.edit', edit_label('homepage', $field));
+}
+
+function ed_about(string $field): string
+{
+    return staff_viewer() === null ? '' : edit_attr('admin/about-content.php?edit=1#row-' . $field, 'about.edit', edit_label('about', $field));
+}
+
+function ed_setting(string $field): string
+{
+    return staff_viewer() === null ? '' : edit_attr('admin/settings.php?edit=1#row-' . $field, 'settings.edit', edit_label('settings', $field) . ' (Website Settings)');
+}
+
+/**
+ * A field of any other record: $module is its cms-modules key, $page its
+ * edit screen (for example 'admin/service-edit.php').
+ */
+function ed_record(string $module, string $page, ?int $id, string $field, string $permission): string
+{
+    if ($id === null || $id <= 0 || staff_viewer() === null) {
+        return '';
+    }
+    return edit_attr($page . '?id=' . $id . '#row-' . $field, $permission, edit_label($module, $field));
+}
+
+function ed_service(?array $service, string $field): string
+{
+    return ed_record('services', 'admin/service-edit.php', isset($service['ServiceID']) ? (int) $service['ServiceID'] : null, $field, 'services.edit');
+}
+
+// ---------------------------------------------------------------------------
+// Hidden blocks: where a section exists but isn't shown (Draft or Archived),
+// or a block is empty, staff see a dashed placeholder with a link to fix it.
+// Visitors see nothing.
+// ---------------------------------------------------------------------------
+
+/**
+ * Placeholders for this page's sections that visitors can't see. $published
+ * is what site_sections() returned; $only limits it to some section keys.
+ */
+function hidden_blocks(string $page, array $published, array $only = []): string
+{
+    $viewer = staff_viewer();
+    if ($viewer === null || !role_can($viewer['Role'], 'page_sections.edit')) {
+        return '';
+    }
+    try {
+        $rows = db_all("SELECT SectionID, SectionKey, Status FROM PageSections WHERE PageKey = ? AND Status <> 'Published' AND SectionKey <> 'seo' ORDER BY DisplayOrder", [$page]);
+    } catch (Throwable $error) {
+        return '';
+    }
+    $html = '';
+    foreach ($rows as $row) {
+        if (isset($published[$row['SectionKey']]) || ($only !== [] && !in_array($row['SectionKey'], $only, true))) {
+            continue;
+        }
+        $label = page_map()[$page]['blocks'][$row['SectionKey']][0] ?? cms_safe_label((string) $row['SectionKey']);
+        $html .= hidden_notice($label, $row['Status'] === 'Draft' ? 'a draft, not published yet' : 'archived', url('admin/section-edit.php?id=' . (int) $row['SectionID'] . '#row-Status'), 'Edit and publish');
+    }
+    return $html;
+}
+
+function hidden_block(string $page, string $key, array $published): string
+{
+    return hidden_blocks($page, $published, [$key]);
+}
+
+/** A placeholder for a block that is hidden because a field is empty. */
+function hidden_field_block(string $label, string $reason, string $path, string $permission): string
+{
+    $viewer = staff_viewer();
+    if ($viewer === null || !role_can($viewer['Role'], $permission)) {
+        return '';
+    }
+    return hidden_notice($label, $reason, url($path), 'Add it');
+}
+
+function hidden_notice(string $label, string $reason, string $href, string $action): string
+{
+    return '<div class="hidden-block" role="note"><span><strong>Hidden from visitors:</strong> ' . e($label) . ' (' . e($reason) . ')</span>'
+         . '<a class="hidden-block__link" href="' . e($href) . '">' . e($action) . '</a></div>';
 }

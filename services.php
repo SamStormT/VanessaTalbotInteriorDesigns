@@ -26,8 +26,8 @@ require_once INCLUDES_PATH . '/header.php';
                     <li aria-current="page">Services</li>
                 </ol>
             </nav>
-            <h1 id="page-title"><?= e($header['Heading'] ?? '') ?></h1>
-            <p class="page-hero__lead"><?= e($header['Introduction'] ?? '') ?></p>
+            <h1 id="page-title"<?= ed_section($header ?: null, 'Heading') ?>><?= e($header['Heading'] ?? '') ?></h1>
+            <p class="page-hero__lead"<?= ed_section($header ?: null, 'Introduction') ?>><?= e($header['Introduction'] ?? '') ?></p>
         </div>
     </section>
 
@@ -50,25 +50,25 @@ require_once INCLUDES_PATH . '/header.php';
         <?= edit_block('services', 'service', [['service', 'Edit ' . $name, $slug]]) ?>
         <div class="container split<?= $i % 2 ? ' split--reverse' : '' ?>">
             <div class="split__media">
-                <?= content_frame('art-frame art-frame--' . $tones[$i % 3], $service['FeaturedImage'] ?? '', $service['FeaturedImageAlt'] ?? '', icon((string) $service['Icon'], 'icon art-frame__icon')) ?>
+                <?= content_frame('art-frame art-frame--' . $tones[$i % 3], $service['FeaturedImage'] ?? '', $service['FeaturedImageAlt'] ?? '', icon((string) $service['Icon'], 'icon art-frame__icon'), 'web', ed_service($service, 'FeaturedImage')) ?>
             </div>
             <div class="split__content">
                 <p class="eyebrow"><span class="service-section__number"><?= sprintf('%02d', $i + 1) ?></span> Service</p>
-                <h2 id="<?= e($slug) ?>-title"><?= e($name) ?></h2>
-                <?= content_paragraphs($service['Lead'], 'lead') ?>
-                <?= content_paragraphs($service['FullDescription']) ?>
+                <h2 id="<?= e($slug) ?>-title"<?= ed_service($service, 'ServiceName') ?>><?= e($name) ?></h2>
+                <?= content_paragraphs($service['Lead'], 'lead', ed_service($service, 'Lead')) ?>
+                <?= content_paragraphs($service['FullDescription'], '', ed_service($service, 'FullDescription')) ?>
 
                 <h3 class="subheading">What's included</h3>
                 <ul class="check-list">
 <?php foreach (content_lines($service['IncludedItems']) as $item): ?>
-                    <li><?= icon('check') ?><span><?= e($item) ?></span></li>
+                    <li<?= ed_service($service, 'IncludedItems') ?>><?= icon('check') ?><span><?= e($item) ?></span></li>
 <?php endforeach; ?>
                 </ul>
 
                 <h3 class="subheading">Ideal for</h3>
                 <ul class="tag-list" aria-label="<?= e($name) ?> is ideal for">
 <?php foreach ($ideal as $market): ?>
-                    <li><?= e($market) ?></li>
+                    <li<?= ed_service($service, 'IdealFor') ?>><?= e($market) ?></li>
 <?php endforeach; ?>
                 </ul>
 
@@ -86,6 +86,7 @@ require_once INCLUDES_PATH . '/header.php';
 <?php endforeach; ?>
 
     <!-- Process -->
+<?= hidden_block('services', 'process', $sections) ?>
 <?php if ($section = $sections['process'] ?? null): ?>
     <section class="section section--white"<?= content_labelled($section, 'process-title') ?>>
         <?= edit_block('services', 'process') ?>
@@ -94,8 +95,8 @@ require_once INCLUDES_PATH . '/header.php';
             <ol class="process">
 <?php foreach ($section['items'] as $step): ?>
                 <li class="process__step">
-                    <h3><?= e($step['Title']) ?></h3>
-                    <p><?= e($step['Text']) ?></p>
+                    <h3<?= ed_item($step, 'Title') ?>><?= e($step['Title']) ?></h3>
+                    <p<?= ed_item($step, 'Text') ?>><?= e($step['Text']) ?></p>
                 </li>
 <?php endforeach; ?>
             </ol>
@@ -104,15 +105,16 @@ require_once INCLUDES_PATH . '/header.php';
 <?php endif; ?>
 
     <!-- Call-to-action -->
+<?= hidden_block('services', 'closing', $sections) ?>
 <?php if ($section = $sections['closing'] ?? null): ?>
     <section class="section cta-banner"<?= content_labelled($section, 'services-cta-title') ?>>
         <?= edit_block('services', 'closing') ?>
         <div class="container cta-banner__inner">
             <?= content_heading($section, 'services-cta-title') ?>
-            <?= content_paragraphs($section['Introduction']) ?>
+            <?= content_paragraphs($section['Introduction'], '', ed_section($section, 'Introduction')) ?>
             <div class="btn-group btn-group--centred">
-                <?= content_link($section['ButtonText'], $section['ButtonLink'], 'btn btn--primary') ?>
-                <?= content_link($section['SecondaryButtonText'], $section['SecondaryButtonLink'], 'btn btn--outline') ?>
+                <?= content_link($section['ButtonText'], $section['ButtonLink'], 'btn btn--primary', '', ed_section($section, 'ButtonText')) ?>
+                <?= content_link($section['SecondaryButtonText'], $section['SecondaryButtonLink'], 'btn btn--outline', '', ed_section($section, 'SecondaryButtonText')) ?>
             </div>
         </div>
     </section>

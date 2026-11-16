@@ -501,3 +501,121 @@ document.querySelectorAll('form[data-confirm]').forEach((form) => {
     resume.addEventListener('click', run);
     run();
 })();
+
+// ---------------------------------------------------------------------------
+// Arriving from an Edit button on the website (#row-Field or #items):
+// bring that field into view, highlight it, and put the cursor in it.
+// ---------------------------------------------------------------------------
+(() => {
+    const hash = decodeURIComponent(window.location.hash.slice(1));
+    if (!/^(row-[A-Za-z0-9]+|items)$/.test(hash)) return;
+    const target = document.getElementById(hash);
+    if (!target) return;
+
+    target.classList.add('is-pointed');
+
+    // After "load": the browser's own jump to the #anchor happens first and would undo the focus.
+    const arrive = () => {
+        target.scrollIntoView({ block: 'center' });
+        // The first thing to type in, or for an image the "Choose from library" button.
+        const control = target.querySelector('textarea:not([hidden]), input:not([type="hidden"]):not(.visually-hidden), select, [data-media-library], a.btn');
+        if (control) control.focus({ preventScroll: true });
+    };
+    if (document.readyState === 'complete') {
+        arrive();
+    } else {
+        window.addEventListener('load', () => setTimeout(arrive, 0), { once: true });
+    }
+})();
+
+// ---------------------------------------------------------------------------
+// Character counts under text fields, with a gentle warning past the
+// recommended length (the field still saves; it's guidance, not a rule).
+// ---------------------------------------------------------------------------
+document.querySelectorAll('[data-count-for]').forEach((counter) => {
+    const field = document.getElementById(counter.dataset.countFor);
+    if (!field) return;
+    const ideal = Number(counter.dataset.ideal || 0);
+    const update = () => {
+        const length = [...field.value].length;
+        const over = ideal > 0 && length > ideal;
+        counter.classList.toggle('is-over', over);
+        counter.textContent = length + (length === 1 ? ' character' : ' characters')
+            + (ideal ? (over ? ` · ${length - ideal} over the recommended ${ideal}. ${counter.dataset.idealWhy}` : ` · aim for ${ideal} or fewer`) : '');
+    };
+    field.addEventListener('input', update);
+    update();
+});
+
+// ---------------------------------------------------------------------------
+// Arrived from the website (an Edit button or "Edit: field" label)? Show a
+// "Back to the page" link, and next to each Save button a "Save and return
+// to the page" button that saves, then goes back to the same spot.
+// ---------------------------------------------------------------------------
+(() => {
+    let back = null;
+    try {
+        back = JSON.parse(sessionStorage.getItem('vt-return') || 'null');
+    } catch (error) {
+        return;
+    }
+    if (!back || Date.now() - back.time > 2 * 60 * 60 * 1000) return; // two hours
+
+    const goBack = (saved) => {
+        try {
+            sessionStorage.setItem('vt-restore', JSON.stringify({ url: back.url, scroll: back.scroll, saved }));
+            sessionStorage.removeItem('vt-return');
+        } catch (error) { /* ignore */ }
+        window.location.href = back.url;
+    };
+
+    // Saved with "Save and return", and the save worked: go back now.
+    try {
+        if (sessionStorage.getItem('vt-return-pending') === '1') {
+            sessionStorage.removeItem('vt-return-pending');
+            const ok = document.querySelector('.admin-alert--success') && !document.querySelector('.admin-alert--error, .admin-error');
+            if (ok) {
+                goBack(true);
+                return;
+            }
+        }
+    } catch (error) { /* ignore */ }
+
+    const content = document.querySelector('.admin-content');
+    if (!content) return;
+
+    const bar = document.createElement('p');
+    bar.className = 'return-bar';
+    const link = document.createElement('a');
+    link.href = back.url;
+    link.textContent = '← Back to the page: ' + (back.title || 'website');
+    link.addEventListener('click', (event) => {
+        event.preventDefault();
+        goBack(false);
+    });
+    const forget = document.createElement('button');
+    forget.type = 'button';
+    forget.className = 'return-bar__forget';
+    forget.textContent = 'Hide';
+    forget.addEventListener('click', () => {
+        try { sessionStorage.removeItem('vt-return'); } catch (error) { /* ignore */ }
+        bar.remove();
+        document.querySelectorAll('[data-save-return]').forEach((button) => button.remove());
+    });
+    bar.append(link, forget);
+    content.prepend(bar);
+
+    document.querySelectorAll('.admin-form .admin-actions').forEach((actions) => {
+        const save = actions.querySelector('button[type="submit"]');
+        if (!save) return;
+        const button = document.createElement('button');
+        button.type = 'submit';
+        button.className = 'btn btn--outline';
+        button.dataset.saveReturn = '';
+        button.textContent = 'Save and return to the page';
+        button.addEventListener('click', () => {
+            try { sessionStorage.setItem('vt-return-pending', '1'); } catch (error) { /* ignore */ }
+        });
+        save.after(button);
+    });
+})();

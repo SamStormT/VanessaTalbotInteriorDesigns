@@ -26,7 +26,7 @@ $activeNav = 'admin/services.php';
 require_once INCLUDES_PATH . '/header.php';
 ?>
 <main id="main-content" class="admin-content">
-    <div class="admin-toolbar"><?= cms_last_edited($row) ?></div>
+    <div class="admin-toolbar"><?= cms_last_edited($row) ?><?= cms_history_link($module, (int) $row[$module['key']]) ?></div>
     <?= cms_render_form($module, $row, $errors, $list, $posted) ?>
 </main>
 <?php require_once INCLUDES_PATH . '/footer.php'; ?>

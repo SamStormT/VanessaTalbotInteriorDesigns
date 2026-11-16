@@ -20,6 +20,7 @@ require_once INCLUDES_PATH . '/header.php';
 
     <?= content_page_hero($header, [], edit_block('portfolio', 'page-header')) ?>
 
+<?= hidden_block('portfolio', 'categories', $sections) ?>
 <?php if ($section = $sections['categories'] ?? null): ?>
     <section class="section"<?= content_labelled($section, 'categories-title') ?>>
         <?= edit_block('portfolio', 'categories') ?>
@@ -28,12 +29,12 @@ require_once INCLUDES_PATH . '/header.php';
             <ul class="portfolio-grid portfolio-grid--4">
 <?php foreach ($section['items'] as $index => $item): ?>
                 <li class="portfolio-tile">
-                    <?= content_frame('art-frame art-frame--' . $tones[$index % 4], $item['Image'] ?? '', $item['ImageAlt'] ?? '', icon((string) $item['Icon'], 'icon art-frame__icon')) ?>
+                    <?= content_frame('art-frame art-frame--' . $tones[$index % 4], $item['Image'] ?? '', $item['ImageAlt'] ?? '', icon((string) $item['Icon'], 'icon art-frame__icon'), 'web', ed_item($item, 'Image')) ?>
                     <div class="portfolio-tile__body">
-                        <h3 class="portfolio-tile__title">
+                        <h3 class="portfolio-tile__title"<?= ed_item($item, 'Title') ?>>
                             <a class="card__link" href="<?= e(content_url($item['Link'])) ?>"><?= e($item['Title']) ?></a>
                         </h3>
-                        <p><?= e($item['Text']) ?></p>
+                        <p<?= ed_item($item, 'Text') ?>><?= e($item['Text']) ?></p>
                     </div>
                 </li>
 <?php endforeach; ?>
@@ -42,6 +43,7 @@ require_once INCLUDES_PATH . '/header.php';
     </section>
 <?php endif; ?>
 
+<?= hidden_block('portfolio', 'featured', $sections) ?>
 <?php if ($featured && ($section = $sections['featured'] ?? null)): ?>
     <section class="section section--peach"<?= content_labelled($section, 'featured-title') ?>>
         <?= edit_block('portfolio', 'featured') ?>
@@ -56,7 +58,7 @@ require_once INCLUDES_PATH . '/header.php';
     </section>
 <?php endif; ?>
 
-    <?= isset($sections['closing']) ? content_closing($sections['closing'], 'portfolio-cta-title', edit_block('portfolio', 'closing')) : '' ?>
+    <?= isset($sections['closing']) ? content_closing($sections['closing'], 'portfolio-cta-title', edit_block('portfolio', 'closing')) : hidden_block('portfolio', 'closing', $sections) ?>
 
 </main>
 <?php require_once INCLUDES_PATH . '/footer.php'; ?>

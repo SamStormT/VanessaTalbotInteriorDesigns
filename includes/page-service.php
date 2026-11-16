@@ -36,8 +36,8 @@ require_once INCLUDES_PATH . '/header.php';
                     <li aria-current="page"><?= e($service['ServiceName']) ?></li>
                 </ol>
             </nav>
-            <h1 id="page-title"><?= e($service['ServiceName']) ?></h1>
-            <p class="page-hero__lead"><?= e($service['Lead'] ?? '') ?></p>
+            <h1 id="page-title"<?= ed_service($service, 'ServiceName') ?>><?= e($service['ServiceName']) ?></h1>
+            <p class="page-hero__lead"<?= ed_service($service, 'Lead') ?>><?= e($service['Lead'] ?? '') ?></p>
         </div>
     </section>
 
@@ -45,15 +45,15 @@ require_once INCLUDES_PATH . '/header.php';
         <?= edit_block('service-' . $serviceSlug, 'main') ?>
         <div class="container split">
             <div class="split__media">
-                <?= content_frame('art-frame art-frame--portrait art-frame--arch art-frame--peach', $service['FeaturedImage'] ?? '', $service['FeaturedImageAlt'] ?? '', icon((string) $service['Icon'], 'icon art-frame__icon')) ?>
+                <?= content_frame('art-frame art-frame--portrait art-frame--arch art-frame--peach', $service['FeaturedImage'] ?? '', $service['FeaturedImageAlt'] ?? '', icon((string) $service['Icon'], 'icon art-frame__icon'), 'web', ed_service($service, 'FeaturedImage')) ?>
             </div>
             <div class="split__content">
-                <?= content_paragraphs($service['FullDescription'], 'lead') ?>
+                <?= content_paragraphs($service['FullDescription'], 'lead', ed_service($service, 'FullDescription')) ?>
 <?php if ($included): ?>
                 <h2 class="subheading">What's included</h2>
                 <ul class="check-list">
 <?php foreach ($included as $item): ?>
-                    <li><?= icon('check') ?><span><?= e($item) ?></span></li>
+                    <li<?= ed_service($service, 'IncludedItems') ?>><?= icon('check') ?><span><?= e($item) ?></span></li>
 <?php endforeach; ?>
                 </ul>
 <?php endif; ?>
@@ -61,7 +61,7 @@ require_once INCLUDES_PATH . '/header.php';
                 <h2 class="subheading">Ideal for</h2>
                 <ul class="tag-list" aria-label="<?= e($service['ServiceName']) ?> is ideal for">
 <?php foreach ($ideal as $market): ?>
-                    <li><?= e($market) ?></li>
+                    <li<?= ed_service($service, 'IdealFor') ?>><?= e($market) ?></li>
 <?php endforeach; ?>
                 </ul>
 <?php endif; ?>
@@ -69,6 +69,7 @@ require_once INCLUDES_PATH . '/header.php';
         </div>
     </section>
 
+<?= hidden_blocks('service-' . $serviceSlug, $sections) ?>
 <?php $index = 0; foreach ($extra as $key => $section): ?>
     <?= content_items_section($section, 'section-' . $key, $index++ % 2 === 0, edit_block('service-' . $serviceSlug, (string) $key)) ?>
 <?php endforeach; ?>
@@ -81,7 +82,7 @@ require_once INCLUDES_PATH . '/header.php';
 <?php foreach ($engagements as $event):
     $detail = array_filter([$event['Venue'] ?? '', $event['City'] ?? '', !empty($event['EventDate']) ? date('j F Y', strtotime($event['EventDate'])) : '']);
 ?>
-                <li><?= icon('check') ?><span><strong><?= e($event['Title']) ?></strong><?= $detail ? ', ' . e(implode(', ', $detail)) : '' ?></span></li>
+                <li<?= ed_record('speaking', 'admin/speaking-edit.php', (int) ($event['EngagementID'] ?? 0), 'Title', 'speaking.edit') ?>><?= icon('check') ?><span><strong><?= e($event['Title']) ?></strong><?= $detail ? ', ' . e(implode(', ', $detail)) : '' ?></span></li>
 <?php endforeach; ?>
             </ul>
         </div>

@@ -157,3 +157,90 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 });
+
+// ---------------------------------------------------------------------------
+// Staff only (body.is-staff): hovering anything editable outlines it and
+// shows "Edit: <field>", which opens that exact field in the admin area.
+// Before leaving for the admin area, remember where we were, so "Save and
+// return to the page" can bring us back to the same spot.
+// ---------------------------------------------------------------------------
+(() => {
+    const body = document.body;
+    if (!body.classList.contains('is-staff')) return;
+
+    const remember = () => {
+        try {
+            sessionStorage.setItem('vt-return', JSON.stringify({
+                url: location.pathname + location.search,
+                scroll: Math.round(window.scrollY),
+                title: document.title.split(' | ')[0],
+                time: Date.now(),
+            }));
+        } catch (error) { /* storage blocked: the return button just won't appear */ }
+    };
+
+    // Coming back after saving: scroll to where we were and say so.
+    try {
+        const restore = JSON.parse(sessionStorage.getItem('vt-restore') || 'null');
+        if (restore && restore.url === location.pathname + location.search) {
+            sessionStorage.removeItem('vt-restore');
+            window.addEventListener('load', () => setTimeout(() => window.scrollTo(0, restore.scroll), 0), { once: true });
+            if (restore.saved) {
+                const toast = document.createElement('p');
+                toast.className = 'edit-toast';
+                toast.setAttribute('role', 'status');
+                toast.textContent = 'Saved. This is how it looks now.';
+                body.append(toast);
+                setTimeout(() => toast.remove(), 4000);
+            }
+        }
+    } catch (error) { /* ignore */ }
+
+    const chip = document.createElement('a');
+    chip.className = 'edit-chip';
+    chip.hidden = true;
+    body.append(chip);
+
+    let current = null;
+    let hideTimer = 0;
+
+    const place = (element) => {
+        const box = element.getBoundingClientRect();
+        const above = box.top > 34;
+        chip.style.top = `${window.scrollY + (above ? box.top - 30 : box.top + 4)}px`;
+        chip.style.left = `${Math.max(8, Math.min(window.scrollX + box.left, window.scrollX + window.innerWidth - chip.offsetWidth - 8))}px`;
+    };
+    const hide = () => {
+        chip.hidden = true;
+        current?.classList.remove('is-edit-hover');
+        current = null;
+    };
+
+    document.addEventListener('mouseover', (event) => {
+        if (body.classList.contains('edit-hidden')) return;
+        if (event.target.closest('.edit-chip')) {
+            clearTimeout(hideTimer);
+            return;
+        }
+        const element = event.target.closest('[data-edit]');
+        if (!element) {
+            clearTimeout(hideTimer);
+            hideTimer = setTimeout(hide, 250);
+            return;
+        }
+        clearTimeout(hideTimer);
+        if (element === current) return;
+        current?.classList.remove('is-edit-hover');
+        current = element;
+        element.classList.add('is-edit-hover');
+        chip.href = element.dataset.edit;
+        chip.textContent = '✎ Edit: ' + element.dataset.editLabel;
+        chip.hidden = false;
+        place(element);
+    });
+    window.addEventListener('scroll', () => { if (current) place(current); }, { passive: true });
+
+    document.addEventListener('click', (event) => {
+        if (event.target.closest('.edit-chip, .edit-here__link')) remember();
+    });
+})();

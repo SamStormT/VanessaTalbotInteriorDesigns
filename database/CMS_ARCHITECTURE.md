@@ -210,11 +210,25 @@ The order of these assignments matters: `SubscriptionStatus` must change after t
 
 | Feature | How it works |
 |---|---|
-| Edit buttons | Signed-in staff browsing the website see a dark bar at the top and small Edit buttons on every block. Each button opens the exact admin screen for that part of the block. Only screens the person's role can open are shown. "Hide edit buttons" in the bar turns them off, and the choice is remembered |
+| Edit buttons | Signed-in staff browsing the website see a dark bar at the top and small Edit buttons on every block. Each button opens the exact admin screen for that part of the block, scrolled to the field itself (for example the hero image), highlighted, with the cursor in it. Every admin field has an anchor `#row-FieldName`, and a section's repeating items `#items`. Only screens the person's role can open are shown. "Hide edit buttons" in the bar turns them off, and the choice is remembered |
 | Pages screen | `admin/pages.php` (Website Content → Pages) lists every public page with its blocks in order and links to where each is edited, including blocks that are hidden because they are empty or unpublished |
+| Click to edit | Hovering over any piece of wording or any picture on the website outlines it and shows a small "✎ Edit: field name" label (for example "Edit: Hero subtitle"). Clicking it opens the admin screen at that exact field. The marks are `data-edit` attributes added by the `ed_*` helpers in `includes/page-map.php`, only for signed-in staff whose role can edit that field. "Hide edit buttons" hides the labels too |
+| Hidden blocks | Where a block exists but visitors can't see it (a section left as Draft or Archived, or an empty Featured box or Quote), staff see a dashed "Hidden from visitors" strip in its place with a link to fix it. Visitors see nothing |
+| Back to the page | After arriving from the website, the admin screen shows "← Back to the page" and a "Save and return to the page" button next to Save. It saves, goes back to the same page at the same scroll position, and says "Saved. This is how it looks now." The return is remembered for two hours in that browser tab only |
+| Length hints | Short text boxes show a live character count. Fields with a recommended length (search title 60, search description 155, email subject 60, preview text 100, button labels 25, headings 70, small headings 80, summaries 200, image descriptions 125) say "aim for N or fewer" and explain why when it is longer. The limit is advice; nothing is refused |
 | One map | Both come from `page_map()` in `includes/page-map.php` |
 | Visitors | No session is opened and nothing changes for visitors; the check only runs when the browser already has a staff session cookie |
 | Section images | `PageSections.Image` is shown on the editor only where it appears on the website: every **page header** (a photo behind the heading, softened by a peach veil; the botanical drawing returns when it's removed) and the About **speaking** block (replacing the microphone) |
+
+## 4f. History and undo
+
+| Feature | How it works |
+|---|---|
+| What is kept | Every save through the CMS (`cms_save`) records what changed in `ContentVersions`: the table, record, each changed field before and after (JSON), who, when, and a note. The last 50 versions per record are kept; older ones are removed automatically |
+| Where | Each edit screen with saved changes has a "History and undo" button (`admin/history.php`). It lists the changes newest first, with before and after for each field |
+| Undo | "Undo the last change" or "Restore what it was before" on any version puts back the earlier values. The restore is saved as a new version, so it can itself be undone |
+| Rules | The same permission as editing applies. Fields the person may not change (for example Status for an Editor) are left as they are, and the page says so. Images that have since been deleted from the Media Library are not restored. A Ready campaign that is changed goes back to Draft; campaigns being sent, sent or archived can't be restored. Restores are written to the activity log as `restore_version` |
+| Not covered | Deleting a record, reordering, uploads and settings changed outside the CMS forms are not versioned. Use database backups for those |
 
 ## 4b. User management
 

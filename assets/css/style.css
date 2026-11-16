@@ -1354,3 +1354,72 @@ label {
 .rich-section--gold .btn--primary { background: var(--color-soft-peach); border-color: var(--color-soft-peach); color: var(--color-primary); }
 .rich-button { margin: var(--space-lg) 0; }
 .rich-more { display: block; }
+
+/* Click-to-edit (staff only): outline and "Edit: field" label on hover */
+.is-staff .is-edit-hover { outline: 2px dashed var(--color-golden-yellow); outline-offset: 4px; }
+.edit-chip {
+    position: absolute;
+    z-index: 300;
+    padding: 0.2rem 0.65rem;
+    border-radius: 999px;
+    background: var(--color-golden-yellow);
+    color: var(--color-primary);
+    font-family: var(--font-body);
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0;
+    text-transform: none;
+    text-decoration: none;
+    white-space: nowrap;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+.edit-chip:hover,
+.edit-chip:focus-visible { background: var(--color-primary); color: var(--color-white); }
+.edit-chip[hidden],
+.edit-hidden .edit-chip { display: none; }
+.edit-toast {
+    position: fixed;
+    left: 50%;
+    bottom: 1.5rem;
+    z-index: 400;
+    transform: translateX(-50%);
+    margin: 0;
+    padding: 0.6rem 1.2rem;
+    border-radius: 999px;
+    background: var(--color-primary);
+    color: var(--color-white);
+    font-size: var(--fs-sm);
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
+}
+/* An empty page header can still be clicked to add a photo. */
+.page-hero__image-spot { position: absolute; right: 6%; top: 50%; transform: translateY(-50%); }
+.page-hero__image-spot .page-hero__botanical { position: static; transform: none; }
+
+/* Hidden blocks, shown to staff only */
+.hidden-block {
+    margin: var(--space-md) auto;
+    max-width: var(--container-width);
+    padding: 0.9rem 1.25rem;
+    border: 2px dashed var(--color-earthy-gold);
+    border-radius: var(--radius);
+    background: repeating-linear-gradient(135deg, var(--color-peach-light), var(--color-peach-light) 12px, var(--color-white) 12px, var(--color-white) 24px);
+    color: var(--color-primary);
+    font-family: var(--font-body);
+    font-size: var(--fs-sm);
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem 1rem;
+}
+.hidden-block strong { font-weight: 700; }
+.hidden-block__link {
+    margin-left: auto;
+    padding: 0.25rem 0.8rem;
+    border-radius: 999px;
+    background: var(--color-primary);
+    color: var(--color-white);
+    text-decoration: none;
+    font-weight: 600;
+}
+.hidden-block__link:hover, .hidden-block__link:focus-visible { background: var(--color-golden-yellow); color: var(--color-primary); }
+.edit-hidden .hidden-block { display: none; }

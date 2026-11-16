@@ -51,7 +51,9 @@ Signed-in staff can edit every piece of website wording without a developer.
 | Subscribers | Newsletter sign-ups, whether they confirmed, unsubscribe and erase on request |
 | Users (SuperAdmin only) | Add people by email invitation, change roles, disable and reactivate accounts, send password reset links |
 
-**Finding things:** while signed in, every block on the website shows Edit buttons that open the right admin screen.
+**Finding things:** while signed in, every block on the website shows Edit buttons that open the right admin screen. Hover over any wording or picture to see "Edit: field name"; click it to go straight to that field, then use "Save and return to the page" to see the result in place. Blocks hidden from visitors (drafts, empty boxes) show as dashed strips for staff only.
+
+**Undo:** every edit screen has "History and undo", listing each saved change with before and after. Restoring is itself saved, so it can be undone. The last 50 changes per item are kept.
 
 **Workflow:** content is Draft, Published or Archived, and only Published content appears on the site. Every change records who made it and when, and is written to an activity log.
 

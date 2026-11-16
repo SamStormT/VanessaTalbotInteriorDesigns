@@ -115,7 +115,7 @@ function cms_validate(array $module, array $input, array $existing = []): array
  * Save changes, stamp LastEditedBy/LastEditedDate and write the activity log.
  * Returns the names of the fields that changed.
  */
-function cms_save(array $module, int $id, array $data, array $existing): array
+function cms_save(array $module, int $id, array $data, array $existing, ?string $note = null): array
 {
     $changed = [];
     foreach ($data as $name => $value) {
@@ -138,6 +138,12 @@ function cms_save(array $module, int $id, array $data, array $existing): array
         );
         // Field names only: values could contain personal data.
         activity_log('update', $module['table'], $id, 'Changed: ' . implode(', ', array_keys($changed)));
+        try {
+            cms_version_record($module['table'], $id, array_intersect_key($existing, $changed), $changed, (int) $admin['AdminUserID'], $note);
+        } catch (PDOException $error) {
+            // History must never stop a save (for example before migration 015 has run).
+            error_log('Version history not recorded for ' . $module['table'] . ' ' . $id . ': ' . $error->getMessage());
+        }
         db()->commit();
     } catch (Throwable $error) {
         db()->rollBack();
@@ -145,6 +151,46 @@ function cms_save(array $module, int $id, array $data, array $existing): array
     }
 
     return array_keys($changed);
+}
+
+// ---------------------------------------------------------------------------
+// Version history: every save keeps the previous values, so it can be undone.
+// ---------------------------------------------------------------------------
+
+const CMS_VERSIONS_KEPT = 50;
+
+/** Keep the before and after values of the fields a save changed. */
+function cms_version_record(string $table, int $id, array $old, array $new, ?int $adminId, ?string $note = null): void
+{
+    foreach (array_keys($new) as $field) {
+        $old[$field] ??= null;
+    }
+    db_query(
+        'INSERT INTO ContentVersions (TableName, RecordID, OldValues, NewValues, ChangedBy, Note) VALUES (?, ?, ?, ?, ?, ?)',
+        [$table, $id, json_encode($old, JSON_UNESCAPED_UNICODE), json_encode($new, JSON_UNESCAPED_UNICODE), $adminId, $note]
+    );
+    // Keep the newest versions only.
+    $cutoff = db_value(
+        'SELECT VersionID FROM ContentVersions WHERE TableName = ? AND RecordID = ? ORDER BY VersionID DESC LIMIT 1 OFFSET ' . CMS_VERSIONS_KEPT,
+        [$table, $id]
+    );
+    if ($cutoff !== null) {
+        db_query('DELETE FROM ContentVersions WHERE TableName = ? AND RecordID = ? AND VersionID <= ?', [$table, $id, $cutoff]);
+    }
+}
+
+/** A "History" link for a record's edit screen, when it has any saved changes. */
+function cms_history_link(array $module, int $id): string
+{
+    try {
+        $count = (int) db_value('SELECT COUNT(*) FROM ContentVersions WHERE TableName = ? AND RecordID = ?', [$module['table'], $id]);
+    } catch (Throwable $error) {
+        return ''; // version table not created yet
+    }
+    if ($count === 0 || !can($module['permission'] . '.edit')) {
+        return '';
+    }
+    return '<a class="btn btn--outline btn--small" href="' . e(url('admin/history.php?table=' . rawurlencode($module['table']) . '&id=' . $id)) . '">History and undo <span class="admin-filter__count">' . $count . '</span></a>';
 }
 
 /**
@@ -250,6 +296,17 @@ function cms_render_control(string $name, array $field, string $value, ?string $
         $message = '<p class="admin-error" id="' . e($id) . '-error">' . e($error) . '</p>';
     }
 
+    // Live character count, with a recommended length where it matters.
+    $counter = '';
+    if (in_array($field['type'], ['text', 'textarea'], true) && empty($field['rich']) && isset($field['max']) && $field['max'] <= 1000) {
+        $ideal   = $field['ideal'] ?? cms_ideal_length($name);
+        $describe[] = $id . '-count';
+        $counter = '<p class="admin-count" id="' . e($id) . '-count" data-count-for="' . e($id) . '"'
+                 . ($ideal ? ' data-ideal="' . (int) $ideal . '" data-ideal-why="' . e(cms_ideal_reason($name)) . '"' : '')
+                 . ' aria-live="polite">' . mb_strlen($value) . ' characters' . ($ideal ? ' · aim for ' . (int) $ideal . ' or fewer' : '') . '</p>';
+        $help = $counter . $help;
+    }
+
     $attrs = 'id="' . e($id) . '" name="' . e($name) . '"';
     if ($describe !== []) {
         $attrs .= ' aria-describedby="' . e(implode(' ', $describe)) . '"';
@@ -267,7 +324,7 @@ function cms_render_control(string $name, array $field, string $value, ?string $
 
     if ($field['type'] === 'checkbox') {
         $checked = $value !== '' && $value !== '0' ? ' checked' : '';
-        return '<div class="admin-field admin-field--check"><label><input type="checkbox" value="1" ' . $attrs . $checked . '> '
+        return '<div class="admin-field admin-field--check" id="row-' . e($name) . '"><label><input type="checkbox" value="1" ' . $attrs . $checked . '> '
              . e($field['label']) . '</label>' . $help . $message . '</div>';
     }
 
@@ -296,7 +353,40 @@ function cms_render_control(string $name, array $field, string $value, ?string $
         $control = '<input type="' . $type . '" value="' . e($value) . '"' . $max . ' ' . $attrs . '>';
     }
 
-    return '<div class="admin-field">' . $label . $control . $help . $message . '</div>';
+    return '<div class="admin-field" id="row-' . e($name) . '">' . $label . $control . $help . $message . '</div>';
+}
+
+/**
+ * Recommended length for fields where length affects how things look: search
+ * results cut titles and descriptions short, buttons wrap, and headings that
+ * run long crowd the design. A field definition can set 'ideal' instead.
+ */
+function cms_ideal_length(string $name): ?int
+{
+    return match (true) {
+        $name === 'MetaTitle'                                  => 60,
+        $name === 'MetaDescription'                            => 155,
+        $name === 'Subject'                                    => 60,
+        $name === 'PreviewText'                                => 100,
+        (bool) preg_match('/(ButtonText|^CTA\dText|ReadMoreText)$/', $name) => 25,
+        in_array($name, ['Heading', 'HeroTitle', 'FeatureTitle', 'FeaturedCTATitle', 'Title', 'ServiceName', 'CategoryName'], true) => 70,
+        in_array($name, ['Eyebrow', 'HeroEyebrow'], true)      => 80,
+        in_array($name, ['ShortDescription', 'Excerpt', 'FeatureSummary', 'Lead'], true) => 200,
+        str_ends_with($name, 'Alt') || $name === 'AltText'     => 125,
+        default                                                => null,
+    };
+}
+
+/** Why the recommended length matters, shown when it's exceeded. */
+function cms_ideal_reason(string $name): string
+{
+    return match (true) {
+        in_array($name, ['MetaTitle', 'MetaDescription'], true) => 'Search engines usually cut off anything longer.',
+        in_array($name, ['Subject', 'PreviewText'], true)       => 'Email apps usually cut off anything longer.',
+        str_ends_with($name, 'Alt') || $name === 'AltText'      => 'Screen readers read it aloud, so short and clear is best.',
+        (bool) preg_match('/(ButtonText|^CTA\dText|ReadMoreText)$/', $name) => 'Longer button text may wrap onto two lines.',
+        default                                                 => 'Longer text may crowd the design. Check how it looks.',
+    };
 }
 
 /**
@@ -349,7 +439,7 @@ function cms_render_image_control(string $name, array $field, string $value, str
              . (empty($field['caption_field']) ? '' : ' data-caption-target="field-' . e($field['caption_field']) . '"');
     $hidden  = $value === '' ? ' hidden' : '';
 
-    return '<div class="admin-field"><span class="admin-field__label" id="' . e($id) . '-label">' . e($field['label']) . '</span>'
+    return '<div class="admin-field" id="row-' . e($name) . '"><span class="admin-field__label" id="' . e($id) . '-label">' . e($field['label']) . '</span>'
          . '<div class="media-field" data-media-field data-category="' . e($GLOBALS['cms_form_title'] ?? '') . '"' . $targets . '>'
          . '<input type="hidden" name="' . e($name) . '" value="' . e($value) . '" data-media-value>'
          . '<div class="media-field__preview"' . $hidden . '><img src="' . ($value === '' ? '' : e(image_url($value, 'thumb'))) . '" alt=""></div>'
@@ -427,7 +517,7 @@ function cms_singleton_page(string $key): void
     require INCLUDES_PATH . '/header.php';
 
     echo '<main id="main-content" class="admin-content">', cms_flash();
-    echo '<div class="admin-toolbar">', cms_last_edited($row);
+    echo '<div class="admin-toolbar">', cms_last_edited($row), cms_history_link($module, 1);
     if (!$editing && can($module['permission'] . '.edit')) {
         echo '<a class="btn btn--primary btn--small" href="', e($page), '?edit=1">Edit</a>';
     }

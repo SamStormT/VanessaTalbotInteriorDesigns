@@ -164,23 +164,26 @@ function content_url(?string $link): string
     return preg_match('/^[a-z][a-z0-9+.-]*:/i', $link) ? $link : url($link);
 }
 
-/** Link or button; nothing if the text or address is blank. $after is trusted markup. */
-function content_link(?string $text, ?string $link, string $class, string $after = ''): string
+/**
+ * Link or button; nothing if the text or address is blank. $after is trusted
+ * markup. $edit is a click-to-edit attribute (see ed_section() and friends).
+ */
+function content_link(?string $text, ?string $link, string $class, string $after = '', string $edit = ''): string
 {
     if (trim((string) $text) === '' || trim((string) $link) === '') {
         return '';
     }
-    return '<a class="' . e($class) . '" href="' . e(content_url($link)) . '">' . e($text) . $after . '</a>';
+    return '<a class="' . e($class) . '" href="' . e(content_url($link)) . '"' . $edit . '>' . e($text) . $after . '</a>';
 }
 
 /** Text as paragraphs, split on blank lines. The first can have its own class. */
-function content_paragraphs(?string $text, string $firstClass = ''): string
+function content_paragraphs(?string $text, string $firstClass = '', string $edit = ''): string
 {
     $html = '';
     foreach (preg_split('/\n\s*\n/', trim((string) $text)) ?: [] as $index => $paragraph) {
         if ($paragraph !== '') {
             $class = $index === 0 && $firstClass !== '' ? ' class="' . e($firstClass) . '"' : '';
-            $html .= '<p' . $class . '>' . nl2br(e($paragraph), false) . '</p>';
+            $html .= '<p' . $class . $edit . '>' . nl2br(e($paragraph), false) . '</p>';
         }
     }
     return $html;
@@ -210,30 +213,37 @@ function content_labelled(array $section, string $id): string
 
 function content_eyebrow(array $section): string
 {
-    return trim((string) ($section['Eyebrow'] ?? '')) === '' ? '' : '<p class="eyebrow">' . e($section['Eyebrow']) . '</p>';
+    return trim((string) ($section['Eyebrow'] ?? '')) === '' ? '' : '<p class="eyebrow"' . ed_section($section, 'Eyebrow') . '>' . e($section['Eyebrow']) . '</p>';
 }
 
 function content_heading(array $section, string $id): string
 {
-    return trim((string) ($section['Heading'] ?? '')) === '' ? '' : '<h2 id="' . e($id) . '">' . e($section['Heading']) . '</h2>';
+    return trim((string) ($section['Heading'] ?? '')) === '' ? '' : '<h2 id="' . e($id) . '"' . ed_section($section, 'Heading') . '>' . e($section['Heading']) . '</h2>';
 }
 
-/** Centred section heading block. $intro replaces the section's own introduction. */
-function content_section_header(array $section, string $id, ?string $intro = null): string
+/**
+ * Centred section heading block. $intro replaces the section's own
+ * introduction, and $introEdit says where that replacement is edited.
+ */
+function content_section_header(array $section, string $id, ?string $intro = null, string $introEdit = ''): string
 {
-    $intro ??= $section['Introduction'] ?? '';
+    if ($intro === null) {
+        $intro     = $section['Introduction'] ?? '';
+        $introEdit = ed_section($section, 'Introduction');
+    }
     return '<header class="section-header">' . content_eyebrow($section) . content_heading($section, $id)
-         . (trim((string) $intro) === '' ? '' : '<p>' . e($intro) . '</p>') . '</header>';
+         . (trim((string) $intro) === '' ? '' : '<p' . $introEdit . '>' . e($intro) . '</p>') . '</header>';
 }
 
 /** Image frame: the photo if one is set, otherwise the decorative artwork. */
-function content_frame(string $class, ?string $image, ?string $alt, string $decoration, string $size = 'web'): string
+function content_frame(string $class, ?string $image, ?string $alt, string $decoration, string $size = 'web', string $edit = ''): string
 {
     if (trim((string) $image) === '') {
-        return '<div class="' . e($class) . '" aria-hidden="true">' . $decoration . '</div>';
+        // Staff can still click the empty frame to add a picture.
+        return '<div class="' . e($class) . '"' . ($edit === '' ? ' aria-hidden="true"' : $edit) . '>' . $decoration . '</div>';
     }
     $src = link_is_safe((string) $image) ? image_url((string) $image, $size) : '#';
-    return '<div class="' . e($class) . '"><img src="' . e($src) . '" alt="' . e($alt) . '"' . ($size === 'full' ? '' : ' loading="lazy"') . '></div>';
+    return '<div class="' . e($class) . '"' . $edit . '><img src="' . e($src) . '" alt="' . e($alt) . '"' . ($size === 'full' ? '' : ' loading="lazy"') . '></div>';
 }
 
 /**
@@ -244,15 +254,21 @@ function content_frame(string $class, ?string $image, ?string $alt, string $deco
 function content_hero_open(array $header, string $edit = ''): string
 {
     $image = trim((string) ($header['Image'] ?? ''));
+    $at    = ed_section(!empty($header['SectionID']) ? $header : null, 'Image');
     if ($image === '' || !link_is_safe($image)) {
-        return '<section class="page-hero" aria-labelledby="page-title">' . $edit . botanical('botanical page-hero__botanical');
+        return '<section class="page-hero" aria-labelledby="page-title">' . $edit
+             . ($at !== '' ? '<span class="page-hero__image-spot"' . $at . '>' . botanical('botanical page-hero__botanical') . '</span>' : botanical('botanical page-hero__botanical'));
     }
     return '<section class="page-hero page-hero--image" aria-labelledby="page-title">' . $edit
-         . '<img class="page-hero__image" src="' . e(image_url($image, 'full')) . '" alt="' . e($header['ImageAlt'] ?? '') . '">';
+         . '<img class="page-hero__image" src="' . e(image_url($image, 'full')) . '" alt="' . e($header['ImageAlt'] ?? '') . '"' . $at . '>';
 }
 
-/** Inner page heading with breadcrumb. $crumbs is a list of [label, path] between Home and this page. */
-function content_page_hero(array $header, array $crumbs, string $edit = ''): string
+/**
+ * Inner page heading with breadcrumb. $crumbs is a list of [label, path]
+ * between Home and this page. $headingEdit/$introEdit say where the heading
+ * and introduction are edited when they don't come from a page section.
+ */
+function content_page_hero(array $header, array $crumbs, string $edit = '', string $headingEdit = '', string $introEdit = ''): string
 {
     $trail = '<li><a href="' . e(url('index.php')) . '">Home</a></li>';
     foreach ($crumbs as [$label, $path]) {
@@ -260,12 +276,16 @@ function content_page_hero(array $header, array $crumbs, string $edit = ''): str
     }
     $heading = (string) ($header['Heading'] ?? '');
     $intro   = trim((string) ($header['Introduction'] ?? ''));
+    if (!empty($header['SectionID'])) {
+        $headingEdit = ed_section($header, 'Heading');
+        $introEdit   = ed_section($header, 'Introduction');
+    }
 
     return content_hero_open($header, $edit)
          . '<div class="container"><nav class="breadcrumb" aria-label="Breadcrumb"><ol>' . $trail
          . '<li aria-current="page">' . e($heading) . '</li></ol></nav>'
-         . '<h1 id="page-title">' . e($heading) . '</h1>'
-         . ($intro === '' ? '' : '<p class="page-hero__lead">' . e($intro) . '</p>')
+         . '<h1 id="page-title"' . $headingEdit . '>' . e($heading) . '</h1>'
+         . ($intro === '' ? '' : '<p class="page-hero__lead"' . $introEdit . '>' . e($intro) . '</p>')
          . '</div></section>';
 }
 
@@ -280,8 +300,8 @@ function content_items_section(array $section, string $id, bool $peach, string $
         $html .= '<ul class="journey' . ($count % 2 === 0 ? ' journey--2' : '') . '">';
         foreach ($section['items'] as $item) {
             $html .= '<li class="journey__step">'
-                   . (empty($item['Icon']) ? '' : '<span class="journey__icon">' . icon((string) $item['Icon']) . '</span>')
-                   . '<h3>' . e($item['Title']) . '</h3>' . content_paragraphs($item['Text']) . '</li>';
+                   . (empty($item['Icon']) ? '' : '<span class="journey__icon"' . ed_item($item, 'Icon') . '>' . icon((string) $item['Icon']) . '</span>')
+                   . '<h3' . ed_item($item, 'Title') . '>' . e($item['Title']) . '</h3>' . content_paragraphs($item['Text'], '', ed_item($item, 'Text')) . '</li>';
         }
         $html .= '</ul>';
     }
@@ -293,28 +313,29 @@ function content_items_section(array $section, string $id, bool $peach, string $
 function content_closing(array $section, string $id, string $edit = ''): string
 {
     return '<section class="section cta-banner"' . content_labelled($section, $id) . '>' . $edit . '<div class="container cta-banner__inner">'
-         . content_heading($section, $id) . content_paragraphs($section['Introduction'] ?? '')
+         . content_heading($section, $id) . content_paragraphs($section['Introduction'] ?? '', '', ed_section($section, 'Introduction'))
          . '<div class="btn-group btn-group--centred">'
-         . content_link($section['ButtonText'] ?? '', $section['ButtonLink'] ?? '', 'btn btn--primary')
-         . content_link($section['SecondaryButtonText'] ?? '', $section['SecondaryButtonLink'] ?? '', 'btn btn--outline')
+         . content_link($section['ButtonText'] ?? '', $section['ButtonLink'] ?? '', 'btn btn--primary', '', ed_section($section, 'ButtonText'))
+         . content_link($section['SecondaryButtonText'] ?? '', $section['SecondaryButtonLink'] ?? '', 'btn btn--outline', '', ed_section($section, 'SecondaryButtonText'))
          . '</div></div></section>';
 }
 
 function content_empty_state(array $section): string
 {
     return '<div class="empty-state"><span class="empty-state__icon">' . icon('leaf') . '</span>'
-         . '<p class="empty-state__title">' . e($section['Heading'] ?? '') . '</p>'
-         . content_paragraphs($section['Introduction'] ?? '') . '</div>';
+         . '<p class="empty-state__title"' . ed_section($section, 'Heading') . '>' . e($section['Heading'] ?? '') . '</p>'
+         . content_paragraphs($section['Introduction'] ?? '', '', ed_section($section, 'Introduction')) . '</div>';
 }
 
 function content_project_tile(array $project, int $index): string
 {
     $tones = ['green', 'gold', 'peach'];
+    $id    = isset($project['ProjectID']) ? (int) $project['ProjectID'] : null;
     return '<li class="portfolio-tile">'
-         . content_frame('art-frame art-frame--' . $tones[$index % 3], $project['FeaturedImage'] ?? '', $project['FeaturedImageAlt'] ?? '', icon('leaf', 'icon art-frame__icon'))
-         . '<div class="portfolio-tile__body"><h3 class="portfolio-tile__title">'
+         . content_frame('art-frame art-frame--' . $tones[$index % 3], $project['FeaturedImage'] ?? '', $project['FeaturedImageAlt'] ?? '', icon('leaf', 'icon art-frame__icon'), 'web', ed_record('portfolio', 'admin/project-edit.php', $id, 'FeaturedImage', 'portfolio.edit'))
+         . '<div class="portfolio-tile__body"><h3 class="portfolio-tile__title"' . ed_record('portfolio', 'admin/project-edit.php', $id, 'Title', 'portfolio.edit') . '>'
          . '<a class="card__link" href="' . e(url('portfolio/project.php?slug=' . urlencode((string) $project['Slug']))) . '">' . e($project['Title']) . '</a></h3>'
-         . (empty($project['Location']) ? '' : '<p>' . e($project['Location']) . '</p>')
+         . (empty($project['Location']) ? '' : '<p' . ed_record('portfolio', 'admin/project-edit.php', $id, 'Location', 'portfolio.edit') . '>' . e($project['Location']) . '</p>')
          . '</div></li>';
 }
 

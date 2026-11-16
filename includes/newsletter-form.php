@@ -11,7 +11,7 @@ declare(strict_types=1);
 
 require_once INCLUDES_PATH . '/newsletter.php';
 
-function newsletter_form(string $idPrefix, string $source, string $return, ?string $note): string
+function newsletter_form(string $idPrefix, string $source, string $return, ?string $note, string $noteEdit = ''): string
 {
     $result = is_string($_GET['newsletter'] ?? null) ? $_GET['newsletter'] : '';
     $id     = static fn(string $name): string => e($idPrefix . '-' . $name);
@@ -28,6 +28,6 @@ function newsletter_form(string $idPrefix, string $source, string $return, ?stri
          . '<input id="' . $id('vt-check') . '" name="vt_check" type="text" tabindex="-1" autocomplete="off" data-lpignore="true" data-1p-ignore></div>'
          . '<button class="btn btn--primary" type="submit">' . icon('mail', 'icon icon--inline') . ' Subscribe</button>'
          . '<p id="' . $id('status') . '" class="form-status" role="status" aria-live="polite">' . e(newsletter_messages()[$result] ?? '') . '</p>'
-         . ($note !== null && trim($note) !== '' ? '<p class="form-note">' . content_with_link($note, 'Privacy Policy', 'privacy-policy.php') . '</p>' : '')
+         . ($note !== null && trim($note) !== '' ? '<p class="form-note"' . $noteEdit . '>' . content_with_link($note, 'Privacy Policy', 'privacy-policy.php') . '</p>' : '')
          . '</form>';
 }

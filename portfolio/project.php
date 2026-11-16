@@ -20,16 +20,16 @@ require_once INCLUDES_PATH . '/header.php';
 ?>
 <main id="main-content">
 
-    <?= content_page_hero(['Heading' => $project['Title'], 'Introduction' => $project['Location'] ?? ''], [['Portfolio', 'portfolio.php']]) ?>
+    <?= content_page_hero(['Heading' => $project['Title'], 'Introduction' => $project['Location'] ?? ''], [['Portfolio', 'portfolio.php']], '', ed_record('portfolio', 'admin/project-edit.php', (int) $project['ProjectID'], 'Title', 'portfolio.edit'), ed_record('portfolio', 'admin/project-edit.php', (int) $project['ProjectID'], 'Location', 'portfolio.edit')) ?>
 
     <section class="section" aria-label="<?= e($project['Title']) ?>">
         <?= edit_block('project', 'project', [['admin', 'Edit this project', 'admin/project-edit.php?id=' . (int) $project['ProjectID'], 'portfolio.edit']]) ?>
         <div class="container split">
             <div class="split__media">
-                <?= content_frame('art-frame art-frame--peach', $project['FeaturedImage'] ?? '', $project['FeaturedImageAlt'] ?? '', icon('leaf', 'icon art-frame__icon')) ?>
+                <?= content_frame('art-frame art-frame--peach', $project['FeaturedImage'] ?? '', $project['FeaturedImageAlt'] ?? '', icon('leaf', 'icon art-frame__icon'), 'web', ed_record('portfolio', 'admin/project-edit.php', (int) $project['ProjectID'], 'FeaturedImage', 'portfolio.edit')) ?>
             </div>
             <div class="split__content">
-                <?= content_paragraphs($project['Description'], 'lead') ?>
+                <?= content_paragraphs($project['Description'], 'lead', ed_record('portfolio', 'admin/project-edit.php', (int) $project['ProjectID'], 'Description', 'portfolio.edit')) ?>
             </div>
         </div>
     </section>
@@ -40,9 +40,9 @@ require_once INCLUDES_PATH . '/header.php';
             <ul class="portfolio-grid">
 <?php foreach ($images as $image): ?>
                 <li class="portfolio-tile">
-                    <?= content_frame('art-frame', $image['ImagePath'], $image['AltText'] ?? '', '') ?>
+                    <?= content_frame('art-frame', $image['ImagePath'], $image['AltText'] ?? '', '', 'web', ed_record('project_images', 'admin/project-image-edit.php', (int) ($image['ImageID'] ?? 0), 'ImagePath', 'portfolio.edit')) ?>
 <?php if (!empty($image['Caption'])): ?>
-                    <div class="portfolio-tile__body"><p><?= e($image['Caption']) ?></p></div>
+                    <div class="portfolio-tile__body"><p<?= ed_record('project_images', 'admin/project-image-edit.php', (int) ($image['ImageID'] ?? 0), 'Caption', 'portfolio.edit') ?>><?= e($image['Caption']) ?></p></div>
 <?php endif; ?>
                 </li>
 <?php endforeach; ?>

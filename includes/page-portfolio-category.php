@@ -19,12 +19,13 @@ require_once INCLUDES_PATH . '/header.php';
 
     <?= content_page_hero($header, [['Portfolio', 'portfolio.php']], edit_block($portfolioPage, 'page-header')) ?>
 
+<?= hidden_block($portfolioPage, 'intro', $sections) ?>
 <?php if ($section = $sections['intro'] ?? null): ?>
     <section class="section"<?= content_labelled($section, 'intro-title') ?>>
         <?= edit_block($portfolioPage, 'intro') ?>
         <div class="container">
             <?= content_section_header($section, 'intro-title') ?>
-            <div class="content-narrow"><?= content_paragraphs($section['Body']) ?></div>
+            <div class="content-narrow"><?= content_paragraphs($section['Body'], '', ed_section($section, 'Body')) ?></div>
         </div>
     </section>
 <?php endif; ?>
@@ -44,7 +45,7 @@ require_once INCLUDES_PATH . '/header.php';
         </div>
     </section>
 
-    <?= isset($sections['closing']) ? content_closing($sections['closing'], 'portfolio-cta-title', edit_block($portfolioPage, 'closing')) : '' ?>
+    <?= isset($sections['closing']) ? content_closing($sections['closing'], 'portfolio-cta-title', edit_block($portfolioPage, 'closing')) : hidden_block($portfolioPage, 'closing', $sections) ?>
 
 </main>
 <?php require_once INCLUDES_PATH . '/footer.php'; ?>

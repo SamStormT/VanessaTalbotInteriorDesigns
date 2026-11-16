@@ -17,7 +17,7 @@
 | Privacy Policy, Terms, Copyright | Built, **needs legal review** | Draft wording, editable under Legal Pages |
 | Admin sign-in, roles, activity log | Ready | Tested on the local stack and Apache. Forgot password works by email |
 | User management | Ready | SuperAdmin adds users by email invitation, changes roles, disables and reactivates, sends reset links |
-| CMS editing | Ready | Every piece of public wording is editable; see `CONTENT_MAPPING.md`. Staff see Edit buttons on the website, and Website Content → Pages lists where every block is edited |
+| CMS editing | Ready | Every piece of public wording is editable; see `CONTENT_MAPPING.md`. Staff see Edit buttons on the website, can click any wording or picture to edit that exact field, and return to the page after saving. Website Content → Pages lists where every block is edited. Every edit is kept in History and can be undone (last 50 per item) |
 | Media Library | Ready | Drag and drop on every image field, library search and reuse, descriptions and captions |
 | Image optimisation | Ready | Every upload is resized, compressed and given a thumbnail; the original is kept privately |
 | Testimonials | Admin only | Can be managed, but no public page shows them yet |

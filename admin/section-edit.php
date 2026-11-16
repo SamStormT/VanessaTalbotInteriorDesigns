@@ -37,14 +37,14 @@ require_once INCLUDES_PATH . '/header.php';
 ?>
 <main id="main-content" class="admin-content">
     <?= cms_flash() ?>
-    <div class="admin-toolbar"><?= cms_last_edited($row) ?></div>
+    <div class="admin-toolbar"><?= cms_last_edited($row) ?><?= cms_history_link($module, (int) $row[$module['key']]) ?></div>
 <?php if ($row['SectionKey'] === 'seo'): ?>
     <p class="admin-alert">This section is for search engines. Heading is the browser title and Introduction is the page description.</p>
 <?php endif; ?>
 
     <?= cms_render_form($module, $row, $errors, $list, $posted) ?>
 
-    <h2 class="admin-section-title">Items in this section</h2>
+    <h2 class="admin-section-title" id="items">Items in this section</h2>
 <?php if (can('page_sections.create')): ?>
     <div class="admin-toolbar admin-toolbar--end"><a class="btn btn--primary btn--small" href="<?= e(url('admin/item-edit.php?section=' . $id)) ?>">Add item</a></div>
 <?php endif; ?>
