@@ -42,7 +42,7 @@ if ($table === 'PageSections') {
 }
 
 $editUrl = url(match ($table) {
-    'WebsiteSettings', 'HomePageContent', 'AboutContent' => $module['page'] . '?edit=1',
+    'WebsiteSettings', 'HomePageContent', 'AboutContent', 'NewsletterSettings' => $module['page'] . '?edit=1',
     'PageSections'      => 'admin/section-edit.php?id=' . $id,
     'PageSectionItems'  => 'admin/item-edit.php?id=' . $id,
     'Services'          => 'admin/service-edit.php?id=' . $id,

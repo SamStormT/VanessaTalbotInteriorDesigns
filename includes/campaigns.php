@@ -14,6 +14,13 @@
  *
  * Nobody unconfirmed or unsubscribed is ever emailed, and nobody is emailed
  * twice for the same campaign (one row per person per campaign).
+ *
+ * A Ready campaign can instead be Scheduled for a date and time. campaign_run()
+ * starts it when that time comes; it is called by a scheduled task (cron), by
+ * the web address scheduled-tasks.php, or when someone opens the campaign.
+ *
+ * Also here: the welcome email sent when someone confirms their subscription
+ * (Marketing → Welcome Email), which uses the same branded design.
  */
 
 declare(strict_types=1);
@@ -22,6 +29,7 @@ require_once INCLUDES_PATH . '/auth.php';
 require_once INCLUDES_PATH . '/mail.php';
 require_once INCLUDES_PATH . '/rich-text.php';
 require_once INCLUDES_PATH . '/content.php';
+require_once INCLUDES_PATH . '/blog.php';
 
 const CAMPAIGN_BATCH_SIZE    = 10;  // emails per batch
 const CAMPAIGN_CLAIM_MINUTES = 15;  // a claimed row older than this was interrupted
@@ -37,6 +45,7 @@ function campaign_statuses(): array
     return [
         'Draft'    => 'Draft',
         'Ready'    => 'Ready to send',
+        'Scheduled' => 'Scheduled',
         'Sending'  => 'Sending',
         'Sent'     => 'Sent',
         'Archived' => 'Archived',
@@ -49,9 +58,25 @@ function campaign_audience_count(): int
     return (int) db_value("SELECT COUNT(*) FROM Subscribers WHERE SubscriptionStatus = 'Subscribed' AND ConfirmedDate IS NOT NULL");
 }
 
-/** The campaign form. Field types are those of includes/cms.php. */
-function campaign_module(): array
+/**
+ * The campaign form. Field types are those of includes/cms.php. Pass the
+ * campaign being edited so articles it already uses stay choosable even if
+ * they have since been unpublished.
+ */
+function campaign_module(array $campaign = []): array
 {
+    $choices = campaign_post_choices();
+    foreach (['MorePost1ID', 'MorePost2ID', 'MorePost3ID'] as $field) {
+        $id = (string) ($campaign[$field] ?? '');
+        if ($id !== '' && !isset($choices[$id])) {
+            $choices[$id] = 'An article that is no longer published';
+        }
+    }
+    $more = static fn(string $label, string $help = ''): array => [
+        'label' => $label, 'type' => 'select', 'options' => array_map('strval', array_keys($choices)), 'option_labels' => $choices,
+        'group' => 'More articles (round-up)', 'help' => $help,
+    ];
+
     return [
         'title'      => 'Newsletter Campaign',
         'table'      => 'NewsletterCampaigns',
@@ -73,9 +98,72 @@ function campaign_module(): array
             'ReadMoreLink'    => ['label' => 'Read more link', 'type' => 'link', 'max' => 500, 'group' => 'Featured article'],
             'QuoteText'       => ['label' => 'Quote', 'type' => 'textarea', 'max' => 1000, 'group' => 'Quote', 'help' => 'Leave blank to leave the quote out.'],
             'QuoteAuthor'     => ['label' => 'Who said it', 'type' => 'text', 'max' => 150, 'group' => 'Quote'],
+            'MorePost1ID'     => $more('Second article', 'Optional. Up to three more blog articles, each shown as a short card with its picture, summary and a link. Use them for a monthly round-up.'),
+            'MorePost2ID'     => $more('Third article'),
+            'MorePost3ID'     => $more('Fourth article'),
             'Content'         => ['label' => 'More in this issue', 'type' => 'textarea', 'rich' => true, 'max' => 50000, 'group' => 'More content', 'help' => 'Optional extra blocks, such as news, an event or your services. Use Section for coloured blocks like the newsletter design.'],
         ],
     ];
+}
+
+/** Published blog articles (newest first), as choices for the round-up fields. Scheduled ones say when they appear. */
+function campaign_post_choices(): array
+{
+    $choices = [];
+    try {
+        foreach (db_all("SELECT BlogID, Title, PublishedDate FROM BlogPosts WHERE Status = 'Published' ORDER BY PublishedDate DESC, BlogID DESC LIMIT 200") as $post) {
+            $scheduled = blog_is_scheduled($post + ['Status' => 'Published']);
+            $choices[(string) $post['BlogID']] = $post['Title'] . ($scheduled ? ' (appears ' . date('j M Y', strtotime((string) $post['PublishedDate'])) . ')' : '');
+        }
+    } catch (Throwable $error) {
+        // Before the blog tables exist there is nothing to choose.
+    }
+    return $choices;
+}
+
+/** The round-up articles chosen for a campaign, in order, without repeats or the featured article. */
+function campaign_more_posts(array $c): array
+{
+    $ids = [];
+    foreach (['MorePost1ID', 'MorePost2ID', 'MorePost3ID'] as $field) {
+        $id = (int) ($c[$field] ?? 0);
+        if ($id > 0 && $id !== (int) ($c['BlogID'] ?? 0) && !in_array($id, $ids, true)) {
+            $ids[] = $id;
+        }
+    }
+    if ($ids === []) {
+        return [];
+    }
+    $rows = db_all(
+        "SELECT BlogID, Title, Slug, Excerpt, FeaturedImage, FeaturedImageAlt, PublishedDate FROM BlogPosts
+         WHERE Status = 'Published' AND BlogID IN (" . implode(',', array_fill(0, count($ids), '?')) . ')',
+        $ids
+    );
+    $byId = array_column($rows, null, 'BlogID');
+    return array_values(array_filter(array_map(static fn(int $id) => $byId[$id] ?? null, $ids)));
+}
+
+/**
+ * Why the campaign's articles can't go out at $when (a timestamp; now by
+ * default), or null. A link to an article that is unpublished, or not on
+ * the website yet, would lead subscribers to a missing page.
+ */
+function campaign_article_problem(array $c, ?int $when = null): ?string
+{
+    $when ??= time();
+    $ids = array_values(array_filter(array_map('intval', [$c['BlogID'] ?? 0, $c['MorePost1ID'] ?? 0, $c['MorePost2ID'] ?? 0, $c['MorePost3ID'] ?? 0])));
+    if ($ids === []) {
+        return null;
+    }
+    foreach (db_all('SELECT Title, Status, PublishedDate FROM BlogPosts WHERE BlogID IN (' . implode(',', array_fill(0, count($ids), '?')) . ')', $ids) as $post) {
+        if ($post['Status'] !== 'Published') {
+            return 'The article "' . $post['Title'] . '" is not published, so its link would not work. Publish it, or take it out of the campaign.';
+        }
+        if (!empty($post['PublishedDate']) && strtotime((string) $post['PublishedDate']) > $when) {
+            return 'The article "' . $post['Title'] . '" only appears on the website on ' . date('j M Y \a\t H:i', strtotime((string) $post['PublishedDate'])) . '. Send the newsletter after that.';
+        }
+    }
+    return null;
 }
 
 /** Starting content for a new campaign. */
@@ -126,6 +214,28 @@ function campaign_from_post(array $post): array
     ], $quote ? ['QuoteText' => $quote[0], 'QuoteAuthor' => $quote[1]] : []);
 }
 
+/**
+ * A new round-up: the newest article as the featured one, and the next three
+ * as the other articles. Null when nothing is published yet.
+ */
+function campaign_roundup(): ?array
+{
+    $posts = blog_find(null, '', 4, 0)[0];
+    if ($posts === []) {
+        return null;
+    }
+    $first = db_row('SELECT * FROM BlogPosts WHERE BlogID = ?', [(int) $posts[0]['BlogID']]);
+    if ($first === null) {
+        return null;
+    }
+    $row = campaign_from_post($first);
+    $row['CampaignName'] = 'Round-up, ' . date('F Y');
+    foreach (array_slice($posts, 1, 3) as $index => $post) {
+        $row['MorePost' . ($index + 1) . 'ID'] = (string) $post['BlogID'];
+    }
+    return $row;
+}
+
 /** What still needs filling in before a campaign can be marked Ready. */
 function campaign_problems(array $c): array
 {
@@ -169,6 +279,8 @@ function campaign_render(array $c, ?array $subscriber, string $testName = ''): a
     $subject = $personal(trim((string) $c['Subject']));
     $greet   = $personal(trim((string) ($c['Greeting'] ?? '')));
     $intro   = $personal((string) ($c['IntroMessage'] ?? ''));
+
+    $c['MorePosts'] ??= campaign_more_posts($c);
 
     $html = campaign_email_html($c, $settings, $subject, $greet, $intro, $unsubscribe, $subscriber === null);
     $text = campaign_email_text($c, $settings, $greet, $intro, $unsubscribe);
@@ -235,6 +347,24 @@ function campaign_email_html(array $c, array $settings, string $subject, string 
         $html .= $row($inner, 'padding:38px 40px 16px');
     }
 
+    // 4b. More articles (a round-up, or the newest articles in the welcome email).
+    if (!empty($c['MorePosts'])) {
+        $cards = '<p style="margin:0 0 18px;' . $label . ';color:#9D7F3C">' . e($c['MoreHeading'] ?? 'More from the blog') . '</p>';
+        foreach ($c['MorePosts'] as $post) {
+            $link  = absolute_url('blog/blog-post.php?slug=' . $post['Slug']);
+            $image = trim((string) ($post['FeaturedImage'] ?? ''));
+            $cards .= '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin:0 0 24px;border-collapse:collapse"><tr>'
+                    . ($image !== '' && link_is_safe($image)
+                        ? '<td class="stack" width="150" valign="top" style="width:150px;padding:0 18px 0 0"><a href="' . e($link) . '"><img src="' . e($origin . image_url($image, 'thumb')) . '" alt="' . e($post['FeaturedImageAlt'] ?? '') . '" width="150" style="display:block;width:150px;max-width:100%;height:auto;border:0"></a></td>'
+                        : '')
+                    . '<td class="stack" valign="top"><h2 style="margin:0 0 6px;' . $serif . ';font-size:20px;line-height:1.3;font-weight:normal"><a href="' . e($link) . '" style="color:#243A39;text-decoration:none">' . e($post['Title']) . '</a></h2>'
+                    . (trim((string) ($post['Excerpt'] ?? '')) !== '' ? '<p style="margin:0 0 8px;' . $sans . ';font-size:15px;line-height:1.6;color:#4F5E5D">' . e(trim((string) $post['Excerpt'])) . '</p>' : '')
+                    . '<p style="margin:0;' . $sans . ';font-size:14px"><a href="' . e($link) . '" style="color:#7A6230;font-weight:600">Read the article</a></p>'
+                    . '</td></tr></table>';
+        }
+        $html .= $row($cards, 'padding:' . (trim((string) ($c['FeatureTitle'] ?? '')) !== '' ? '10px' : '38px') . ' 40px 12px');
+    }
+
     // 5. Quote on peach.
     if (trim((string) ($c['QuoteText'] ?? '')) !== '') {
         $html .= '<tr><td align="center" class="px" style="background:#F6E2D4;padding:36px 48px">'
@@ -289,7 +419,8 @@ function campaign_email_html(array $c, array $settings, string $subject, string 
          . '<title>' . e($subject) . '</title>'
          . '<link href="https://fonts.googleapis.com/css2?family=Allison&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">'
          . '<style>body{margin:0;padding:0}img{-ms-interpolation-mode:bicubic}a{color:#7A6230}'
-         . '@media (max-width:620px){.wrap{width:100%!important}.px{padding-left:22px!important;padding-right:22px!important}}</style>'
+         . '@media (max-width:620px){.wrap{width:100%!important}.px{padding-left:22px!important;padding-right:22px!important}'
+         . '.stack{display:block!important;width:100%!important;padding:0 0 12px!important}}</style>'
          . '</head><body style="margin:0;padding:0;background:#F9F0EA">'
          . ($preview !== '' ? '<div style="display:none;max-height:0;overflow:hidden;opacity:0;color:#F9F0EA">' . e($preview) . str_repeat('&nbsp;&zwnj;', 40) . '</div>' : '')
          . '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#F9F0EA"><tr><td align="center" style="padding:24px 10px">'
@@ -309,6 +440,12 @@ function campaign_email_text(array $c, array $settings, string $greeting, string
         array_push($parts, '', '--- FROM THE BLOG ---', trim((string) $c['FeatureTitle']), trim((string) ($c['FeatureSummary'] ?? '')), '', rich_plain($c['FeatureBody'] ?? ''));
         if (($link = rich_href((string) ($c['ReadMoreLink'] ?? ''), 'email')) !== null) {
             $parts[] = (trim((string) ($c['ReadMoreText'] ?? '')) ?: 'Read more') . ': ' . $link;
+        }
+    }
+    if (!empty($c['MorePosts'])) {
+        array_push($parts, '', '--- ' . strtoupper((string) ($c['MoreHeading'] ?? 'More from the blog')) . ' ---');
+        foreach ($c['MorePosts'] as $post) {
+            array_push($parts, '', trim((string) $post['Title']), trim((string) ($post['Excerpt'] ?? '')), absolute_url('blog/blog-post.php?slug=' . $post['Slug']));
         }
     }
     if (trim((string) ($c['QuoteText'] ?? '')) !== '') {
@@ -363,10 +500,14 @@ function campaign_start(int $id): ?string
 {
     db()->beginTransaction();
     try {
-        $c = db_row('SELECT Status FROM NewsletterCampaigns WHERE CampaignID = ? FOR UPDATE', [$id]);
-        if ($c === null || $c['Status'] !== 'Ready') {
+        $c = db_row('SELECT *, ScheduledDate <= NOW() AS Due FROM NewsletterCampaigns WHERE CampaignID = ? FOR UPDATE', [$id]);
+        if ($c === null || !($c['Status'] === 'Ready' || ($c['Status'] === 'Scheduled' && $c['Due']))) {
             db()->rollBack();
             return 'Only a campaign marked Ready can be sent.';
+        }
+        if (($problem = campaign_article_problem($c)) !== null) {
+            db()->rollBack();
+            return $problem;
         }
         db_query(
             "INSERT IGNORE INTO CampaignRecipients (CampaignID, SubscriberID)
@@ -380,7 +521,7 @@ function campaign_start(int $id): ?string
             return 'There are no confirmed subscribers to send to yet.';
         }
         db_query("UPDATE NewsletterCampaigns SET Status = 'Sending', SendStartedDate = NOW(), RecipientCount = ? WHERE CampaignID = ?", [$queued, $id]);
-        activity_log('send_start', 'NewsletterCampaigns', $id, $queued . ' recipients');
+        activity_log('send_start', 'NewsletterCampaigns', $id, $queued . ' recipients' . ($c['Status'] === 'Scheduled' ? ' (scheduled)' : ''));
         db()->commit();
     } catch (Throwable $error) {
         db()->rollBack();
@@ -478,4 +619,153 @@ function campaign_retry_failed(int $id): int
         activity_log('send_retry', 'NewsletterCampaigns', $id, $count . ' failed recipients');
     }
     return $count;
+}
+
+// ---------------------------------------------------------------------------
+// Scheduled sending
+// ---------------------------------------------------------------------------
+
+/** Schedule a Ready campaign for a date and time ($when as the browser sends it). Returns null, or why not. */
+function campaign_schedule(int $id, string $when): ?string
+{
+    $at = cms_datetime($when);
+    if ($at === null) {
+        return 'Enter a valid date and time.';
+    }
+    if (strtotime($at) < time() + 60) {
+        return 'Choose a time still to come. To send straight away, use Send campaign.';
+    }
+    if (strtotime($at) > strtotime('+1 year')) {
+        return 'Choose a time within the next year.';
+    }
+    $c = db_row('SELECT * FROM NewsletterCampaigns WHERE CampaignID = ?', [$id]);
+    if ($c === null || $c['Status'] !== 'Ready') {
+        return 'Only a campaign marked Ready can be scheduled.';
+    }
+    if (($problem = campaign_article_problem($c, strtotime($at))) !== null) {
+        return $problem;
+    }
+    db_query("UPDATE NewsletterCampaigns SET Status = 'Scheduled', ScheduledDate = ? WHERE CampaignID = ? AND Status = 'Ready'", [$at, $id]);
+    activity_log('schedule', 'NewsletterCampaigns', $id, 'For ' . $at);
+    return null;
+}
+
+/** Cancel a schedule: the campaign goes back to Ready. */
+function campaign_unschedule(int $id): bool
+{
+    $done = db_query("UPDATE NewsletterCampaigns SET Status = 'Ready', ScheduledDate = NULL WHERE CampaignID = ? AND Status = 'Scheduled'", [$id])->rowCount() > 0;
+    if ($done) {
+        activity_log('unschedule', 'NewsletterCampaigns', $id);
+    }
+    return $done;
+}
+
+/** Scheduled campaigns whose time passed more than 20 minutes ago: the automatic sender isn't running. */
+function campaign_overdue(): array
+{
+    try {
+        return db_all("SELECT CampaignID, CampaignName, ScheduledDate FROM NewsletterCampaigns WHERE Status = 'Scheduled' AND ScheduledDate < NOW() - INTERVAL 20 MINUTE ORDER BY ScheduledDate");
+    } catch (Throwable $error) {
+        return [];
+    }
+}
+
+/**
+ * Start every scheduled campaign whose time has come, then send batches until
+ * everything is sent, the hourly limit is reached, or $seconds have passed.
+ * Safe to run at any time and from several places at once: nobody is ever
+ * emailed twice. Returns a line for each thing that happened.
+ */
+function campaign_run(int $seconds): array
+{
+    $log = [];
+    $end = time() + $seconds;
+
+    foreach (db_all("SELECT CampaignID, CampaignName FROM NewsletterCampaigns WHERE Status = 'Scheduled' AND ScheduledDate <= NOW() ORDER BY ScheduledDate") as $c) {
+        $problem = campaign_start((int) $c['CampaignID']);
+        $log[] = $problem === null ? 'Started "' . $c['CampaignName'] . '" (scheduled)' : 'Could not start "' . $c['CampaignName'] . '": ' . $problem;
+    }
+
+    foreach (db_all("SELECT CampaignID, CampaignName FROM NewsletterCampaigns WHERE Status = 'Sending' ORDER BY SendStartedDate") as $c) {
+        while (true) {
+            $result = campaign_process((int) $c['CampaignID']);
+            if ($result['paused']) {
+                $log[] = '"' . $c['CampaignName'] . '": ' . $result['message'];
+                return $log;
+            }
+            if ($result['done'] || $result['pending'] === 0) {
+                break; // finished, or the last few are being sent elsewhere
+            }
+            if (time() >= $end) {
+                $log[] = '"' . $c['CampaignName'] . '": ' . $result['sent'] . ' sent so far; the rest continue next time.';
+                return $log;
+            }
+            sleep(1);
+        }
+        $log[] = sprintf('"%s": %d sent, %d failed, %d skipped, %d waiting', $c['CampaignName'], $result['sent'], $result['failed'], $result['skipped'], $result['pending'] + $result['sending']);
+    }
+
+    return $log === [] ? ['Nothing to send.'] : $log;
+}
+
+// ---------------------------------------------------------------------------
+// Welcome email
+// ---------------------------------------------------------------------------
+
+/** The welcome email's settings, or null before the database is updated. */
+function welcome_settings(): ?array
+{
+    try {
+        return db_row('SELECT * FROM NewsletterSettings WHERE SettingID = 1');
+    } catch (Throwable $error) {
+        return null;
+    }
+}
+
+/** Build the welcome email for one subscriber (or a test), in the newsletter design. */
+function welcome_render(array $w, ?array $subscriber, string $testName = ''): array
+{
+    return campaign_render([
+        'Subject'      => trim((string) $w['WelcomeSubject']) ?: 'Welcome',
+        'Greeting'     => (string) ($w['WelcomeGreeting'] ?? ''),
+        'IntroMessage' => (string) ($w['WelcomeMessage'] ?? ''),
+        'MorePosts'    => (int) $w['WelcomeShowLatest'] === 1 ? blog_latest(3) : [],
+        'MoreHeading'  => 'Start reading',
+    ], $subscriber, $testName);
+}
+
+/**
+ * Send the welcome email to someone who has just confirmed, after their page
+ * has loaded. Does nothing when the welcome email is switched off.
+ */
+function welcome_send_later(int $subscriberId): void
+{
+    mail_later(static function () use ($subscriberId): void {
+        $w = welcome_settings();
+        if ($w === null || (int) $w['WelcomeEnabled'] !== 1) {
+            return;
+        }
+        $person = db_row('SELECT Name, Email, UnsubscribeToken, SubscriptionStatus, ConfirmedDate FROM Subscribers WHERE SubscriberID = ?', [$subscriberId]);
+        if ($person === null || $person['SubscriptionStatus'] !== 'Subscribed' || $person['ConfirmedDate'] === null) {
+            return;
+        }
+        $message = welcome_render($w, $person);
+        mail_deliver($person['Email'], 'newsletter-welcome', $message, [
+            'to_name' => (string) ($person['Name'] ?? ''),
+            'headers' => [
+                'List-Unsubscribe'      => '<' . $message['unsubscribe'] . '>',
+                'List-Unsubscribe-Post' => 'List-Unsubscribe=One-Click',
+            ],
+        ]);
+    });
+}
+
+/** Send a test copy of the welcome email. Returns null on success, or why it failed. */
+function welcome_send_test(array $w, string $to, array $actor): ?string
+{
+    $message = welcome_render($w, null, (string) $actor['Name']);
+    $message['subject'] = '[TEST] ' . $message['subject'];
+    $error = mail_deliver($to, 'welcome-test', $message, ['to_name' => trim($actor['Name'] . ' ' . $actor['Surname'])]);
+    activity_log('test_send', 'NewsletterSettings', 1, $error === null ? 'Welcome email test sent' : 'Welcome email test failed');
+    return $error;
 }

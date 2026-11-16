@@ -55,14 +55,14 @@ if ($posted) {
                 $newId = cms_create($module, $data + ['AuthorID' => (int) current_admin()['AdminUserID']]);
                 blog_after_save($newId, 'Draft', (string) ($data['Status'] ?? 'Draft'));
                 media_learn_alt_text($module, $data);
-                flash_set('success', ($data['Status'] ?? 'Draft') === 'Published' ? 'Post published.' : 'Draft saved. It is not on the website until it is published.');
+                flash_set('success', blog_save_message($newId));
                 header('Location: ' . url('admin/blog-edit.php?id=' . $newId));
                 exit;
             }
             $changed = cms_save($module, $id, $data, $row);
             blog_after_save($id, (string) $row['Status'], (string) ($data['Status'] ?? $row['Status']));
             media_learn_alt_text($module, $data);
-            flash_set('success', $changed === [] ? 'No changes to save.' : 'Your changes have been saved.');
+            flash_set('success', $changed === [] ? 'No changes to save.' : blog_save_message($id, $row));
             header('Location: ' . url('admin/blog-edit.php?id=' . $id));
             exit;
         } catch (PDOException $error) {
@@ -88,7 +88,7 @@ require_once INCLUDES_PATH . '/header.php';
         <?= cms_history_link($module, $id) ?>
 <?php endif; ?>
 <?php if (!$creating): ?>
-        <a class="btn btn--outline btn--small" href="<?= e(blog_post_url((string) $row['Slug'])) ?>" target="_blank" rel="noopener"><?= $row['Status'] === 'Published' ? 'View on website' : 'Preview' ?><span class="visually-hidden"> (opens in a new tab)</span></a>
+        <a class="btn btn--outline btn--small" href="<?= e(blog_post_url((string) $row['Slug'])) ?>" target="_blank" rel="noopener"><?= blog_is_live($row) ? 'View on website' : 'Preview' ?><span class="visually-hidden"> (opens in a new tab)</span></a>
 <?php if ($row['Status'] === 'Published' && can('subscribers.create')): ?>
         <a class="btn btn--primary btn--small" href="<?= e(url('admin/campaign-edit.php?from_post=' . (int) $row['BlogID'])) ?>">Create campaign from this post</a>
 <?php endif; ?>
@@ -99,9 +99,9 @@ require_once INCLUDES_PATH . '/header.php';
     <section class="admin-panel">
         <h2 class="admin-panel__title">Post</h2>
         <dl class="admin-fields">
-            <div><dt>Status</dt><dd><span class="admin-badge admin-badge--<?= e(strtolower($row['Status'])) ?>"><?= e($row['Status']) ?></span><?= $row['Status'] === 'Published' ? '' : ' <span class="admin-muted">Only signed-in staff can see it.</span>' ?></dd></div>
+            <div><dt>Status</dt><dd><span class="admin-badge admin-badge--<?= e(strtolower(blog_status_label($row))) ?>"><?= e(blog_status_label($row)) ?></span><?= blog_is_scheduled($row) ? ' <span class="admin-muted">Appears on the website by itself on ' . e(cms_format_date($row['PublishedDate'])) . '. Until then only signed-in staff can see it.</span>' : (blog_is_live($row) ? '' : ' <span class="admin-muted">Only signed-in staff can see it.</span>') ?></dd></div>
             <div><dt>Author</dt><dd><?= e(trim((string) $row['AuthorName']) ?: 'A former user') ?></dd></div>
-            <div><dt>Published</dt><dd><?= $row['PublishedDate'] ? e(cms_format_date($row['PublishedDate'])) : '<span class="admin-muted">Not yet</span>' ?></dd></div>
+            <div><dt><?= blog_is_scheduled($row) ? 'Scheduled for' : 'Published' ?></dt><dd><?= $row['PublishedDate'] && $row['Status'] !== 'Draft' ? e(cms_format_date($row['PublishedDate'])) : '<span class="admin-muted">Not yet</span>' ?></dd></div>
             <div><dt>Last edited</dt><dd><?= cms_last_edited_cell($row) ?></dd></div>
         </dl>
     </section>

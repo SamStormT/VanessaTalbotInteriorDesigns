@@ -167,12 +167,14 @@ function media_usage(string $path): array
     ];
 
     $places[] = ['NewsletterCampaigns', 'FeatureImage', 'Newsletter campaigns'];
+    $places[] = ['WebsiteSettings', 'ShareImage', 'Website Settings (default sharing picture)'];
 
     // Pictures placed inside formatted text, as [[image path | caption]].
     $inline = [
         ['BlogPosts', 'Content', 'Inside blog articles'],
         ['NewsletterCampaigns', 'FeatureBody', 'Inside newsletter campaigns'],
         ['NewsletterCampaigns', 'Content', 'Inside newsletter campaigns'],
+        ['NewsletterSettings', 'WelcomeMessage', 'Inside the welcome email'],
     ];
 
     $used = [];

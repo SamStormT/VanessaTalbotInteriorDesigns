@@ -1044,3 +1044,49 @@ CREATE TABLE IF NOT EXISTS ContentVersions (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 INSERT IGNORE INTO SchemaMigrations (MigrationName) VALUES ('015_content_versions');
+
+-- --------------------------------------------------------------------------
+-- 016: Sharing and scheduling. A default picture for links shared on social
+-- media; up to three more blog articles in a newsletter (a round-up);
+-- scheduled sending (ScheduledDate and the Scheduled status already exist);
+-- and the welcome email sent when someone confirms their subscription. The
+-- welcome email's starting wording is filled in once and starts switched
+-- off, so nothing is sent until it has been read and switched on.
+-- --------------------------------------------------------------------------
+ALTER TABLE WebsiteSettings
+    ADD COLUMN IF NOT EXISTS ShareImage VARCHAR(500) NULL,
+    ADD COLUMN IF NOT EXISTS ShareImageAlt VARCHAR(255) NULL;
+
+ALTER TABLE NewsletterCampaigns
+    ADD COLUMN IF NOT EXISTS MorePost1ID INT UNSIGNED NULL,
+    ADD COLUMN IF NOT EXISTS MorePost2ID INT UNSIGNED NULL,
+    ADD COLUMN IF NOT EXISTS MorePost3ID INT UNSIGNED NULL,
+    ADD CONSTRAINT fk_NewsletterCampaigns_More1 FOREIGN KEY IF NOT EXISTS fk_NewsletterCampaigns_More1 (MorePost1ID)
+        REFERENCES BlogPosts (BlogID) ON UPDATE CASCADE ON DELETE SET NULL,
+    ADD CONSTRAINT fk_NewsletterCampaigns_More2 FOREIGN KEY IF NOT EXISTS fk_NewsletterCampaigns_More2 (MorePost2ID)
+        REFERENCES BlogPosts (BlogID) ON UPDATE CASCADE ON DELETE SET NULL,
+    ADD CONSTRAINT fk_NewsletterCampaigns_More3 FOREIGN KEY IF NOT EXISTS fk_NewsletterCampaigns_More3 (MorePost3ID)
+        REFERENCES BlogPosts (BlogID) ON UPDATE CASCADE ON DELETE SET NULL;
+
+CREATE TABLE IF NOT EXISTS NewsletterSettings (
+    SettingID         INT UNSIGNED NOT NULL DEFAULT 1,
+    WelcomeEnabled    TINYINT(1) NOT NULL DEFAULT 0,
+    WelcomeSubject    VARCHAR(255) NULL,
+    WelcomeGreeting   VARCHAR(150) NULL,
+    WelcomeMessage    TEXT NULL,
+    WelcomeShowLatest TINYINT(1) NOT NULL DEFAULT 1 COMMENT 'Add the three newest articles',
+    LastEditedBy      INT UNSIGNED NULL,
+    LastEditedDate    DATETIME NULL,
+    UpdatedDate       DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    PRIMARY KEY (SettingID),
+    CONSTRAINT chk_NewsletterSettings_SingleRow CHECK (SettingID = 1),
+    CONSTRAINT fk_NewsletterSettings_LastEditedBy FOREIGN KEY (LastEditedBy)
+        REFERENCES AdminUsers (AdminUserID) ON UPDATE CASCADE ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+INSERT IGNORE INTO NewsletterSettings (SettingID, WelcomeEnabled, WelcomeSubject, WelcomeGreeting, WelcomeMessage)
+SELECT 1, 0, 'Welcome, and thank you for subscribing', 'Hi {first_name},',
+       'Thank you for confirming your subscription. I''m so glad you''re here.\n\nEach newsletter brings you a new article from the blog: ideas for bringing nature indoors, how colour and design shape the way a space feels, and the stories behind my projects and photographs.\n\nI look forward to sharing them with you.'
+FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM SchemaMigrations WHERE MigrationName = '016_sharing_and_scheduling');
+
+INSERT IGNORE INTO SchemaMigrations (MigrationName) VALUES ('016_sharing_and_scheduling');

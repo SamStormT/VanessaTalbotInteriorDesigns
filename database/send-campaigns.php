@@ -1,14 +1,17 @@
 <?php
 /**
- * Command line: carry on sending any campaign that is Sending.
+ * Command line: start scheduled campaigns whose time has come, and carry on
+ * sending any campaign that is Sending.
  *
  *   php database/send-campaigns.php
  *
- * Campaigns are normally sent from the admin page, which must stay open.
- * If the host allows scheduled tasks (cron), running this every 10 to 15
- * minutes finishes sends without a browser. It stops at the hourly limit
- * (NEWSLETTER_HOURLY_LIMIT in .env) and carries on next time. Safe to run
- * at any time: it never emails anyone twice.
+ * If the host allows scheduled tasks (cron), run this every 10 minutes:
+ * scheduled newsletters then go out on time, and sends finish without a
+ * browser left open. It stops at the hourly limit (NEWSLETTER_HOURLY_LIMIT
+ * in .env) and carries on next time. Safe to run at any time: it never
+ * emails anyone twice.
+ *
+ * Hosts without cron can call scheduled-tasks.php instead (see CRON_KEY).
  */
 
 declare(strict_types=1);
@@ -20,25 +23,10 @@ if (PHP_SAPI !== 'cli') {
 
 $_SERVER['REMOTE_ADDR'] = '127.0.0.1';
 require_once dirname(__DIR__) . '/includes/config.php';
+require_once INCLUDES_PATH . '/cms.php';
 require_once INCLUDES_PATH . '/campaigns.php';
 
-$campaigns = db_all("SELECT CampaignID, CampaignName FROM NewsletterCampaigns WHERE Status = 'Sending' ORDER BY SendStartedDate");
-if ($campaigns === []) {
-    echo "Nothing to send.\n";
-    exit;
-}
-
-foreach ($campaigns as $campaign) {
-    echo 'Sending "' . $campaign['CampaignName'] . "\"\n";
-    do {
-        $result = campaign_process((int) $campaign['CampaignID']);
-        echo sprintf("  %d sent, %d failed, %d skipped, %d waiting\n", $result['sent'], $result['failed'], $result['skipped'], $result['pending'] + $result['sending']);
-        if ($result['paused']) {
-            echo '  ' . $result['message'] . "\n";
-            exit;
-        }
-        if (!$result['done']) {
-            sleep(1);
-        }
-    } while (!$result['done'] && $result['pending'] > 0);
+// Up to nine minutes, so a run every ten minutes never overlaps the next.
+foreach (campaign_run(540) as $line) {
+    echo $line, "\n";
 }

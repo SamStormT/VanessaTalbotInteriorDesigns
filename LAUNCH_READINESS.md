@@ -22,10 +22,12 @@
 | Image optimisation | Ready | Every upload is resized, compressed and given a thumbnail; the original is kept privately |
 | Testimonials | Admin only | Can be managed, but no public page shows them yet |
 | Newsletter sign-up | Ready | Saved to Subscribers, confirmed by email, with unsubscribe |
-| Newsletter campaigns | Ready | Built from blog posts; preview, test, send to confirmed subscribers in batches with an hourly limit; one-click unsubscribe |
+| Newsletter campaigns | Ready | Built from blog posts or as a round-up of the newest articles; preview, test, send now or schedule; batches with an hourly limit; one-click unsubscribe. Scheduled sending on time needs a scheduled task (cron) on the host |
+| Welcome email | Ready, switched off | Sent once when someone confirms. Vanessa reads the wording, sends a test, then switches it on |
+| Search and sharing | Ready | Favicon, home-screen icon, sharing picture, page addresses and sharing tags, `sitemap.xml`, `robots.txt`. Needs `APP_URL` on the live site |
 | Email delivery | **Partly verified** | Login to Xneelo's mail server succeeds with the `.env` settings. Delivery to real inboxes, and the DNS records that keep mail out of spam, still to check |
 | Project documents | Protected | `.htaccess` returns 404 for every `.md` file, tested on Apache |
-| Blog | Ready | Articles, categories, search, featured post, draft preview; in the main menu. Shows "first articles are on their way" until posts are published |
+| Blog | Ready | Articles, categories, search, featured post, draft preview, scheduled publishing, share links; in the main menu. Shows "first articles are on their way" until posts are published |
 | Photography store | Not built | Removed from the menus |
 | Production hosting | **Not tested** | Only tested locally |
 
@@ -34,17 +36,17 @@
 | # | Blocker | What's needed | Owner |
 |---|---|---|---|
 | 1 | Legal pages are unreviewed drafts | Review by a suitably qualified person; confirm Vanessa as Information Officer | Vanessa |
-| 2 | Email settings on the live server, and spam protection | Mailbox and SMTP settings work locally. On Xneelo: `.env` with `APP_URL` set to the https address, add a DMARC record and confirm DKIM is on (SPF exists), then send a test of each email | Samantha |
+| 2 | Email settings on the live server, and spam protection | Mailbox and SMTP settings work locally. On the new host (Xneelo now keeps only the domain; hosting to be decided): `.env` with `APP_URL` set to the https address, add a DMARC record and confirm DKIM is on (SPF exists), then send a test of each email | Samantha |
 | 3 | Where enquiries are sent | Fill in "Send contact form messages to" in Website Settings | Vanessa |
 | 4 | Privacy Policy doesn't yet describe the contact form and newsletter | Add what is collected (name, email, phone, message, IP address), why, how long it's kept, and how to unsubscribe or ask for deletion | Vanessa |
 | 5 | All wording is draft | Vanessa's review of section 3 below | Vanessa |
 | 6 | The Photography service mentions an online store that doesn't exist yet | Reword the description and "What's included" under Services | Vanessa |
-| 7 | Newsletter logo and sending limit | Supply `assets/images/logo-email.png` (PNG, about 400px wide; email apps don't show SVG), and set `NEWSLETTER_HOURLY_LIMIT` below Xneelo's limit | Vanessa, Samantha |
+| 7 | Newsletter logo and sending limit | Supply `assets/images/logo-email.png` (PNG, about 400px wide; email apps don't show SVG), and set `NEWSLETTER_HOURLY_LIMIT` below the email provider's hourly limit | Vanessa, Samantha |
 | 8 | No photographs yet | Upload through the admin area | Vanessa |
 | 9 | No portfolio projects | At least a few real projects with client permission | Vanessa |
 | 10 | Stand-in logo text and fonts | Official logo files; web-licensed John Mayer and Bayshore | Vanessa |
 | 11 | Vanessa's phone and street address are in the public GitHub history | Make the repo private, or rewrite history | Samantha |
-| 12 | Which email is public: the business card and business plan use a different address from Website Settings | Confirm and update Website Settings | Vanessa |
+| 12 | Public email | **Decided:** the address on the business card. Enter it in Website Settings → Email (local copy and live site); it is not stored in the code | Vanessa |
 
 Store placeholder pages still exist at their old addresses, but nothing links to them. Old blog addresses redirect to the blog page.
 
@@ -72,13 +74,15 @@ Everything below can be changed in the admin area. Page Sections are listed by p
 
 ## 4. Hosting checklist
 
-- [ ] Confirm Xneelo's MariaDB is 10.2.1 or newer, and PHP is 8.x with the GD and fileinfo extensions
+- [ ] Confirm the new host's MariaDB (or MySQL 8) is 10.2.1 or newer, and PHP is 8.x with the GD and fileinfo extensions
 - [ ] Confirm whether command-line access is available
+- [ ] Confirm the host runs Apache (or LiteSpeed) so `.htaccess` works, including the rewrite rules for `/robots.txt` and `/sitemap.xml`
+- [ ] Set up a scheduled task (cron) every 10 minutes: `php database/send-campaigns.php` (or `CRON_KEY` and `scheduled-tasks.php`); needed for scheduled newsletters
 - [ ] Upload `vendor/` (or run `composer install --no-dev` on the server); without it no email is sent
 - [ ] In `.env`: `APP_URL`, `MAIL_HOST`, `MAIL_PORT`, `MAIL_ENCRYPTION`, `MAIL_USERNAME`, `MAIL_PASSWORD`, `MAIL_FROM_ADDRESS`, and `MAIL_MAILER=smtp`
 - [ ] Send a test contact message, newsletter sign-up and password reset, and check they arrive (and not in spam)
-- [ ] Confirm Xneelo's hourly sending limit before the newsletter phase
-- [ ] Domain registered and pointing at Xneelo; HTTPS certificate active
+- [ ] Confirm the email provider's hourly sending limit
+- [ ] Domain (registered with Xneelo) pointing at the new host; HTTPS certificate active
 - [ ] Add an HTTP-to-HTTPS redirect (sign-in needs HTTPS in production)
 - [ ] Create the production database and a dedicated database user
 - [ ] Put `.env` in the folder above the website with `APP_ENV=production`
@@ -87,7 +91,7 @@ Everything below can be changed in the admin area. Page Sections are listed by p
 - [ ] Make a second SuperAdmin (or keep developer access) so the site can never be left without one who can manage users
 - [ ] Confirm `.htaccess` is honoured: `/.env`, `/database/`, `/includes/`, `/vendor/`, `/composer.json` and `/README.md` must return 404, a script placed in `uploads/` must not run, and nothing in `uploads/originals/` may be downloadable
 - [ ] Make sure PHP can write to `uploads/`, and exclude it from anything that mirrors files
-- [ ] Confirm Xneelo's PHP upload limits allow 10 MB files, and that PHP may use 512 MB of memory while processing a large photo
+- [ ] Confirm the host's PHP upload limits allow 10 MB files, and that PHP may use 512 MB of memory while processing a large photo
 - [ ] Plan disk space: each photo is stored as the original plus three sizes (about 1.3 MB extra for a typical phone photo)
 - [ ] Schedule database and `uploads/` backups, and test a restore
 - [ ] Add a monitoring check, and review `logs/php-error.log` after launch
@@ -97,7 +101,8 @@ Everything below can be changed in the admin area. Page Sections are listed by p
 - [ ] Confirm the tagline style: "and" or "&", capitalised or not
 - [ ] Decide whether the street address is ever shown
 - [ ] Decide how long to keep login attempts, activity logs, contact messages and IP addresses (POPIA)
-- [ ] Favicon, sharing image, sitemap and robots file
+- [x] Favicon, sharing image, sitemap and robots file (replace the sharing picture and icon when the official logo arrives)
+- [ ] Submit `sitemap.xml` in Google Search Console after launch
 - [ ] Cookie notice, if analytics is added, and update the Privacy Policy to match
 - [ ] Real-device testing on phones, plus Safari and Firefox, including a real drag and drop upload
 - [ ] Screen reader and keyboard review

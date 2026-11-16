@@ -41,6 +41,33 @@ function site_tagline(): string
     return $tagline ??= (string) (content_fetch('settings', static fn() => db_row('SELECT Tagline FROM WebsiteSettings WHERE SettingID = 1'))['Tagline'] ?? '');
 }
 
+/**
+ * The picture shown when a page without its own image is shared on social
+ * media or WhatsApp: the one chosen in Website Settings, otherwise the
+ * built-in assets/images/share-default.jpg. Read separately (not through
+ * content_fetch) so a missing column can't switch the page to fallback text.
+ *
+ * @return array{url: string, alt: string, width: ?int, height: ?int}
+ */
+function site_share_image(): array
+{
+    static $image = null;
+    if ($image !== null) {
+        return $image;
+    }
+    $row = null;
+    try {
+        $row = db_row('SELECT ShareImage, ShareImageAlt FROM WebsiteSettings WHERE SettingID = 1');
+    } catch (Throwable $error) {
+        // Database down or not yet updated: use the built-in picture.
+    }
+    $path = trim((string) ($row['ShareImage'] ?? ''));
+    if ($path !== '' && link_is_safe($path)) {
+        return $image = ['url' => image_url($path, 'web'), 'alt' => (string) ($row['ShareImageAlt'] ?? ''), 'width' => null, 'height' => null];
+    }
+    return $image = ['url' => asset('images/share-default.jpg'), 'alt' => SITE_NAME . ': ' . SITE_TAGLINE, 'width' => 1200, 'height' => 630];
+}
+
 function site_home(): array
 {
     return content_fetch('home', static fn() => db_row('SELECT * FROM HomePageContent WHERE HomePageID = 1'));

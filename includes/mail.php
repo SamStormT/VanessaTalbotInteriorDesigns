@@ -39,25 +39,7 @@ function mail_problem(): ?string
     return null;
 }
 
-/**
- * Full address of a page on this site, for links in emails. Uses APP_URL;
- * only in development does it fall back to the address being browsed.
- */
-function absolute_url(string $path): string
-{
-    return mail_origin() . url($path);
-}
-
-/** The site's origin (https://domain) for links in emails. See absolute_url(). */
-function mail_origin(): string
-{
-    $origin = APP_URL;
-    if ($origin === '' && APP_ENV === 'development') {
-        $https  = !empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off';
-        $origin = ($https ? 'https://' : 'http://') . ($_SERVER['HTTP_HOST'] ?? 'localhost');
-    }
-    return $origin;
-}
+// absolute_url() and mail_origin() are in includes/functions.php.
 
 // ---------------------------------------------------------------------------
 // Template helpers (for use inside includes/mail-templates/*.php)
@@ -231,10 +213,19 @@ function mail_deliver(string $to, string $label, array $message, array $options 
  */
 function mail_send_later(string $to, string $template, array $data = [], array $options = []): void
 {
+    mail_later(static fn() => mail_send($to, $template, $data, $options));
+}
+
+/**
+ * Run some email work after the visitor's page has been delivered (see
+ * mail_send_later). A failure is logged and never reaches the visitor.
+ */
+function mail_later(callable $job): void
+{
     static $registered = false;
     static $queue = [];
 
-    $queue[] = [$to, $template, $data, $options];
+    $queue[] = $job;
 
     if (!$registered) {
         $registered = true;
@@ -246,8 +237,12 @@ function mail_send_later(string $to, string $template, array $data = [], array $
                 fastcgi_finish_request();
             }
             ignore_user_abort(true);
-            foreach ($queue as [$to, $template, $data, $options]) {
-                mail_send($to, $template, $data, $options);
+            foreach ($queue as $job) {
+                try {
+                    $job();
+                } catch (Throwable $error) {
+                    error_log('Email job failed: ' . $error->getMessage());
+                }
             }
         });
     }

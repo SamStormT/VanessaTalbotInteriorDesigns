@@ -46,6 +46,23 @@ function cms_modules(): array
                 'LinkedIn'        => ['label' => 'LinkedIn', 'type' => 'url', 'max' => 500, 'group' => 'Social media'],
                 'Pinterest'       => ['label' => 'Pinterest', 'type' => 'url', 'max' => 500, 'group' => 'Social media'],
                 'FooterCopyright' => ['label' => 'Footer copyright text', 'type' => 'text', 'max' => 255, 'group' => 'Footer'],
+                'ShareImage'      => ['label' => 'Default sharing picture', 'type' => 'image', 'alt_field' => 'ShareImageAlt', 'max' => 500, 'group' => 'Sharing on social media', 'help' => 'Shown when a page without its own picture is shared on WhatsApp, Facebook or LinkedIn. Best at 1200 × 630 pixels (a wide rectangle). Leave empty to use the built-in green picture with the business name. Blog articles use their featured image.'],
+                'ShareImageAlt'   => ['label' => 'Picture description (alt text)', 'type' => 'text', 'max' => 255, 'group' => 'Sharing on social media'],
+            ],
+        ],
+
+        'newsletter_welcome' => [
+            'title'      => 'Welcome Email',
+            'table'      => 'NewsletterSettings',
+            'key'        => 'SettingID',
+            'permission' => 'subscribers',
+            'page'       => 'admin/welcome-email.php',
+            'fields'     => [
+                'WelcomeEnabled'    => ['label' => 'Send this welcome email when someone confirms their subscription', 'type' => 'checkbox', 'group' => 'Sending', 'help' => 'Sent once, straight after they click the link in the confirmation email.'],
+                'WelcomeSubject'    => ['label' => 'Subject line', 'type' => 'text', 'required' => true, 'max' => 255, 'ideal' => 60, 'group' => 'Email', 'help' => 'You can use {first_name} for the subscriber\'s name.'],
+                'WelcomeGreeting'   => ['label' => 'Greeting', 'type' => 'text', 'max' => 150, 'group' => 'Email', 'help' => '{first_name} becomes their first name, or "there" if we don\'t know it.'],
+                'WelcomeMessage'    => ['label' => 'Message', 'type' => 'textarea', 'rich' => true, 'max' => 10000, 'group' => 'Email'],
+                'WelcomeShowLatest' => ['label' => 'Add the three newest blog articles under "Start reading"', 'type' => 'checkbox', 'group' => 'Email'],
             ],
         ],
 
@@ -298,6 +315,7 @@ function cms_modules(): array
                 'FeaturedImageAlt' => ['label' => 'Image description (alt text)', 'type' => 'text', 'max' => 255, 'group' => 'Featured image'],
                 'IsFeatured'       => ['label' => 'Feature this post at the top of the blog page', 'type' => 'checkbox', 'group' => 'Publishing', 'permission' => 'blogs.publish'],
                 'Status'           => ['label' => 'Status', 'type' => 'select', 'required' => true, 'options' => ['Draft', 'Published', 'Archived'], 'group' => 'Publishing', 'permission' => 'blogs.publish', 'help' => 'Draft: only staff can see it. Published: on the website. Archived: taken off the website but kept.'],
+                'PublishedDate'    => ['label' => 'Publish date and time', 'type' => 'datetime', 'group' => 'Publishing', 'permission' => 'blogs.publish', 'help' => 'Leave blank to publish as soon as you save with Status Published. To schedule the post, choose a date and time still to come: it stays hidden until then and appears by itself. This is also the date shown on the article.'],
             ] + $meta,
         ],
 

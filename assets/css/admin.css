@@ -408,6 +408,8 @@ fieldset.admin-panel > .admin-panel__title + * { clear: both; }
 /* Newsletter campaigns */
 .admin-badge--campaign-draft { background: var(--color-white); }
 .admin-badge--campaign-ready { background: var(--color-golden-yellow); border-color: var(--color-golden-yellow); color: var(--color-primary); }
+.admin-badge--campaign-scheduled,
+.admin-badge--scheduled { background: var(--color-soft-peach); border-color: var(--color-accent-dark); color: var(--color-primary); }
 .admin-badge--campaign-sending { background: var(--color-peach-light); border-color: var(--color-primary); }
 .admin-badge--campaign-sent { background: var(--color-primary); border-color: var(--color-primary); color: var(--color-white); }
 .admin-badge--campaign-archived { border-color: var(--color-border); color: var(--color-text-muted); }
@@ -504,3 +506,6 @@ fieldset.admin-panel > .admin-panel__title + * { clear: both; }
 .return-bar { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem 1rem; margin: 0 0 var(--space-md); padding: 0.6rem 1rem; border-left: 3px solid var(--color-golden-yellow); background: var(--color-white); font-size: var(--fs-sm); }
 .return-bar a { font-weight: 600; color: var(--color-primary); }
 .return-bar__forget { margin-left: auto; border: 0; background: none; color: var(--color-text-muted); font: inherit; text-decoration: underline; cursor: pointer; }
+
+/* Room between the schedule help text and "Not ready after all". */
+.campaign-send .admin-help + .admin-inline-action { margin-top: var(--space-sm); }

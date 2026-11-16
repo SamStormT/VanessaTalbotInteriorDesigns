@@ -3,7 +3,10 @@
  * Newsletter Campaigns: create, edit, preview, test and send one campaign.
  *
  *   Draft  → (Mark as ready) → Ready → (Send) → Sending → Sent → (Archive)
+ *                                     → (Schedule) → Scheduled → (its time comes) → Sending
  *
+ * ?from_post=ID fills a new campaign in from a blog post; ?roundup=1 from the
+ * four newest articles (one featured, three as cards).
  * Any edit to a Ready campaign returns it to Draft, so what is sent is always
  * what was last checked. Sending, Sent and Archived campaigns can't be edited.
  *
@@ -26,7 +29,6 @@ admin_guard('subscribers.' . match (true) {
     default                                   => 'view',
 });
 
-$module = campaign_module();
 $actor  = current_admin();
 $list   = url('admin/campaigns.php');
 
@@ -35,7 +37,15 @@ if ($creating) {
     $fromPost = filter_input(INPUT_GET, 'from_post', FILTER_VALIDATE_INT) ?: 0;
     $row      = campaign_defaults();
     $post     = null;
-    if ($fromPost > 0) {
+    $roundup  = isset($_GET['roundup']);
+    if ($roundup) {
+        $row = campaign_roundup();
+        if ($row === null) {
+            flash_set('error', 'A round-up needs at least one published blog article.');
+            header('Location: ' . $list);
+            exit;
+        }
+    } elseif ($fromPost > 0) {
         $post = db_row("SELECT * FROM BlogPosts WHERE BlogID = ? AND Status = 'Published'", [$fromPost]);
         if ($post === null) {
             admin_stop(404, 'Post not found', 'Only a published blog post can become a newsletter.');
@@ -58,7 +68,20 @@ if ($creating) {
     if ($row === null) {
         admin_stop(404, 'Campaign not found', 'That campaign does not exist.');
     }
+
+    // A scheduled campaign whose time has come starts as soon as anyone opens
+    // it, in case the automatic sender (cron) isn't set up.
+    $startProblem = null;
+    if (!$posted && $row['Status'] === 'Scheduled' && strtotime((string) $row['ScheduledDate']) <= time()) {
+        $startProblem = campaign_start($id);
+        if ($startProblem === null) {
+            header('Location: ' . url('admin/campaign-edit.php?id=' . $id));
+            exit;
+        }
+    }
 }
+
+$module = campaign_module($row);
 
 $editable = in_array($row['Status'], ['Draft', 'Ready'], true);
 $self     = $creating ? '' : url('admin/campaign-edit.php?id=' . $id);
@@ -108,6 +131,11 @@ if ($posted) {
             }
             $back('success', $changed === [] ? 'No changes to save.' : 'Saved.');
         }
+    } elseif ($do === 'schedule') {
+        $problem = campaign_schedule($id, is_string($_POST['send_at'] ?? null) ? $_POST['send_at'] : '');
+        $back($problem === null ? 'success' : 'error', $problem ?? 'Scheduled. It will be sent by itself at the chosen time.');
+    } elseif ($do === 'unschedule') {
+        $back('success', campaign_unschedule($id) ? 'Schedule cancelled. The campaign is Ready again: send it now, or choose another time.' : 'This campaign is not scheduled.');
     } elseif ($do === 'draft' && $row['Status'] === 'Ready') {
         db_query("UPDATE NewsletterCampaigns SET Status = 'Draft' WHERE CampaignID = ?", [$id]);
         activity_log('unready', 'NewsletterCampaigns', $id);
@@ -179,16 +207,18 @@ require_once INCLUDES_PATH . '/header.php';
     <ol class="campaign-steps" aria-label="Steps">
         <li class="is-current">Write</li><li>Preview</li><li>Send a test</li><li>Mark ready</li><li>Send</li>
     </ol>
-<?php if ($post): ?>
+<?php if ($roundup): ?>
+    <p class="admin-alert admin-alert--success">Filled in as a round-up of the newest articles: the newest is featured, and up to three more appear as cards under <strong>More articles</strong>. Add an introduction, check everything, then save.</p>
+<?php elseif ($post): ?>
     <p class="admin-alert admin-alert--success">Filled in from the blog post <strong><?= e($post['Title']) ?></strong>. Add an introduction, check everything, then save.</p>
 <?php else: ?>
-    <p class="admin-help">Tip: most campaigns start from a blog post. Open a published post and choose <strong>Create campaign from this post</strong> to fill all of this in.</p>
+    <p class="admin-help">Tip: most campaigns start from a blog post. Open a published post and choose <strong>Create campaign from this post</strong>, or use <strong>New round-up</strong> on the campaigns list for the newest articles.</p>
 <?php endif; ?>
 <?php else: ?>
     <section class="admin-panel">
         <h2 class="admin-panel__title">Campaign</h2>
         <dl class="admin-fields">
-            <div><dt>Status</dt><dd><span class="admin-badge admin-badge--campaign-<?= e(strtolower($row['Status'])) ?>"><?= e($statuses[$row['Status']] ?? $row['Status']) ?></span></dd></div>
+            <div><dt>Status</dt><dd><span class="admin-badge admin-badge--campaign-<?= e(strtolower($row['Status'])) ?>"><?= e($statuses[$row['Status']] ?? $row['Status']) ?></span><?= $row['Status'] === 'Scheduled' ? ' for ' . e(cms_format_date($row['ScheduledDate'])) : '' ?></dd></div>
 <?php if ($row['PostTitle']): ?>
             <div><dt>From blog post</dt><dd><a href="<?= e(url('admin/blog-edit.php?id=' . (int) $row['BlogID'])) ?>"><?= e($row['PostTitle']) ?></a></dd></div>
 <?php endif; ?>
@@ -196,7 +226,7 @@ require_once INCLUDES_PATH . '/header.php';
             <div><dt>Last edited</dt><dd><?= cms_last_edited_cell($row) ?></dd></div>
 <?php if ($row['SentDate']): ?>
             <div><dt>Sent</dt><dd><?= e(cms_format_date($row['SentDate'])) ?> to <?= (int) $row['RecipientCount'] ?> subscriber<?= (int) $row['RecipientCount'] === 1 ? '' : 's' ?></dd></div>
-<?php elseif (in_array($row['Status'], ['Draft', 'Ready'], true)): ?>
+<?php elseif (in_array($row['Status'], ['Draft', 'Ready', 'Scheduled'], true)): ?>
             <div><dt>Would go to</dt><dd><?= $audience ?> confirmed subscriber<?= $audience === 1 ? '' : 's' ?> <span class="admin-muted">(unconfirmed and unsubscribed people are never emailed)</span></dd></div>
 <?php endif; ?>
         </dl>
@@ -218,6 +248,24 @@ require_once INCLUDES_PATH . '/header.php';
         <form method="post" class="admin-inline-action" data-confirm="Try the failed emails again? People who have since unsubscribed are skipped.">
             <?= csrf_field() ?><input type="hidden" name="do" value="retry">
             <button class="btn btn--outline btn--small" type="submit">Retry failed emails</button>
+        </form>
+<?php endif; ?>
+    </section>
+<?php endif; ?>
+
+<?php if (!$creating && $startProblem !== null): ?>
+    <p class="admin-alert admin-alert--error" role="alert">This campaign was due to send on <?= e(cms_format_date($row['ScheduledDate'])) ?> but couldn't start: <?= e($startProblem) ?></p>
+<?php endif; ?>
+
+<?php if (!$creating && $row['Status'] === 'Scheduled'): ?>
+    <section class="admin-panel campaign-send">
+        <h2 class="admin-panel__title">Scheduled</h2>
+        <p>This campaign will be sent by itself on <strong><?= e(date('l j F Y \a\t H:i', strtotime((string) $row['ScheduledDate']))) ?></strong> to everyone confirmed and subscribed at that time (<?= $audience ?> now).</p>
+        <p class="admin-help">Sending is started by the website's scheduled task. If that isn't set up on the hosting yet, sending starts the next time someone opens this campaign after that time. To change anything, cancel the schedule first.</p>
+<?php if (can('subscribers.edit')): ?>
+        <form method="post" class="admin-inline-action">
+            <?= csrf_field() ?><input type="hidden" name="do" value="unschedule">
+            <button class="btn btn--outline btn--small" type="submit">Cancel the schedule</button>
         </form>
 <?php endif; ?>
     </section>
@@ -276,6 +324,16 @@ require_once INCLUDES_PATH . '/header.php';
             </div>
             <button class="btn btn--primary" type="submit">Send campaign</button>
         </form>
+        <h3 class="campaign-subtitle">Or send it later</h3>
+        <form method="post" class="campaign-test">
+            <?= csrf_field() ?><input type="hidden" name="do" value="schedule">
+            <div class="admin-field">
+                <label for="send-at">Send on</label>
+                <input id="send-at" name="send_at" type="datetime-local" required min="<?= e(date('Y-m-d\TH:i', time() + 300)) ?>" aria-describedby="send-at-help">
+            </div>
+            <button class="btn btn--outline" type="submit">Schedule</button>
+        </form>
+        <p class="admin-help" id="send-at-help">South African time. It goes to everyone confirmed and subscribed at that moment. If it features a scheduled blog article, choose a time after the article appears.</p>
 <?php endif; ?>
         <form method="post" class="admin-inline-action">
             <?= csrf_field() ?><input type="hidden" name="do" value="draft">

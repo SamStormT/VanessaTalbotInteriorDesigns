@@ -10,7 +10,7 @@ admin_guard('blogs.view');
 
 const BLOG_ADMIN_PAGE = 30;
 
-$statuses = ['Draft' => 'Draft', 'Published' => 'Published', 'Archived' => 'Archived'];
+$statuses = ['Draft' => 'Draft', 'Scheduled' => 'Scheduled', 'Published' => 'Published', 'Archived' => 'Archived'];
 $status   = is_string($_GET['status'] ?? null) && isset($statuses[$_GET['status']]) ? $_GET['status'] : '';
 $category = filter_input(INPUT_GET, 'category', FILTER_VALIDATE_INT) ?: 0;
 $query    = is_string($_GET['q'] ?? null) ? mb_substr(trim($_GET['q']), 0, 100) : '';
@@ -18,7 +18,12 @@ $page     = max(1, (int) ($_GET['page'] ?? 1));
 
 $where  = ['1'];
 $params = [];
-if ($status !== '') {
+// Scheduled posts are Published with a publish date still to come.
+if ($status === 'Scheduled') {
+    $where[] = "p.Status = 'Published' AND p.PublishedDate > NOW()";
+} elseif ($status === 'Published') {
+    $where[] = blog_live_sql();
+} elseif ($status !== '') {
     $where[]  = 'p.Status = ?';
     $params[] = $status;
 }
@@ -43,11 +48,11 @@ $rows  = db_all(
      LEFT JOIN AdminUsers a ON a.AdminUserID = p.AuthorID
      LEFT JOIN AdminUsers u ON u.AdminUserID = p.LastEditedBy
      WHERE $sqlWhere
-     ORDER BY FIELD(p.Status, 'Draft', 'Published', 'Archived'), COALESCE(p.PublishedDate, p.CreatedDate) DESC, p.BlogID DESC
+     ORDER BY FIELD(p.Status, 'Draft', 'Published', 'Archived'), p.Status = 'Published' AND p.PublishedDate > NOW() DESC, COALESCE(p.PublishedDate, p.CreatedDate) DESC, p.BlogID DESC
      LIMIT " . BLOG_ADMIN_PAGE . ' OFFSET ' . (($page - 1) * BLOG_ADMIN_PAGE),
     $params
 );
-$counts     = array_column(db_all('SELECT Status, COUNT(*) AS Total FROM BlogPosts GROUP BY Status'), 'Total', 'Status');
+$counts     = array_column(db_all("SELECT IF(Status = 'Published' AND PublishedDate > NOW(), 'Scheduled', Status) AS Shown, COUNT(*) AS Total FROM BlogPosts GROUP BY Shown"), 'Total', 'Shown');
 $categories = db_all('SELECT CategoryID, CategoryName FROM BlogCategories ORDER BY CategoryName');
 
 $listUrl = static fn(array $change = []): string => url('admin/blogs.php?' . http_build_query(array_filter(
@@ -117,8 +122,8 @@ require_once INCLUDES_PATH . '/header.php';
                     <td><?= $row['FeaturedImage'] ? '<img class="admin-thumb admin-thumb--small" src="' . e(image_url($row['FeaturedImage'], 'thumb')) . '" alt="">' : '' ?></td>
                     <td><?= e($row['Title']) ?><?= $row['IsFeatured'] ? ' <span class="admin-badge">Featured</span>' : '' ?><br><span class="admin-muted">by <?= e(trim((string) $row['AuthorName']) ?: 'a former user') ?></span></td>
                     <td><?= $row['CategoryName'] ? e($row['CategoryName']) : '<span class="admin-muted">None</span>' ?></td>
-                    <td><span class="admin-badge admin-badge--<?= e(strtolower($row['Status'])) ?>"><?= e($row['Status']) ?></span></td>
-                    <td><?= $row['PublishedDate'] ? e(date('j M Y', strtotime($row['PublishedDate']))) : '<span class="admin-muted">Not yet</span>' ?></td>
+                    <td><span class="admin-badge admin-badge--<?= e(strtolower(blog_status_label($row))) ?>"><?= e(blog_status_label($row)) ?></span></td>
+                    <td><?= $row['PublishedDate'] ? e(date(blog_is_scheduled($row) ? 'j M Y, H:i' : 'j M Y', strtotime($row['PublishedDate']))) : '<span class="admin-muted">Not yet</span>' ?></td>
                     <td><?= cms_last_edited_cell($row) ?></td>
                     <td class="admin-table__actions">
                         <a class="btn btn--outline btn--small" href="<?= e(url('admin/blog-edit.php?id=' . (int) $row['BlogID'])) ?>">Edit<span class="visually-hidden"> <?= e($row['Title']) ?></span></a>

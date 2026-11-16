@@ -2,8 +2,9 @@
 /**
  * One blog post: blog/blog-post.php?slug=...
  *
- * Visitors see Published posts only. Signed-in staff can also open a Draft
- * or Archived post, marked as a preview, to check it before publishing.
+ * Visitors see Published posts whose publish date has arrived. Signed-in
+ * staff can also open a Draft, Scheduled or Archived post, marked as a
+ * preview, to check it before it goes live.
  */
 require_once __DIR__ . '/../includes/config.php';
 require_once INCLUDES_PATH . '/blog.php';
@@ -19,7 +20,7 @@ if ($post === null) {
     content_not_found();
 }
 
-$preview  = $post['Status'] !== 'Published';
+$preview  = !blog_is_live($post);
 $related  = $preview ? [] : blog_related($post);
 $sections = site_sections('blog');
 $signup   = $sections['post-newsletter'] ?? null;
@@ -27,6 +28,10 @@ $signup   = $sections['post-newsletter'] ?? null;
 $pageTitle       = ($post['MetaTitle'] ?? '') ?: $post['Title'];
 $pageDescription = ($post['MetaDescription'] ?? '') ?: (($post['Excerpt'] ?? '') ?: SITE_TAGLINE);
 $pageImage       = $post['FeaturedImage'] ?? '';
+$pageImageAlt    = $post['FeaturedImageAlt'] ?? '';
+$pagePath        = 'blog/blog-post.php?slug=' . $post['Slug'];
+$pageType        = 'article';
+$articleDate     = $post['PublishedDate'];
 $noindex         = $preview;
 
 $return = 'blog/blog-post.php?slug=' . $post['Slug'];
@@ -36,7 +41,7 @@ require_once INCLUDES_PATH . '/header.php';
 <main id="main-content">
 
 <?php if ($preview): ?>
-    <p class="preview-banner" role="status"><strong>Preview:</strong> this post is <?= e(strtolower($post['Status'])) ?>, so only signed-in staff can see it.</p>
+    <p class="preview-banner" role="status"><strong>Preview:</strong> <?= blog_is_scheduled($post) ? 'this post is scheduled for ' . e(date('j M Y \a\t H:i', strtotime((string) $post['PublishedDate']))) . '. Until then' : 'this post is ' . e(strtolower($post['Status'])) . ', so' ?> only signed-in staff can see it.</p>
 <?php endif; ?>
 
     <article class="blog-post">
@@ -74,6 +79,9 @@ require_once INCLUDES_PATH . '/header.php';
                 <div class="content-document rich-text blog-post__content"<?= ed_record('blog_posts', 'admin/blog-edit.php', (int) $post['BlogID'], 'Content', 'blogs.edit') ?>>
                     <?= rich_render($post['Content']) ?>
                 </div>
+<?php if (!$preview): ?>
+                <?= blog_share_links($post) ?>
+<?php endif; ?>
                 <p class="blog-post__back"><a class="text-link" href="<?= e(url('blog.php')) ?>"><?= icon('arrow', 'icon icon--inline icon--flip') ?> All articles</a></p>
             </div>
         </div>

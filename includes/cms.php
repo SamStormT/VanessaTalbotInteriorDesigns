@@ -49,6 +49,12 @@ function cms_validate(array $module, array $input, array $existing = []): array
             continue;
         }
 
+        // A date and time that wasn't sent at all is left as it is: blank
+        // means "now" for a publish date, so it must be cleared on purpose.
+        if ($field['type'] === 'datetime' && !array_key_exists($name, $input)) {
+            continue;
+        }
+
         $raw   = $input[$name] ?? '';
         $value = is_string($raw) ? trim(str_replace("\r\n", "\n", $raw)) : '';
         $label = $field['label'];
@@ -80,6 +86,7 @@ function cms_validate(array $module, array $input, array $existing = []): array
             'slug'   => preg_match('/^[a-z0-9]+(-[a-z0-9]+)*$/', $value) ? null : 'Use lower-case letters, numbers and single hyphens only.',
             'int'    => filter_var($value, FILTER_VALIDATE_INT) !== false ? null : 'Enter a whole number.',
             'date'   => (DateTime::createFromFormat('!Y-m-d', $value) ?: null)?->format('Y-m-d') === $value ? null : 'Enter a valid date.',
+            'datetime' => cms_datetime($value) !== null ? null : 'Enter a valid date and time.',
             'select' => in_array($value, $field['options'], true) ? null : 'Choose one of the listed options.',
             default  => null,
         };
@@ -87,7 +94,11 @@ function cms_validate(array $module, array $input, array $existing = []): array
             $errors[$name] = $problem;
         }
 
-        $data[$name] = $field['type'] === 'int' ? (int) $value : $value;
+        $data[$name] = match ($field['type']) {
+            'int'      => (int) $value,
+            'datetime' => cms_datetime($value) ?? $value,
+            default    => $value,
+        };
     }
 
     // A blank slug is built from the field it names, for example the title.
@@ -112,6 +123,23 @@ function cms_validate(array $module, array $input, array $existing = []): array
 }
 
 /**
+ * A date and time as the database stores it (2026-11-16 09:30:00), from the
+ * browser's date and time box (2026-11-16T09:30) or the database itself.
+ * Null if it isn't a real date and time.
+ */
+function cms_datetime(?string $value): ?string
+{
+    $value = trim((string) $value);
+    foreach (['Y-m-d\TH:i', 'Y-m-d\TH:i:s', 'Y-m-d H:i', 'Y-m-d H:i:s'] as $format) {
+        $date = DateTime::createFromFormat('!' . $format, $value);
+        if ($date !== false && $date->format($format) === $value) {
+            return $date->format('Y-m-d H:i:00');
+        }
+    }
+    return null;
+}
+
+/**
  * Save changes, stamp LastEditedBy/LastEditedDate and write the activity log.
  * Returns the names of the fields that changed.
  */
@@ -119,7 +147,13 @@ function cms_save(array $module, int $id, array $data, array $existing, ?string 
 {
     $changed = [];
     foreach ($data as $name => $value) {
-        if ((string) ($existing[$name] ?? '') !== (string) ($value ?? '')) {
+        $before = (string) ($existing[$name] ?? '');
+        $after  = (string) ($value ?? '');
+        // Date and time boxes show minutes, not seconds: the same minute is no change.
+        if (($module['fields'][$name]['type'] ?? '') === 'datetime' && $before !== '' && $after !== '') {
+            [$before, $after] = [substr($before, 0, 16), substr($after, 0, 16)];
+        }
+        if ($before !== $after) {
             $changed[$name] = $value;
         }
     }
@@ -318,6 +352,10 @@ function cms_render_control(string $name, array $field, string $value, ?string $
         $attrs .= ' required';
     }
 
+    if ($field['type'] === 'datetime' && ($stored = cms_datetime($value)) !== null) {
+        $value = str_replace(' ', 'T', substr($stored, 0, 16)); // the browser's date and time box wants 2026-11-16T09:30
+    }
+
     if ($field['type'] === 'image') {
         return cms_render_image_control($name, $field, $value, $id, $help, $message);
     }
@@ -347,7 +385,7 @@ function cms_render_control(string $name, array $field, string $value, ?string $
         $control = '<textarea rows="' . $rows . '" ' . $attrs . '>' . e($value) . '</textarea>';
     } else {
         $type = match ($field['type']) {
-            'email' => 'email', 'tel' => 'tel', 'url' => 'url', 'int' => 'number', 'date' => 'date', default => 'text',
+            'email' => 'email', 'tel' => 'tel', 'url' => 'url', 'int' => 'number', 'date' => 'date', 'datetime' => 'datetime-local', default => 'text',
         };
         $max     = isset($field['max']) ? ' maxlength="' . (int) $field['max'] . '"' : '';
         $control = '<input type="' . $type . '" value="' . e($value) . '"' . $max . ' ' . $attrs . '>';

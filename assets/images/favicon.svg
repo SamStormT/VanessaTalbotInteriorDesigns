@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <title>Vanessa Talbot Interior Designs</title>
+  <rect width="64" height="64" rx="14" fill="#243A39"/>
+  <g transform="rotate(28 32 32)">
+    <path d="M32 6 C 49 18 51 41 32 58 C 13 41 15 18 32 6 Z" fill="#CDA02D"/>
+    <path d="M32 13 V 60" stroke="#243A39" stroke-width="2.6" stroke-linecap="round" fill="none"/>
+    <path d="M32 26 L 41 19 M32 26 L 23 19 M32 37 L 43 29 M32 37 L 21 29 M32 48 L 41 41 M32 48 L 23 41" stroke="#243A39" stroke-width="1.8" stroke-linecap="round" fill="none"/>
+  </g>
+</svg>

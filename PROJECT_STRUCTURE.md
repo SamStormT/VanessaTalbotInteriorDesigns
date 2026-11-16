@@ -2,7 +2,7 @@
 
 **Vanessa Talbot Interior Designs**: *"The Balance of Art, Science and Nature in Spaces"*
 
-Stack: HTML5, CSS3, JavaScript, PHP 8, MariaDB, PHPMailer (installed with Composer). PayFast is planned. Hosted on Xneelo Standard Hosting.
+Stack: HTML5, CSS3, JavaScript, PHP 8, MariaDB, PHPMailer (installed with Composer). PayFast is planned. Hosting to be decided (the domain is with Xneelo); previously planned for Xneelo Standard Hosting.
 
 > **Status: Phase 12.** Every page in the public menus reads its wording from the CMS. Images are uploaded by drag and drop from the page being edited, kept in the Media Library, and optimised automatically. The contact form, newsletter sign-up and forgot-password emails work through PHPMailer. The SuperAdmin manages users from the admin area. The blog is built, with formatted articles. Newsletter campaigns are built from blog posts. Photography store and payments are not built yet.
 
@@ -26,6 +26,10 @@ Stack: HTML5, CSS3, JavaScript, PHP 8, MariaDB, PHPMailer (installed with Compos
 ├── speaking.php               Redirects to services/speaking-engagements.php
 ├── photography.php            Redirects to the photography gallery until the store exists
 ├── blog.php                   Blog: all articles, ?category=slug, ?q=search, pages of 9
+├── sitemap.php                sitemap.xml for search engines (served at /sitemap.xml)
+├── robots.php                 robots.txt (served at /robots.txt); open to search engines only in production
+├── scheduled-tasks.php        Starts scheduled newsletters; for web-based cron, needs ?key=CRON_KEY
+├── favicon.ico, site.webmanifest   Browser and phone home-screen icons (artwork in assets/images/)
 │
 ├── services/                  One file per service; all use includes/page-service.php
 │   ├── biophilic-design.php
@@ -43,7 +47,7 @@ Stack: HTML5, CSS3, JavaScript, PHP 8, MariaDB, PHPMailer (installed with Compos
 │   └── project.php            Single project, found by ?slug=
 │
 ├── blog/
-│   ├── blog-post.php          One article, ?slug=; staff can preview drafts
+│   ├── blog-post.php          One article, ?slug=; share links; staff can preview drafts and scheduled posts
 │   └── category.php, search.php, archive.php   Old addresses; redirect to blog.php
 ├── photography/               Placeholders, not linked (store not built)
 │
@@ -73,6 +77,7 @@ Stack: HTML5, CSS3, JavaScript, PHP 8, MariaDB, PHPMailer (installed with Compos
 │   ├── campaigns.php, campaign-edit.php             Newsletter campaigns: list; write, test, ready, send, archive
 │   ├── campaign-preview.php, campaign-send.php      Email preview (computer/phone/text); batch sending (JSON)
 │   ├── rich-preview.php                             Article editor's Preview button (JSON)
+│   ├── welcome-email.php                            Welcome email: wording, preview, test, on/off
 │   ├── history.php                                  History and undo for any edited record
 │   ├── blogs.php, blog-edit.php                     Blog posts: list, write, edit (blog-create.php redirects)
 │   ├── blog-categories.php, blog-category-edit.php  Blog categories

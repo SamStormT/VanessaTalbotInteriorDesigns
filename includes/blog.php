@@ -3,8 +3,10 @@
  * Blog: categories, posts, search, and the publishing rules shared by the
  * public pages and the admin screens.
  *
- * Visitors only ever see Published posts. Signed-in staff can preview a
- * Draft or Archived post on the website before it goes live.
+ * Visitors only ever see Published posts whose publish date has arrived: a
+ * post Published with a future date is Scheduled, and appears by itself at
+ * that time. Signed-in staff can preview a Draft, Scheduled or Archived
+ * post on the website before it goes live.
  */
 
 declare(strict_types=1);
@@ -12,6 +14,30 @@ declare(strict_types=1);
 require_once INCLUDES_PATH . '/content.php';
 
 const BLOG_PAGE_SIZE = 9;
+
+/** SQL condition: visitors can see the post (published, and its time has come). */
+function blog_live_sql(string $alias = 'p'): string
+{
+    return "$alias.Status = 'Published' AND ($alias.PublishedDate IS NULL OR $alias.PublishedDate <= NOW())";
+}
+
+/** Published with a publish date still to come. */
+function blog_is_scheduled(array $post): bool
+{
+    return ($post['Status'] ?? '') === 'Published' && !empty($post['PublishedDate']) && strtotime((string) $post['PublishedDate']) > time();
+}
+
+/** Visitors can see it now. */
+function blog_is_live(array $post): bool
+{
+    return ($post['Status'] ?? '') === 'Published' && !blog_is_scheduled($post);
+}
+
+/** Status for staff screens: Draft, Scheduled, Published or Archived. */
+function blog_status_label(array $post): string
+{
+    return blog_is_scheduled($post) ? 'Scheduled' : (string) $post['Status'];
+}
 
 function blog_post_url(string $slug): string
 {
@@ -31,7 +57,7 @@ function blog_categories(): array
         "SELECT c.CategoryID, c.CategoryName, c.Slug, c.Description,
                 COUNT(p.BlogID) AS PostCount
          FROM BlogCategories c
-         LEFT JOIN BlogPosts p ON p.CategoryID = c.CategoryID AND p.Status = 'Published'
+         LEFT JOIN BlogPosts p ON p.CategoryID = c.CategoryID AND " . blog_live_sql() . "
          GROUP BY c.CategoryID ORDER BY c.CategoryName"
     ));
 }
@@ -52,7 +78,7 @@ function blog_search_words(string $query): array
  */
 function blog_find(?int $categoryId, string $query, int $limit, int $offset, ?int $excludeId = null): array
 {
-    $where  = ["p.Status = 'Published'"];
+    $where  = [blog_live_sql()];
     $params = [];
     if ($categoryId !== null) {
         $where[]  = 'p.CategoryID = ?';
@@ -90,7 +116,7 @@ function blog_featured(): ?array
         "SELECT p.BlogID, p.Title, p.Slug, p.Excerpt, p.Content, p.FeaturedImage, p.FeaturedImageAlt, p.PublishedDate,
                 c.CategoryName, c.Slug AS CategorySlug
          FROM BlogPosts p LEFT JOIN BlogCategories c ON c.CategoryID = p.CategoryID
-         WHERE p.Status = 'Published' AND p.IsFeatured = 1
+         WHERE " . blog_live_sql() . " AND p.IsFeatured = 1
          ORDER BY p.PublishedDate DESC, p.BlogID DESC LIMIT 1"
     ) ?? []);
     return $post ?: null;
@@ -104,7 +130,7 @@ function blog_post(string $slug, bool $preview): ?array
          FROM BlogPosts p
          LEFT JOIN BlogCategories c ON c.CategoryID = p.CategoryID
          LEFT JOIN AdminUsers u ON u.AdminUserID = p.AuthorID
-         WHERE p.Slug = ?" . ($preview ? '' : " AND p.Status = 'Published'"),
+         WHERE p.Slug = ?" . ($preview ? '' : ' AND ' . blog_live_sql()),
         [$slug]
     ) ?? []);
     return $post ?: null;
@@ -116,10 +142,20 @@ function blog_related(array $post): array
     return content_fetch('blog_related', static fn() => db_all(
         "SELECT p.BlogID, p.Title, p.Slug, p.Excerpt, p.FeaturedImage, p.FeaturedImageAlt, p.PublishedDate, c.CategoryName
          FROM BlogPosts p LEFT JOIN BlogCategories c ON c.CategoryID = p.CategoryID
-         WHERE p.Status = 'Published' AND p.BlogID <> ?
+         WHERE " . blog_live_sql() . " AND p.BlogID <> ?
          ORDER BY (p.CategoryID <=> ?) DESC, p.PublishedDate DESC LIMIT 3",
         [(int) $post['BlogID'], $post['CategoryID']]
     ));
+}
+
+/** Every post visitors can see, for sitemap.xml. */
+function blog_sitemap_posts(): array
+{
+    try {
+        return db_all('SELECT p.Slug, p.PublishedDate, p.UpdatedDate FROM BlogPosts p WHERE ' . blog_live_sql() . ' ORDER BY p.PublishedDate DESC');
+    } catch (Throwable $error) {
+        return [];
+    }
 }
 
 /** The newest published posts, for the home page. */
@@ -170,6 +206,53 @@ function blog_post_module(): array
     $module['fields']['CategoryID']['options']       = array_map('strval', array_keys($labels));
     $module['fields']['CategoryID']['option_labels'] = $labels;
     return $module;
+}
+
+/**
+ * "Share this article" links. Plain links to each network's own share page:
+ * no scripts, buttons or trackers from those networks are loaded. "Copy
+ * link" needs JavaScript and stays hidden without it.
+ */
+function blog_share_links(array $post): string
+{
+    if (mail_origin() === '') {
+        return '';
+    }
+    $link  = absolute_url('blog/blog-post.php?slug=' . $post['Slug']);
+    $title = (string) $post['Title'];
+    $image = trim((string) ($post['FeaturedImage'] ?? ''));
+
+    $links = [
+        'WhatsApp' => 'https://wa.me/?text=' . rawurlencode($title . ' ' . $link),
+        'Facebook' => 'https://www.facebook.com/sharer/sharer.php?u=' . rawurlencode($link),
+        'LinkedIn' => 'https://www.linkedin.com/sharing/share-offsite/?url=' . rawurlencode($link),
+    ];
+    if ($image !== '' && link_is_safe($image)) {
+        $links['Pinterest'] = 'https://www.pinterest.com/pin/create/button/?url=' . rawurlencode($link)
+            . '&media=' . rawurlencode(mail_origin() . image_url($image, 'web')) . '&description=' . rawurlencode($title);
+    }
+
+    $html = '<aside class="share" aria-labelledby="share-title"><h2 class="share__title" id="share-title">Share this article</h2><ul class="share__list">';
+    foreach ($links as $network => $href) {
+        $html .= '<li><a class="share__link" href="' . e($href) . '" target="_blank" rel="noopener noreferrer">' . $network
+               . '<span class="visually-hidden"> (opens in a new tab)</span></a></li>';
+    }
+    $html .= '<li><a class="share__link" href="mailto:?subject=' . e(rawurlencode($title)) . '&amp;body=' . e(rawurlencode($title . "\n\n" . $link)) . '">Email</a></li>';
+    $html .= '<li><button class="share__link" type="button" data-copy-link="' . e($link) . '" hidden>Copy link</button></li>';
+    return $html . '</ul><p class="share__status visually-hidden" role="status" data-copy-status></p></aside>';
+}
+
+/** What to tell the person after saving a post ($before is the post before an edit). */
+function blog_save_message(int $id, ?array $before = null): string
+{
+    $post = db_row('SELECT Status, PublishedDate FROM BlogPosts WHERE BlogID = ?', [$id]) ?? ['Status' => 'Draft', 'PublishedDate' => null];
+    if (blog_is_scheduled($post)) {
+        return 'Saved. The post is scheduled: it appears on the website by itself on ' . date('j M Y \a\t H:i', strtotime((string) $post['PublishedDate'])) . '.';
+    }
+    if (blog_is_live($post) && ($before === null || !blog_is_live($before))) {
+        return 'Post published.';
+    }
+    return $before === null ? 'Draft saved. It is not on the website until it is published.' : 'Your changes have been saved.';
 }
 
 /**

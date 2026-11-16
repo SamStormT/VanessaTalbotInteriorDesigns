@@ -104,3 +104,24 @@ function is_active(string $path): bool
     $section = preg_replace('/\.php$/', '', $path);
     return $section !== 'index' && str_starts_with($current, $section . '/');
 }
+
+/**
+ * Full address of a page on this site, for links in emails and in links
+ * shared on social media. Uses APP_URL;
+ * only in development does it fall back to the address being browsed.
+ */
+function absolute_url(string $path): string
+{
+    return mail_origin() . url($path);
+}
+
+/** The site's origin (https://domain) for links in emails. See absolute_url(). */
+function mail_origin(): string
+{
+    $origin = APP_URL;
+    if ($origin === '' && APP_ENV === 'development') {
+        $https  = !empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off';
+        $origin = ($https ? 'https://' : 'http://') . ($_SERVER['HTTP_HOST'] ?? 'localhost');
+    }
+    return $origin;
+}

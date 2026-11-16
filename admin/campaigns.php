@@ -12,16 +12,17 @@ $statuses = campaign_statuses();
 $filter   = is_string($_GET['status'] ?? null) && isset($statuses[$_GET['status']]) ? $_GET['status'] : '';
 
 $rows = db_all(
-    "SELECT c.CampaignID, c.CampaignName, c.Subject, c.Status, c.SentDate, c.RecipientCount, c.CreatedDate, c.LastEditedDate,
+    "SELECT c.CampaignID, c.CampaignName, c.Subject, c.Status, c.SentDate, c.ScheduledDate, c.RecipientCount, c.CreatedDate, c.LastEditedDate,
             b.Title AS PostTitle,
             (SELECT MAX(t.SentDate) FROM CampaignTestSends t WHERE t.CampaignID = c.CampaignID AND t.Successful = 1) AS LastTest
      FROM NewsletterCampaigns c LEFT JOIN BlogPosts b ON b.BlogID = c.BlogID
      WHERE " . ($filter === '' ? "c.Status <> 'Archived'" : 'c.Status = ?') . '
-     ORDER BY FIELD(c.Status, \'Sending\', \'Ready\', \'Draft\', \'Sent\', \'Archived\'), COALESCE(c.SentDate, c.LastEditedDate, c.CreatedDate) DESC',
+     ORDER BY FIELD(c.Status, \'Sending\', \'Scheduled\', \'Ready\', \'Draft\', \'Sent\', \'Archived\'), COALESCE(c.SentDate, c.LastEditedDate, c.CreatedDate) DESC',
     $filter === '' ? [] : [$filter]
 );
 $counts   = array_column(db_all('SELECT Status, COUNT(*) AS Total FROM NewsletterCampaigns GROUP BY Status'), 'Total', 'Status');
 $audience = campaign_audience_count();
+$overdue  = campaign_overdue();
 
 $pageTitle = 'Newsletter Campaigns';
 $layout    = 'admin';
@@ -38,10 +39,14 @@ require_once INCLUDES_PATH . '/header.php';
 <?php endforeach; ?>
         </nav>
 <?php if (can('subscribers.create')): ?>
+        <a class="btn btn--outline btn--small" href="<?= e(url('admin/campaign-edit.php?roundup=1')) ?>">New round-up</a>
         <a class="btn btn--primary btn--small" href="<?= e(url('admin/campaign-edit.php')) ?>">New campaign</a>
 <?php endif; ?>
     </div>
 
+<?php foreach ($overdue as $late): ?>
+    <p class="admin-alert admin-alert--error" role="alert">"<?= e($late['CampaignName']) ?>" was scheduled for <?= e(cms_format_date($late['ScheduledDate'])) ?> but hasn't started, so the automatic sender isn't running. <a href="<?= e(url('admin/campaign-edit.php?id=' . (int) $late['CampaignID'])) ?>">Open it to send it now</a>.</p>
+<?php endforeach; ?>
     <p class="admin-help"><?= $audience ?> confirmed subscriber<?= $audience === 1 ? '' : 's' ?> would receive a campaign sent now. To turn a blog post into a newsletter, open the post and choose <strong>Create campaign from this post</strong>.</p>
 
 <?php if ($rows === []): ?>
@@ -63,7 +68,7 @@ require_once INCLUDES_PATH . '/header.php';
                 <tr>
                     <td><?= e($row['CampaignName']) ?><br><span class="admin-muted"><?= e($row['Subject']) ?><?= $row['PostTitle'] ? ' · from "' . e($row['PostTitle']) . '"' : '' ?></span></td>
                     <td><span class="admin-badge admin-badge--campaign-<?= e(strtolower($row['Status'])) ?>"><?= e($statuses[$row['Status']] ?? $row['Status']) ?></span></td>
-                    <td><?= $row['SentDate'] ? e(date('j M Y, H:i', strtotime($row['SentDate']))) . '<br><span class="admin-muted">' . (int) $row['RecipientCount'] . ' recipient' . ((int) $row['RecipientCount'] === 1 ? '' : 's') . '</span>' : '<span class="admin-muted">Not yet</span>' ?></td>
+                    <td><?= $row['SentDate'] ? e(date('j M Y, H:i', strtotime($row['SentDate']))) . '<br><span class="admin-muted">' . (int) $row['RecipientCount'] . ' recipient' . ((int) $row['RecipientCount'] === 1 ? '' : 's') . '</span>' : ($row['Status'] === 'Scheduled' ? 'Scheduled for<br>' . e(date('j M Y, H:i', strtotime((string) $row['ScheduledDate']))) : '<span class="admin-muted">Not yet</span>') ?></td>
                     <td><?= $row['LastTest'] ? e(date('j M Y, H:i', strtotime($row['LastTest']))) : '<span class="admin-muted">None</span>' ?></td>
                     <td class="admin-table__actions"><a class="btn btn--outline btn--small" href="<?= e(url('admin/campaign-edit.php?id=' . (int) $row['CampaignID'])) ?>">Open<span class="visually-hidden"> <?= e($row['CampaignName']) ?></span></a></td>
                 </tr>

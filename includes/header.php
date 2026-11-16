@@ -7,7 +7,14 @@
  *   $pageDescription  string  Meta description
  *   $layout           string  'public' (default) or 'admin'
  *   $noindex          bool    Keep this page out of search engines
- *   $pageImage        string  Image for link previews when shared (an uploads/ path)
+ *   $pageImage        string  Image for link previews when shared (an uploads/ path);
+ *                             the default sharing image is used when it is empty
+ *   $pageImageAlt     string  Description of that image
+ *   $pagePath         string  This page's own address, for search engines and sharing,
+ *                             for example 'blog/blog-post.php?slug=...'. Defaults to
+ *                             the page's file, without any ?filters
+ *   $pageType         string  'website' (default) or 'article' (a blog post)
+ *   $articleDate      string  Article only: date first published
  *   $activeNav        string  Admin only: sidebar item to highlight
  */
 
@@ -16,6 +23,26 @@ $pageDescription = $pageDescription ?? SITE_TAGLINE;
 $layout          = $layout ?? 'public';
 
 $fullTitle = $pageTitle !== '' ? $pageTitle . ' | ' . SITE_NAME : SITE_NAME . ' | ' . SITE_TAGLINE;
+
+// Sharing and search details for public pages. Full addresses need APP_URL
+// (the live https address), so without it these tags are left out.
+$share = null;
+if ($layout !== 'admin' && empty($noindex) && mail_origin() !== '') {
+    if (!isset($pagePath)) {
+        $shareScript = (string) ($_SERVER['SCRIPT_NAME'] ?? '');
+        $pagePath = ltrim(BASE_URL !== '' && str_starts_with($shareScript, BASE_URL) ? substr($shareScript, strlen(BASE_URL)) : $shareScript, '/');
+    }
+    $pagePath = $pagePath === 'index.php' ? '' : $pagePath;
+    $shareImage = !empty($pageImage) && link_is_safe((string) $pageImage)
+        ? ['url' => image_url((string) $pageImage, 'web'), 'alt' => (string) ($pageImageAlt ?? ''), 'width' => null, 'height' => null]
+        : (function_exists('site_share_image') ? site_share_image() : null);
+    $share = [
+        'url'   => absolute_url($pagePath),
+        'type'  => ($pageType ?? 'website') === 'article' ? 'article' : 'website',
+        'image' => $shareImage === null ? null : ['url' => mail_origin() . $shareImage['url']] + $shareImage,
+    ];
+    unset($shareScript, $shareImage);
+}
 
 // Signed-in staff see a bar and Edit buttons on the public website. Checked
 // here, before any output, because it may open their session.
@@ -37,14 +64,35 @@ $staff = $layout !== 'admin' && function_exists('staff_viewer') ? staff_viewer()
 <?php if ($layout === 'admin' || !empty($noindex)): ?>
     <meta name="robots" content="noindex, nofollow">
 <?php else: ?>
-    <meta property="og:type" content="website">
+<?php if ($share !== null): ?>
+    <link rel="canonical" href="<?= e($share['url']) ?>">
+    <meta property="og:type" content="<?= e($share['type']) ?>">
+    <meta property="og:url" content="<?= e($share['url']) ?>">
+    <meta property="og:locale" content="en_ZA">
     <meta property="og:site_name" content="<?= e(SITE_NAME) ?>">
-    <meta property="og:title" content="<?= e($fullTitle) ?>">
+    <meta property="og:title" content="<?= e($pageTitle !== '' ? $pageTitle : $fullTitle) ?>">
     <meta property="og:description" content="<?= e($pageDescription) ?>">
-<?php if (!empty($pageImage) && APP_URL !== '' && link_is_safe((string) $pageImage)): ?>
-    <meta property="og:image" content="<?= e(APP_URL . image_url((string) $pageImage, 'web')) ?>">
+<?php if ($share['image'] !== null): ?>
+    <meta property="og:image" content="<?= e($share['image']['url']) ?>">
+<?php if ($share['image']['width']): ?>
+    <meta property="og:image:width" content="<?= (int) $share['image']['width'] ?>">
+    <meta property="og:image:height" content="<?= (int) $share['image']['height'] ?>">
+<?php endif; ?>
+<?php if ($share['image']['alt'] !== ''): ?>
+    <meta property="og:image:alt" content="<?= e($share['image']['alt']) ?>">
+<?php endif; ?>
+    <meta name="twitter:card" content="summary_large_image">
+<?php endif; ?>
+<?php if ($share['type'] === 'article' && !empty($articleDate)): ?>
+    <meta property="article:published_time" content="<?= e(date('c', strtotime((string) $articleDate))) ?>">
 <?php endif; ?>
 <?php endif; ?>
+<?php endif; ?>
+
+    <link rel="icon" href="<?= e(url('favicon.ico')) ?>" sizes="48x48">
+    <link rel="icon" href="<?= e(asset('images/favicon.svg')) ?>" type="image/svg+xml">
+    <link rel="apple-touch-icon" href="<?= e(asset('images/apple-touch-icon.png')) ?>">
+    <link rel="manifest" href="<?= e(url('site.webmanifest')) ?>">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>

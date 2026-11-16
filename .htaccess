@@ -20,3 +20,14 @@ RedirectMatch 404 "(?i)/uploads/.*\.(php[0-9]?|phtml|phar|pl|py|cgi|sh|htaccess)
 
 # Original uploads are kept for re-processing, not for the public.
 RedirectMatch 404 "/uploads/originals/"
+
+# Search engines: /robots.txt and /sitemap.xml are written by PHP, so they
+# always match the published content and the live address (APP_URL).
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteRule ^robots\.txt$ robots.php [L]
+    RewriteRule ^sitemap\.xml$ sitemap.php [L]
+</IfModule>
+
+# The web app manifest (home-screen icon on phones).
+AddType application/manifest+json .webmanifest

@@ -125,6 +125,16 @@ function newsletter_confirm(string $token): string
 
     db_query('UPDATE Subscribers SET ConfirmedDate = NOW() WHERE SubscriberID = ? AND ConfirmedDate IS NULL', [$subscriber['SubscriberID']]);
     activity_log_visitor('newsletter_confirm', 'Subscribers', (int) $subscriber['SubscriberID']);
+
+    // The welcome email (Marketing → Welcome Email), sent after this page has
+    // loaded and only if it is switched on. A problem here never stops the
+    // confirmation itself.
+    try {
+        require_once INCLUDES_PATH . '/campaigns.php';
+        welcome_send_later((int) $subscriber['SubscriberID']);
+    } catch (Throwable $error) {
+        error_log('Welcome email not queued: ' . $error->getMessage());
+    }
     return 'confirmed';
 }
 

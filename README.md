@@ -63,7 +63,9 @@ Signed-in staff can edit every piece of website wording without a developer.
 
 **Email:** contact messages are emailed to the address in Website Settings, with Reply-To set to the visitor. Staff who forget their password can reset it from the sign-in page.
 
-**Newsletters:** Marketing → Newsletter Campaigns. Create a campaign from a published blog post, add an introduction, preview it, send yourself a test, mark it ready, then send. Only confirmed, subscribed people receive it, and every email has a one-click unsubscribe.
+**Newsletters:** Marketing → Newsletter Campaigns. Create a campaign from a published blog post (or **New round-up** for the newest four), add an introduction, preview it, send yourself a test, mark it ready, then send now or schedule it. Only confirmed, subscribed people receive it, and every email has a one-click unsubscribe. Marketing → Welcome Email sets the email new subscribers receive once they confirm (switched off until you turn it on).
+
+**Scheduling blog posts:** set **Publish date and time** to a date still to come and Status to Published. The post shows as Scheduled and appears on the website by itself at that time.
 
 Planned admin areas (placeholders today): Photography Products and Orders.
 
@@ -78,7 +80,7 @@ Planned admin areas (placeholders today): Photography Products and Orders.
 | Database | MariaDB 10.2.1 or newer |
 | Email | PHPMailer 6, installed with Composer |
 | Payments | PayFast (planned) |
-| Hosting | Xneelo Standard Hosting |
+| Hosting | To be decided (the domain stays with Xneelo). Needs PHP 8, MariaDB or MySQL, Apache-style `.htaccess` and ideally cron |
 | Version control | Git and GitHub |
 
 ---

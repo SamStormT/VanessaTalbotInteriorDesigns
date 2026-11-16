@@ -244,3 +244,27 @@ document.addEventListener('DOMContentLoaded', () => {
         if (event.target.closest('.edit-chip, .edit-here__link')) remember();
     });
 })();
+
+// ---------------------------------------------------------------------------
+// "Copy link" on blog articles: shown only where the browser can copy.
+// ---------------------------------------------------------------------------
+(() => {
+    const button = document.querySelector('[data-copy-link]');
+    if (!button || !navigator.clipboard) return;
+    const status = document.querySelector('[data-copy-status]');
+    button.hidden = false;
+    button.addEventListener('click', async () => {
+        try {
+            await navigator.clipboard.writeText(button.dataset.copyLink);
+            button.textContent = 'Link copied';
+            button.classList.add('is-copied');
+            if (status) status.textContent = 'Link copied.';
+            setTimeout(() => {
+                button.textContent = 'Copy link';
+                button.classList.remove('is-copied');
+            }, 2500);
+        } catch (error) {
+            if (status) status.textContent = 'The link could not be copied.';
+        }
+    });
+})();
