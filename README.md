@@ -65,7 +65,9 @@ Signed-in staff can edit every piece of website wording without a developer.
 
 **Newsletters:** Marketing → Newsletter Campaigns. Create a campaign from a published blog post (or **New round-up** for the newest four), add an introduction, preview it, send yourself a test, mark it ready, then send now or schedule it. Only confirmed, subscribed people receive it, and every email has a one-click unsubscribe. Marketing → Welcome Email sets the email new subscribers receive once they confirm (switched off until you turn it on).
 
-**Scheduling blog posts:** set **Publish date and time** to a date still to come and Status to Published. The post shows as Scheduled and appears on the website by itself at that time.
+**Writing a blog post:** type in the article box as you would in an email; the buttons above it add bold, links, headings, lists, quotes, pictures, coloured sections and buttons. Then choose **Save draft**, **Publish now** or **Schedule…** (it appears on the website by itself at that time). After publishing you are offered a newsletter made from it. Unsaved typing is kept in the browser and offered back if the page closes.
+
+**Other:** testimonials (with written permission) show on the home, service and project pages; a project photo can have a "before" photo for a before-and-after slider; visitors can book a consultation at `book-consultation.php`; and a WhatsApp number in Website Settings adds a "Chat on WhatsApp" button.
 
 Planned admin areas (placeholders today): Photography Products and Orders.
 

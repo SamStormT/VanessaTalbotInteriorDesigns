@@ -20,7 +20,9 @@
 | CMS editing | Ready | Every piece of public wording is editable; see `CONTENT_MAPPING.md`. Staff see Edit buttons on the website, can click any wording or picture to edit that exact field, and return to the page after saving. Website Content → Pages lists where every block is edited. Every edit is kept in History and can be undone (last 50 per item) |
 | Media Library | Ready | Drag and drop on every image field, library search and reuse, descriptions and captions |
 | Image optimisation | Ready | Every upload is resized, compressed and given a thumbnail; the original is kept privately |
-| Testimonials | Admin only | Can be managed, but no public page shows them yet |
+| Testimonials | Ready | Home, service and project pages, once published with the date of written permission |
+| Book a consultation | Ready | `book-consultation.php`; arrives as a Consultation enquiry |
+| WhatsApp button | Ready | Shows when a WhatsApp number is set in Website Settings |
 | Newsletter sign-up | Ready | Saved to Subscribers, confirmed by email, with unsubscribe |
 | Newsletter campaigns | Ready | Built from blog posts or as a round-up of the newest articles; preview, test, send now or schedule; batches with an hourly limit; one-click unsubscribe. Scheduled sending on time needs a scheduled task (cron) on the host |
 | Welcome email | Ready, switched off | Sent once when someone confirms. Vanessa reads the wording, sends a test, then switches it on |
@@ -98,7 +100,7 @@ Everything below can be changed in the admin area. Page Sections are listed by p
 
 ## 5. Before going public
 
-- [ ] Confirm the tagline style: "and" or "&", capitalised or not
+- [x] Tagline style: "The balance of art, science & nature in spaces" (from the branding document)
 - [ ] Decide whether the street address is ever shown
 - [ ] Decide how long to keep login attempts, activity logs, contact messages and IP addresses (POPIA)
 - [x] Favicon, sharing image, sitemap and robots file (replace the sharing picture and icon when the official logo arrives)
@@ -112,7 +114,7 @@ Everything below can be changed in the admin area. Page Sections are listed by p
 
 - **Database values:** `PortfolioCategory` and `EnquiryType` still store `Colour Psychology` internally. Admin and public forms display Colour & Design Psychology, and the web address stays `colour-psychology`.
 - **Menus:** Photography points to the portfolio gallery and Speaking to its service page. These need revisiting when the store is built.
-- **Article formatting:** simple marks inserted by a toolbar, not a visual word-processor; Preview shows the result. Tables and videos aren't supported.
+- **Article formatting:** the visual editor covers bold, italic, links, headings, lists, quotes, pictures, coloured sections, buttons and the newsletter "read more" point. Tables, videos, underlining and text colours are not supported. Pasting from Word keeps the words, not the fonts.
 - **Newsletters:** sending needs the campaign page open (or `database/send-campaigns.php` on a schedule). There is no scheduled sending, open or click tracking. Pictures in emails load from the live website, so they only appear once it's online.
 - **Sections:** new page sections are added by a developer. On service pages a new section appears automatically. On other pages, the order is set by the design.
 - **Editors and live content:** an Editor changing an already Published record changes the site immediately. Only new records wait for an Admin.

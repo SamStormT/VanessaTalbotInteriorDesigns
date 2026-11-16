@@ -146,6 +146,7 @@ require_once INCLUDES_PATH . '/header.php';
                 <?= content_eyebrow($section) ?>
                 <?= content_heading($section, 'form-title') ?>
                 <?= content_paragraphs($section['Introduction'], '', ed_section($section, 'Introduction')) ?>
+                <p class="form-switch">Would you like to book a consultation? <a href="<?= e(url('book-consultation.php')) ?>">Choose your preferred dates on the booking form</a>.</p>
                 <form class="newsletter__form contact-form" action="<?= e(url('contact.php')) ?>#contact-form" method="post" data-contact-form novalidate>
                     <?= csrf_field() ?>
 <?php if ($status !== null): ?>

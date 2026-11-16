@@ -159,6 +159,7 @@ function media_usage(string $path): array
         ['PageSections', 'Image', 'Page sections'],
         ['PortfolioProjects', 'FeaturedImage', 'Portfolio projects'],
         ['ProjectImages', 'ImagePath', 'Project galleries'],
+        ['ProjectImages', 'BeforeImage', 'Project galleries (before photos)'],
         ['Collaborators', 'Logo', 'Collaborators'],
         ['SpeakingEngagements', 'FeaturedImage', 'Speaking engagements'],
         ['Testimonials', 'Photo', 'Testimonials'],

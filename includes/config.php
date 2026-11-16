@@ -82,7 +82,7 @@ set_exception_handler(static function (Throwable $error): void {
 // Site identity
 // ---------------------------------------------------------------------------
 define('SITE_NAME', 'Vanessa Talbot Interior Designs');
-define('SITE_TAGLINE', 'The Balance of Art, Science and Nature in Spaces');
+define('SITE_TAGLINE', 'The balance of art, science & nature in spaces');
 
 // Leave empty when the site is served from the domain root (e.g. on Xneelo).
 // Set to '/subfolder' if served from a subdirectory locally.

@@ -242,6 +242,32 @@ function blog_share_links(array $post): string
     return $html . '</ul><p class="share__status visually-hidden" role="status" data-copy-status></p></aside>';
 }
 
+/**
+ * An Editor asks for a post to be published: every active person who can
+ * publish is emailed (after the page loads). Returns false when nobody can be.
+ */
+function blog_request_publishing(int $id): bool
+{
+    require_once INCLUDES_PATH . '/mail.php';
+    $post   = db_row('SELECT Title, Slug FROM BlogPosts WHERE BlogID = ?', [$id]);
+    $editor = current_admin();
+    $sent   = 0;
+    foreach (db_all("SELECT Email, Name, Surname, Role FROM AdminUsers WHERE Status = 'Active' AND AdminUserID <> ?", [(int) $editor['AdminUserID']]) as $person) {
+        if (!role_can((string) $person['Role'], 'blogs.publish')) {
+            continue;
+        }
+        mail_send_later((string) $person['Email'], 'blog-review', [
+            'title'      => (string) $post['Title'],
+            'editor'     => trim($editor['Name'] . ' ' . $editor['Surname']),
+            'adminUrl'   => absolute_url('admin/blog-edit.php?id=' . $id),
+            'previewUrl' => absolute_url('blog/blog-post.php?slug=' . $post['Slug']),
+        ], ['to_name' => trim($person['Name'] . ' ' . $person['Surname'])]);
+        $sent++;
+    }
+    activity_log('request_publish', 'BlogPosts', $id, $sent . ' Admin' . ($sent === 1 ? '' : 's') . ' emailed');
+    return $sent > 0;
+}
+
 /** What to tell the person after saving a post ($before is the post before an edit). */
 function blog_save_message(int $id, ?array $before = null): string
 {

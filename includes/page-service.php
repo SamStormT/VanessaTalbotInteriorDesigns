@@ -69,6 +69,8 @@ require_once INCLUDES_PATH . '/header.php';
         </div>
     </section>
 
+<?= content_testimonials_section(site_testimonials($serviceSlug), 'testimonials-title', '', 'section section--peach') ?>
+
 <?= hidden_blocks('service-' . $serviceSlug, $sections) ?>
 <?php $index = 0; foreach ($extra as $key => $section): ?>
     <?= content_items_section($section, 'section-' . $key, $index++ % 2 === 0, edit_block('service-' . $serviceSlug, (string) $key)) ?>

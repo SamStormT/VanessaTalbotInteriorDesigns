@@ -268,3 +268,18 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 })();
+
+// ---------------------------------------------------------------------------
+// Before-and-after sliders on project pages. Without this script the two
+// photos sit side by side. The slider is a real range control, so it works
+// by dragging, by touch, and with the arrow keys.
+// ---------------------------------------------------------------------------
+document.querySelectorAll('[data-compare]').forEach((figure) => {
+    const range = figure.querySelector('.compare__range');
+    if (!range) return;
+    const set = () => figure.style.setProperty('--compare', range.value + '%');
+    range.hidden = false;
+    figure.classList.add('is-enhanced');
+    range.addEventListener('input', set);
+    set();
+});

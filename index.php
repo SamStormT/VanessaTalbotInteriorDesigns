@@ -168,6 +168,12 @@ $tileTones  = ['green', 'gold', 'peach'];
     </section>
 <?php endif; ?>
 
+    <!-- Testimonials: the featured ones first. Shown once any are published with permission. -->
+<?= hidden_block('home', 'testimonials', $sections) ?>
+<?php if (isset($sections['testimonials'])): $testimonials = site_testimonials(); ?>
+<?= $testimonials === [] ? hidden_field_block('What clients say', 'no published testimonials yet', 'admin/testimonials.php', 'testimonials.view') : content_testimonials_section($testimonials, 'testimonials-title', edit_block('home', 'testimonials')) ?>
+<?php endif; ?>
+
     <!-- Latest blog -->
 <?= hidden_block('home', 'blog', $sections) ?>
 <?php if ($section = $sections['blog'] ?? null): ?>

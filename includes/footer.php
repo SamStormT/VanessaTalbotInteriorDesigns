@@ -14,6 +14,7 @@ if ($layout === 'admin'): ?>
 </div><!-- /.admin-main -->
 </div><!-- /.admin-shell -->
 <script src="<?= e(asset('js/admin.js')) ?>" defer></script>
+<script src="<?= e(asset('js/visual-editor.js')) ?>" defer></script>
 <?php else: ?>
 <footer class="site-footer">
     <?= edit_block('global', 'footer') ?>
@@ -62,6 +63,16 @@ if ($layout === 'admin'): ?>
         </div>
     </div>
 </footer>
+<?php
+// "Chat on WhatsApp", when a WhatsApp number is set in Website Settings. A local number
+// (082 …) is turned into the international form WhatsApp links need (27 82 …).
+$whatsApp = preg_replace('/[^0-9]/', '', (string) (site_settings()['WhatsApp'] ?? ''));
+if (strlen($whatsApp) === 10 && $whatsApp[0] === '0') {
+    $whatsApp = '27' . substr($whatsApp, 1);
+}
+if (strlen($whatsApp) >= 9): ?>
+<a class="whatsapp-button" href="https://wa.me/<?= e($whatsApp) ?>?text=<?= e(rawurlencode('Hello, I am getting in touch from your website.')) ?>" target="_blank" rel="noopener"<?= ed_setting('WhatsApp') ?>><?= icon('chat') ?><span class="whatsapp-button__text">Chat on WhatsApp</span><span class="visually-hidden"> (opens WhatsApp)</span></a>
+<?php endif; ?>
 <script src="<?= e(asset('js/main.js')) ?>" defer></script>
 <?php endif; ?>
 </body>

@@ -11,7 +11,13 @@ if ($project === null) {
     content_not_found();
 }
 
-$images = site_project_images((int) $project['ProjectID']);
+$images   = site_project_images((int) $project['ProjectID']);
+// Images with a "before" photo become before-and-after sliders, shown first.
+$compares = array_values(array_filter($images, static fn(array $i): bool => trim((string) ($i['BeforeImage'] ?? '')) !== ''));
+$images   = array_values(array_filter($images, static fn(array $i): bool => trim((string) ($i['BeforeImage'] ?? '')) === ''));
+$pageImage    = $project['FeaturedImage'] ?? '';
+$pageImageAlt = $project['FeaturedImageAlt'] ?? '';
+$pagePath     = 'portfolio/project.php?slug=' . $project['Slug'];
 
 $pageTitle       = ($project['MetaTitle'] ?? '') ?: $project['Title'];
 $pageDescription = ($project['MetaDescription'] ?? '') ?: SITE_TAGLINE;
@@ -34,6 +40,16 @@ require_once INCLUDES_PATH . '/header.php';
         </div>
     </section>
 
+<?php if ($compares): ?>
+    <section class="section" aria-label="Before and after">
+        <div class="container compare-list">
+<?php foreach ($compares as $image): ?>
+            <?= content_compare($image, ed_record('project_images', 'admin/project-image-edit.php', (int) $image['ImageID'], 'BeforeImage', 'portfolio.edit')) ?>
+<?php endforeach; ?>
+        </div>
+    </section>
+<?php endif; ?>
+
 <?php if ($images): ?>
     <section class="section section--peach" aria-label="Gallery">
         <div class="container">
@@ -50,6 +66,8 @@ require_once INCLUDES_PATH . '/header.php';
         </div>
     </section>
 <?php endif; ?>
+
+    <?= content_testimonials_section(site_testimonials(null, (int) $project['ProjectID'], 2), 'testimonials-title') ?>
 
 </main>
 <?php require_once INCLUDES_PATH . '/footer.php'; ?>

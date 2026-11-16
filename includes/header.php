@@ -15,6 +15,7 @@
  *                             the page's file, without any ?filters
  *   $pageType         string  'website' (default) or 'article' (a blog post)
  *   $articleDate      string  Article only: date first published
+ *   $structuredData   array   Extra schema.org data for this page (see includes/seo.php)
  *   $activeNav        string  Admin only: sidebar item to highlight
  */
 
@@ -83,6 +84,16 @@ $staff = $layout !== 'admin' && function_exists('staff_viewer') ? staff_viewer()
 <?php endif; ?>
     <meta name="twitter:card" content="summary_large_image">
 <?php endif; ?>
+<?php
+    // Structured data for search engines: the business on its main pages, and each article.
+    require_once INCLUDES_PATH . '/seo.php';
+    if (in_array($pagePath, ['', 'about.php', 'contact.php', 'book-consultation.php'], true)) {
+        echo '    ', seo_business() ? seo_script(seo_business()) : '';
+    }
+    if (isset($structuredData) && is_array($structuredData)) {
+        echo '    ', seo_script($structuredData);
+    }
+?>
 <?php if ($share['type'] === 'article' && !empty($articleDate)): ?>
     <meta property="article:published_time" content="<?= e(date('c', strtotime((string) $articleDate))) ?>">
 <?php endif; ?>

@@ -45,6 +45,7 @@ function page_map(): array
             'quote'        => ['Quote', [$home('Quote', 'FeaturedQuote')]],
             'services'     => ['Services overview', [$section('home', 'services', 'Heading and button'), ['admin', 'Service cards', 'admin/services.php', 'services.view']]],
             'portfolio'    => ['Portfolio highlights', [$section('home', 'portfolio', 'Heading and button'), $section('home', 'portfolio', 'Tiles and tile images', 'items')]],
+            'testimonials' => ['What clients say', [$section('home', 'testimonials', 'Heading'), ['admin', 'Testimonials', 'admin/testimonials.php', 'testimonials.view']]],
             'blog'         => ['Latest blog posts', [$section('home', 'blog', 'Heading and button'), ['admin', 'Blog posts', 'admin/blogs.php', 'blogs.view'], $section('home', 'blog-empty', 'Notice while there are no posts')]],
             'newsletter'   => ['Newsletter sign-up', [$section('home', 'newsletter')]],
             'contact-cta'  => ['Contact call to action', [$section('home', 'contact-cta', 'Wording and buttons'), $section('home', 'contact-cta', 'Client types', 'items')]],
@@ -128,6 +129,12 @@ function page_map(): array
 
     $map['project'] = ['title' => 'Portfolio: single project', 'path' => null, 'blocks' => [
         'project' => ['Project, images and gallery', [$projects]],
+    ]];
+
+    $map['consultation'] = ['title' => 'Book a consultation', 'path' => 'book-consultation.php', 'blocks' => [
+        'page-header' => ['Page header', [$section('consultation', 'page-header', 'Heading'), $section('consultation', 'page-header', 'Header image', 'Image')]],
+        'form'        => ['Booking form wording', [$section('consultation', 'form', 'Heading and introduction')]],
+        'next'        => ['What happens next', [$section('consultation', 'next', 'Heading'), $section('consultation', 'next', 'Steps', 'items')]],
     ]];
 
     $map['contact'] = ['title' => 'Contact', 'path' => 'contact.php', 'blocks' => [

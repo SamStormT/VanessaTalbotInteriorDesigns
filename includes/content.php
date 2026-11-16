@@ -102,7 +102,7 @@ function site_engagements(): array
 function site_settings(): array
 {
     return content_fetch('settings', static fn() => db_row(
-        'SELECT Tagline, Phone, Email, AddressLine1, AddressLine2, City, Province, PostalCode, Country, ShowAddress,
+        'SELECT Tagline, Phone, WhatsApp, Email, AddressLine1, AddressLine2, City, Province, PostalCode, Country, ShowAddress,
                 Facebook, Instagram, LinkedIn, Pinterest FROM WebsiteSettings WHERE SettingID = 1'
     ));
 }
@@ -406,4 +406,91 @@ function content_not_found(): never
          '<a class="text-link" href="', e(url('index.php')), '">Back to the home page</a></div></div></section></main>';
     require INCLUDES_PATH . '/footer.php';
     exit;
+}
+
+// ---------------------------------------------------------------------------
+// Testimonials: only Published ones with the date written permission was
+// given. For a service (its web address), a project, or (with neither) the
+// featured ones first.
+// ---------------------------------------------------------------------------
+
+function site_testimonials(?string $service = null, ?int $project = null, int $limit = 3): array
+{
+    $where  = ["Status = 'Published'", 'ConsentDate IS NOT NULL'];
+    $params = [];
+    if ($service !== null) {
+        $where[]  = 'Category = ?';
+        $params[] = $service;
+    }
+    if ($project !== null) {
+        $where[]  = 'ProjectID = ?';
+        $params[] = $project;
+    }
+    try {
+        return db_all(
+            'SELECT TestimonialID, Name, Company, Location, Testimonial, Photo, PhotoAlt FROM Testimonials WHERE ' . implode(' AND ', $where)
+            . ' ORDER BY IsFeatured DESC, DisplayOrder, TestimonialID DESC LIMIT ' . max(1, $limit),
+            $params
+        );
+    } catch (Throwable $error) {
+        return [];
+    }
+}
+
+/** One testimonial: the words, then who said it (with their photo or logo when there is one). */
+function content_testimonial(array $t): string
+{
+    $id    = (int) $t['TestimonialID'];
+    $who   = array_filter([trim((string) ($t['Company'] ?? '')), trim((string) ($t['Location'] ?? ''))]);
+    $photo = trim((string) ($t['Photo'] ?? ''));
+    return '<figure class="testimonial">'
+         . '<blockquote class="testimonial__quote"' . ed_record('testimonials', 'admin/testimonial-edit.php', $id, 'Testimonial', 'testimonials.edit') . '>' . content_paragraphs((string) $t['Testimonial']) . '</blockquote>'
+         . '<figcaption class="testimonial__by">'
+         . ($photo !== '' && link_is_safe($photo) ? '<img class="testimonial__photo" src="' . e(image_url($photo, 'thumb')) . '" alt="' . e($t['PhotoAlt'] ?? '') . '" width="56" height="56" loading="lazy"' . ed_record('testimonials', 'admin/testimonial-edit.php', $id, 'Photo', 'testimonials.edit') . '>' : '')
+         . '<span><strong' . ed_record('testimonials', 'admin/testimonial-edit.php', $id, 'Name', 'testimonials.edit') . '>' . e($t['Name']) . '</strong>'
+         . ($who ? '<span class="testimonial__detail">' . e(implode(', ', $who)) . '</span>' : '') . '</span>'
+         . '</figcaption></figure>';
+}
+
+/**
+ * A "What clients say" band, using the heading of the home page's
+ * testimonials section (edited under Page Sections), or nothing if there are
+ * no testimonials to show.
+ */
+function content_testimonials_section(array $testimonials, string $id, string $edit = '', string $class = 'section'): string
+{
+    if ($testimonials === []) {
+        return '';
+    }
+    $heading = site_sections('home')['testimonials'] ?? ['Eyebrow' => null, 'Heading' => null, 'Introduction' => null];
+    $items   = '';
+    foreach ($testimonials as $t) {
+        $items .= '<li>' . content_testimonial($t) . '</li>';
+    }
+    return '<section class="' . e($class) . ' testimonials"' . (trim((string) ($heading['Heading'] ?? '')) !== '' ? ' aria-labelledby="' . e($id) . '"' : ' aria-label="Testimonials"') . '>'
+         . $edit . '<div class="container">'
+         . (trim((string) ($heading['Heading'] ?? '')) !== '' ? content_section_header($heading, $id) : '')
+         . '<ul class="testimonials__list testimonials__list--' . min(3, count($testimonials)) . '">' . $items . '</ul></div></section>';
+}
+
+/**
+ * A before-and-after pair from a project gallery. Without JavaScript the two
+ * photos sit side by side, labelled; main.js turns it into a slider (drag,
+ * or use the arrow keys) that reveals more of one or the other.
+ */
+function content_compare(array $image, string $edit = ''): string
+{
+    $after   = (string) $image['ImagePath'];
+    $before  = (string) $image['BeforeImage'];
+    $caption = trim((string) ($image['Caption'] ?? ''));
+    $altText = static fn(string $when, ?string $alt): string => $when . (trim((string) $alt) !== '' ? ': ' . trim((string) $alt) : '');
+    return '<figure class="compare" data-compare' . $edit . '>'
+         . '<div class="compare__frame">'
+         . '<div class="compare__side compare__side--after"><img src="' . e(image_url($after, 'full')) . '" alt="' . e($altText('After', $image['AltText'] ?? '')) . '" loading="lazy"><span class="compare__label">After</span></div>'
+         . '<div class="compare__side compare__side--before"><img src="' . e(image_url($before, 'full')) . '" alt="' . e($altText('Before', $image['BeforeImageAlt'] ?? '')) . '" loading="lazy"><span class="compare__label">Before</span></div>'
+         . '<span class="compare__handle" aria-hidden="true"></span>'
+         . '<input class="compare__range" type="range" min="0" max="100" value="50" step="1" aria-label="Before and after: move to show more of the before photo (left) or the after photo (right)" hidden>'
+         . '</div>'
+         . ($caption !== '' ? '<figcaption>' . e($caption) . '</figcaption>' : '')
+         . '</figure>';
 }

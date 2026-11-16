@@ -1090,3 +1090,51 @@ SELECT 1, 0, 'Welcome, and thank you for subscribing', 'Hi {first_name},',
 FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM SchemaMigrations WHERE MigrationName = '016_sharing_and_scheduling');
 
 INSERT IGNORE INTO SchemaMigrations (MigrationName) VALUES ('016_sharing_and_scheduling');
+
+-- --------------------------------------------------------------------------
+-- 017: Before-and-after photos, testimonials on the website, the consultation
+-- booking page, and the brand's tagline style. A project image can have a
+-- "before" photo of the same view (shown as a slider). Wording runs once and
+-- only fills what is empty or still the original, so later edits are kept.
+-- --------------------------------------------------------------------------
+ALTER TABLE ProjectImages
+    ADD COLUMN IF NOT EXISTS BeforeImage VARCHAR(500) NULL AFTER Caption,
+    ADD COLUMN IF NOT EXISTS BeforeImageAlt VARCHAR(255) NULL AFTER BeforeImage;
+
+UPDATE WebsiteSettings SET Tagline = 'The balance of art, science & nature in spaces'
+WHERE SettingID = 1 AND Tagline = 'The Balance of Art, Science and Nature in Spaces'
+  AND NOT EXISTS (SELECT 1 FROM SchemaMigrations WHERE MigrationName = '017_consultations_testimonials');
+
+INSERT IGNORE INTO PageSections (PageKey, SectionKey, Eyebrow, Heading, Introduction, Body, ButtonText, ButtonLink, SecondaryButtonText, SecondaryButtonLink, DisplayOrder, Status)
+SELECT 'home', 'testimonials', 'Kind words', 'What clients say', NULL, NULL, NULL, NULL, NULL, NULL, 65, 'Published'
+FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM SchemaMigrations WHERE MigrationName = '017_consultations_testimonials');
+
+INSERT IGNORE INTO PageSections (PageKey, SectionKey, Eyebrow, Heading, Introduction, Body, ButtonText, ButtonLink, SecondaryButtonText, SecondaryButtonLink, DisplayOrder, Status)
+SELECT 'consultation', 'page-header', NULL, 'Book a consultation', 'Tell me a little about your space and the days that suit you, and I''ll be in touch to confirm a time.', NULL, NULL, NULL, NULL, NULL, 10, 'Published'
+FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM SchemaMigrations WHERE MigrationName = '017_consultations_testimonials');
+
+INSERT IGNORE INTO PageSections (PageKey, SectionKey, Eyebrow, Heading, Introduction, Body, ButtonText, ButtonLink, SecondaryButtonText, SecondaryButtonLink, DisplayOrder, Status)
+SELECT 'consultation', 'form', 'Your consultation', 'Tell me about your space', 'There''s no obligation: this simply helps me prepare and suggest a time.', NULL, NULL, NULL, NULL, NULL, 20, 'Published'
+FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM SchemaMigrations WHERE MigrationName = '017_consultations_testimonials');
+
+INSERT IGNORE INTO PageSections (PageKey, SectionKey, Eyebrow, Heading, Introduction, Body, ButtonText, ButtonLink, SecondaryButtonText, SecondaryButtonLink, DisplayOrder, Status)
+SELECT 'consultation', 'next', NULL, 'What happens next', NULL, NULL, NULL, NULL, NULL, NULL, 30, 'Published'
+FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM SchemaMigrations WHERE MigrationName = '017_consultations_testimonials');
+
+INSERT IGNORE INTO PageSectionItems (SectionID, ItemKey, Title, Text, Icon, Link, DisplayOrder, Status)
+SELECT s.SectionID, 'confirm', 'I confirm a time', 'I''ll reply to suggest a date and time from the ones you chose, or another that suits us both.', 'chat', NULL, 10, 'Published'
+FROM PageSections s WHERE s.PageKey = 'consultation' AND s.SectionKey = 'next' AND NOT EXISTS (SELECT 1 FROM SchemaMigrations WHERE MigrationName = '017_consultations_testimonials');
+
+INSERT IGNORE INTO PageSectionItems (SectionID, ItemKey, Title, Text, Icon, Link, DisplayOrder, Status)
+SELECT s.SectionID, 'meet', 'We meet', 'At your space, or online if that is easier. We talk about how you live and work, and what you would like the space to feel like.', 'leaf', NULL, 20, 'Published'
+FROM PageSections s WHERE s.PageKey = 'consultation' AND s.SectionKey = 'next' AND NOT EXISTS (SELECT 1 FROM SchemaMigrations WHERE MigrationName = '017_consultations_testimonials');
+
+INSERT IGNORE INTO PageSectionItems (SectionID, ItemKey, Title, Text, Icon, Link, DisplayOrder, Status)
+SELECT s.SectionID, 'ideas', 'You leave with ideas', 'Practical next steps you can act on, whether you go on to a full design or make the changes yourself.', 'sprout', NULL, 30, 'Published'
+FROM PageSections s WHERE s.PageKey = 'consultation' AND s.SectionKey = 'next' AND NOT EXISTS (SELECT 1 FROM SchemaMigrations WHERE MigrationName = '017_consultations_testimonials');
+
+UPDATE PageSections SET ButtonText = 'Book a consultation', ButtonLink = 'book-consultation.php'
+WHERE PageKey = 'service-consultations' AND SectionKey = 'closing' AND ButtonLink = 'contact.php?service=consultations'
+  AND NOT EXISTS (SELECT 1 FROM SchemaMigrations WHERE MigrationName = '017_consultations_testimonials');
+
+INSERT IGNORE INTO SchemaMigrations (MigrationName) VALUES ('017_consultations_testimonials');

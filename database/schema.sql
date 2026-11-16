@@ -732,7 +732,7 @@ CREATE TABLE IF NOT EXISTS MediaLibrary (
 -- content untouched on re-runs. Contact details stay empty until confirmed.
 -- ==========================================================================
 INSERT IGNORE INTO WebsiteSettings (SettingID, BusinessName, Tagline, Country)
-VALUES (1, 'Vanessa Talbot Interior Designs', 'The Balance of Art, Science and Nature in Spaces', 'South Africa');
+VALUES (1, 'Vanessa Talbot Interior Designs', 'The balance of art, science & nature in spaces', 'South Africa');
 
 INSERT IGNORE INTO HomePageContent (HomePageID) VALUES (1);
 

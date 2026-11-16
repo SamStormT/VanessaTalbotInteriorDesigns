@@ -363,7 +363,7 @@ document.querySelectorAll('form[data-confirm]').forEach((form) => {
             },
             button: () => {
                 const words = selected() || 'Book a consultation';
-                insertBlock('[[button ' + words + ' | contact.php]]', 9, 9 + words.length);
+                insertBlock('[[button ' + words + ' | book-consultation.php]]', 9, 9 + words.length);
             },
             section: () => {
                 const answer = (window.prompt('Section colour: peach, green, gold or white', 'peach') || 'peach').trim().toLowerCase();
@@ -413,6 +413,7 @@ document.querySelectorAll('form[data-confirm]').forEach((form) => {
         };
 
         toolbar.addEventListener('click', (event) => {
+            if (editor.dataset.mode === 'visual') return; // the visual editor handles it (visual-editor.js)
             const button = event.target.closest('[data-rich]');
             if (!button || !actions[button.dataset.rich]) return;
             if (button.dataset.rich !== 'preview' && previewButton.getAttribute('aria-pressed') === 'true') {
@@ -513,12 +514,15 @@ document.querySelectorAll('form[data-confirm]').forEach((form) => {
     if (!target) return;
 
     target.classList.add('is-pointed');
+    // Inside a closed "More options" group: open it.
+    const group = target.closest('details');
+    if (group) group.open = true;
 
     // After "load": the browser's own jump to the #anchor happens first and would undo the focus.
     const arrive = () => {
         target.scrollIntoView({ block: 'center' });
         // The first thing to type in, or for an image the "Choose from library" button.
-        const control = target.querySelector('textarea:not([hidden]), input:not([type="hidden"]):not(.visually-hidden), select, [data-media-library], a.btn');
+        const control = target.querySelector('[contenteditable="true"], textarea:not([hidden]), input:not([type="hidden"]):not(.visually-hidden), select, [data-media-library], a.btn');
         if (control) control.focus({ preventScroll: true });
     };
     if (document.readyState === 'complete') {
@@ -617,5 +621,91 @@ document.querySelectorAll('[data-count-for]').forEach((counter) => {
             try { sessionStorage.setItem('vt-return-pending', '1'); } catch (error) { /* ignore */ }
         });
         save.after(button);
+    });
+})();
+
+// ---------------------------------------------------------------------------
+// Unsaved work is kept in this browser while typing (forms marked
+// data-autosave). If the tab closes, the connection drops or the computer
+// restarts before saving, the next visit offers to put it back. The copy is
+// removed once the form has been saved.
+// ---------------------------------------------------------------------------
+(() => {
+    const KEEP_DAYS = 14;
+    document.querySelectorAll('form[data-autosave]').forEach((form) => {
+        const key = 'vt-draft:' + form.dataset.autosave;
+        const fields = () => [...form.elements].filter((el) => el.name && !['csrf_token', 'publish_action', 'schedule_at', '_delete'].includes(el.name)
+            && !['submit', 'button', 'file', 'reset'].includes(el.type));
+        const read = () => {
+            const data = {};
+            fields().forEach((el) => { data[el.name] = el.type === 'checkbox' ? (el.checked ? '1' : '') : el.value; });
+            return data;
+        };
+        const store = {
+            get: () => { try { return JSON.parse(localStorage.getItem(key) || 'null'); } catch (error) { return null; } },
+            set: (value) => { try { localStorage.setItem(key, JSON.stringify(value)); } catch (error) { /* storage full or blocked */ } },
+            drop: (name = key) => { try { localStorage.removeItem(name); } catch (error) { /* ignore */ } },
+        };
+
+        // Just saved successfully? Then the kept copy (of this form, or of the new post it was) is no longer needed.
+        try {
+            const sent = sessionStorage.getItem('vt-draft-sent');
+            if (sent) {
+                sessionStorage.removeItem('vt-draft-sent');
+                if (document.querySelector('.admin-alert--success') && !document.querySelector('.admin-form .admin-alert--error')) {
+                    store.drop(sent);
+                    store.drop();
+                }
+            }
+        } catch (error) { /* ignore */ }
+
+        const initial = JSON.stringify(read());
+        let timer = 0;
+        const save = () => {
+            const now = read();
+            if (JSON.stringify(now) === initial) store.drop();
+            else store.set({ time: Date.now(), data: now });
+        };
+        const later = () => { clearTimeout(timer); timer = setTimeout(save, 700); };
+        form.addEventListener('input', later);
+        form.addEventListener('change', later);
+        form.addEventListener('submit', () => {
+            save();
+            try { sessionStorage.setItem('vt-draft-sent', key); } catch (error) { /* ignore */ }
+        });
+
+        // Offer to put back a copy that differs from what is on screen.
+        const kept = store.get();
+        if (!kept || !kept.data) return;
+        if (Date.now() - kept.time > KEEP_DAYS * 86400000 || JSON.stringify(kept.data) === initial) {
+            store.drop();
+            return;
+        }
+        const when = new Date(kept.time).toLocaleString('en-ZA', { weekday: 'long', day: 'numeric', month: 'long', hour: '2-digit', minute: '2-digit' });
+        const bar = document.createElement('div');
+        bar.className = 'admin-alert admin-alert--error autosave-bar';
+        bar.setAttribute('role', 'alert');
+        bar.innerHTML = '<p>You have changes from <strong></strong> that were not saved.</p>'
+            + '<p class="autosave-bar__actions"><button type="button" class="btn btn--primary btn--small" data-restore>Put them back</button> '
+            + '<button type="button" class="btn btn--outline btn--small" data-discard>Discard them</button></p>';
+        bar.querySelector('strong').textContent = when;
+        form.before(bar);
+
+        bar.querySelector('[data-restore]').addEventListener('click', () => {
+            fields().forEach((el) => {
+                if (!(el.name in kept.data)) return;
+                if (el.type === 'checkbox') el.checked = kept.data[el.name] === '1';
+                else el.value = kept.data[el.name];
+                el.dispatchEvent(new Event('vt:restored'));
+                el.dispatchEvent(new Event('input', { bubbles: true }));
+            });
+            bar.className = 'admin-alert admin-alert--success autosave-bar';
+            bar.setAttribute('role', 'status');
+            bar.textContent = 'Your changes are back. Remember to save.';
+        });
+        bar.querySelector('[data-discard]').addEventListener('click', () => {
+            store.drop();
+            bar.remove();
+        });
     });
 })();

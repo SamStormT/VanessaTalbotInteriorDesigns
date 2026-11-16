@@ -9,7 +9,7 @@ declare(strict_types=1);
 return array (
   'settings' => 
   array (
-    'Tagline' => 'The Balance of Art, Science and Nature in Spaces',
+    'Tagline' => 'The balance of art, science & nature in spaces',
   ),
   'home' => 
   array (

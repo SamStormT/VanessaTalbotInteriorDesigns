@@ -13,7 +13,31 @@ require_once INCLUDES_PATH . '/media.php';
 
 function cms_module(string $key): array
 {
-    return cms_modules()[$key] ?? throw new InvalidArgumentException('Unknown CMS module.');
+    $module = cms_modules()[$key] ?? throw new InvalidArgumentException('Unknown CMS module.');
+    // Lists filled from the database, for example the services a testimonial can belong to.
+    foreach ($module['fields'] as $name => $field) {
+        if (isset($field['choices'])) {
+            $labels = cms_choices($field['choices']);
+            $module['fields'][$name]['options']       = array_map('strval', array_keys($labels));
+            $module['fields'][$name]['option_labels'] = $labels;
+        }
+    }
+    return $module;
+}
+
+/** Choices for a list field: value => label. */
+function cms_choices(string $source): array
+{
+    static $cache = [];
+    if (isset($cache[$source])) {
+        return $cache[$source];
+    }
+    $rows = match ($source) {
+        'services' => db_all('SELECT Slug AS Value, ServiceName AS Label FROM Services ORDER BY DisplayOrder, ServiceName'),
+        'projects' => db_all('SELECT ProjectID AS Value, Title AS Label FROM PortfolioProjects ORDER BY Title'),
+        default    => [],
+    };
+    return $cache[$source] = array_column($rows, 'Label', 'Value');
 }
 
 /** Can the current user change this field? */
@@ -461,11 +485,11 @@ function cms_rich_editor(string $attrs, string $value, int $rows = 18): string
            . '<div><dt>&gt; quote</dt><dd>A pull quote. Add a last line &gt; — Name for who said it.</dd></div>'
            . '<div><dt>[[image …]]</dt><dd>A picture from the Media Library, with an optional caption after |.</dd></div>'
            . '<div><dt>[[section green]] … [[/section]]</dt><dd>A highlighted block: peach, green, gold or white.</dd></div>'
-           . '<div><dt>[[button Words | page]]</dt><dd>A button, for example [[button Book a consultation | contact.php]].</dd></div>'
+           . '<div><dt>[[button Words | page]]</dt><dd>A button, for example [[button Book a consultation | book-consultation.php]].</dd></div>'
            . '<div><dt>[[more]]</dt><dd>Newsletters show the article up to this point, then a Read more button.</dd></div>'
            . '</dl></details>';
 
-    return '<div class="rich-editor" data-rich-editor data-preview-url="' . e(url('admin/rich-preview.php')) . '">' . $toolbar
+    return '<div class="rich-editor" data-rich-editor data-base="' . e(url('')) . '" data-preview-url="' . e(url('admin/rich-preview.php')) . '">' . $toolbar
          . '<textarea rows="' . $rows . '" ' . $attrs . '>' . e($value) . '</textarea>'
          . '<div class="rich-preview content-document rich-text" hidden aria-live="polite"></div>' . $guide . '</div>';
 }
@@ -505,11 +529,16 @@ function cms_render_form(array $module, array $row, array $errors, string $cance
     $restricted = false;
     foreach (cms_group_fields($module['fields']) as $group => $fields) {
         $controls = '';
+        $problem  = false;
         foreach ($fields as $name => $field) {
             if (!cms_field_editable($field)) {
                 $restricted = true;
                 continue;
             }
+            if (($field['form'] ?? true) === false) {
+                continue; // set by the screen's own buttons, for example Publish now
+            }
+            $problem = $problem || isset($errors[$name]);
             if ($posted) {
                 $value = $field['type'] === 'checkbox' ? (isset($_POST[$name]) ? '1' : '') : (is_string($_POST[$name] ?? null) ? $_POST[$name] : '');
             } else {
@@ -517,7 +546,12 @@ function cms_render_form(array $module, array $row, array $errors, string $cance
             }
             $controls .= cms_render_control($name, $field, $value, $errors[$name] ?? null);
         }
-        if ($controls !== '') {
+        if ($controls !== '' && in_array($group, $module['collapsed'] ?? [], true)) {
+            // Rarely needed fields, closed until opened (or until one needs correcting).
+            $html .= '<details class="admin-panel admin-more" id="group-' . e(preg_replace('/[^a-z0-9]+/', '-', strtolower($group))) . '"' . ($problem ? ' open' : '') . '>'
+                   . '<summary class="admin-panel__title">' . e($group) . '</summary>'
+                   . (isset($module['collapsed_help']) ? '<p class="admin-help">' . e($module['collapsed_help']) . '</p>' : '') . $controls . '</details>';
+        } elseif ($controls !== '') {
             $html .= '<fieldset class="admin-panel"><legend class="admin-panel__title">' . e($group) . '</legend>' . $controls . '</fieldset>';
         }
     }

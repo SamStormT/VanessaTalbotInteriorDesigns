@@ -189,3 +189,108 @@ function contact_submit(array $data): int
 
     return $id;
 }
+
+// ---------------------------------------------------------------------------
+// Consultation requests (book-consultation.php). Saved as a Contact Message of
+// type Consultation, with the choices set out at the top of the message, so
+// they arrive in the same inbox and admin list as every other enquiry.
+// ---------------------------------------------------------------------------
+
+/** Types of space a consultation can be about. */
+function consultation_spaces(): array
+{
+    return ['Home', 'Office or workspace', 'Boutique or shop', 'Hospitality or wellness venue', 'Special occasion or event', 'Something else'];
+}
+
+function consultation_formats(): array
+{
+    return ['visit' => 'At my space', 'online' => 'Online video call', 'either' => 'Either suits me'];
+}
+
+function consultation_times(): array
+{
+    return ['morning' => 'Morning', 'afternoon' => 'Afternoon', 'any' => 'Any time'];
+}
+
+/** A preferred date: YYYY-MM-DD from tomorrow to a year ahead. Returns [date or null, problem or null]. */
+function consultation_date(string $value, bool $required): array
+{
+    if ($value === '') {
+        return [null, $required ? 'Please choose a date that suits you.' : null];
+    }
+    $date = DateTime::createFromFormat('!Y-m-d', $value);
+    if ($date === false || $date->format('Y-m-d') !== $value) {
+        return [null, 'Please choose a date from the calendar.'];
+    }
+    if ($date < new DateTime('tomorrow') || $date > new DateTime('+1 year')) {
+        return [null, 'Please choose a date from tomorrow onwards, within the next year.'];
+    }
+    return [$date, null];
+}
+
+/**
+ * Check a consultation request. Returns [data for contact_submit(), errors],
+ * with errors keyed by form field name.
+ *
+ * @return array{0: array<string, mixed>, 1: array<string, string>}
+ */
+function consultation_validate(array $input, array $services): array
+{
+    $errors = [];
+    $space  = form_text($input, 'space');
+    $format = form_text($input, 'format');
+    $area   = form_text($input, 'area');
+    $notes  = form_multiline($input, 'notes');
+    $slug   = form_text($input, 'service');
+
+    if (!in_array($space, consultation_spaces(), true)) {
+        $errors['space'] = 'Please choose the type of space.';
+    }
+    if (!isset(consultation_formats()[$format])) {
+        $errors['format'] = 'Please choose where you would like to meet.';
+    }
+    if (mb_strlen($area) > 150) {
+        $errors['area'] = 'Please use 150 characters or fewer.';
+    }
+    if (mb_strlen($notes) > 3000) {
+        $errors['notes'] = 'Please keep this under 3,000 characters.';
+    }
+    $service = $slug === '' ? 'Not sure yet' : ($services[$slug] ?? null);
+    if ($service === null) {
+        $errors['service'] = 'Please choose one of the listed services.';
+    }
+
+    $choices = [];
+    foreach ([1 => true, 2 => false] as $n => $required) {
+        [$date, $problem] = consultation_date(form_text($input, 'date' . $n), $required);
+        $time = form_text($input, 'time' . $n);
+        if ($problem !== null) {
+            $errors['date' . $n] = $problem;
+        } elseif ($date !== null) {
+            $choices[$n] = $date->format('l j F Y') . ', ' . strtolower(consultation_times()[$time] ?? 'any time');
+        }
+    }
+
+    $place   = consultation_formats()[$format] ?? '';
+    $message = "Consultation request\n\n"
+             . 'Type of space: ' . $space . "\n"
+             . 'Service: ' . $service . "\n"
+             . 'Where: ' . $place . ($area !== '' ? ' (' . $area . ')' : '') . "\n"
+             . 'First choice: ' . ($choices[1] ?? '') . "\n"
+             . (isset($choices[2]) ? 'Second choice: ' . $choices[2] . "\n" : '')
+             . "\nAbout the space:\n" . ($notes !== '' ? $notes : '(nothing added)');
+
+    [$data, $contactErrors] = contact_validate([
+        'name'         => $input['name'] ?? '',
+        'surname'      => $input['surname'] ?? '',
+        'email'        => $input['email'] ?? '',
+        'phone'        => $input['phone'] ?? '',
+        'subject'      => 'Consultation request: ' . $space,
+        'message'      => $message,
+        'enquiry_type' => 'Consultation',
+        'newsletter'   => $input['newsletter'] ?? '',
+    ]);
+    unset($contactErrors['message'], $contactErrors['subject']);
+
+    return [$data, $contactErrors + $errors];
+}

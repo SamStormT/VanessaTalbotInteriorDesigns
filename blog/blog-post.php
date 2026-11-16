@@ -32,6 +32,10 @@ $pageImageAlt    = $post['FeaturedImageAlt'] ?? '';
 $pagePath        = 'blog/blog-post.php?slug=' . $post['Slug'];
 $pageType        = 'article';
 $articleDate     = $post['PublishedDate'];
+if (!$preview) {
+    require_once INCLUDES_PATH . '/seo.php';
+    $structuredData = seo_article($post);
+}
 $noindex         = $preview;
 
 $return = 'blog/blog-post.php?slug=' . $post['Slug'];

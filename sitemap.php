@@ -20,7 +20,7 @@ if (mail_origin() === '') {
 
 /** @var array<int, array{0: string, 1: ?string}> $pages  [address, last changed] */
 $pages = [];
-foreach (['', 'about.php', 'services.php', 'portfolio.php', 'blog.php', 'contact.php'] as $page) {
+foreach (['', 'about.php', 'services.php', 'portfolio.php', 'blog.php', 'contact.php', 'book-consultation.php'] as $page) {
     $pages[] = [$page, null];
 }
 

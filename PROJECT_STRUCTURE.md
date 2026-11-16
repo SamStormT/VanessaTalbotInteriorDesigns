@@ -26,6 +26,7 @@ Stack: HTML5, CSS3, JavaScript, PHP 8, MariaDB, PHPMailer (installed with Compos
 ├── speaking.php               Redirects to services/speaking-engagements.php
 ├── photography.php            Redirects to the photography gallery until the store exists
 ├── blog.php                   Blog: all articles, ?category=slug, ?q=search, pages of 9
+├── book-consultation.php      Book a consultation (saved as a Consultation contact message)
 ├── sitemap.php                sitemap.xml for search engines (served at /sitemap.xml)
 ├── robots.php                 robots.txt (served at /robots.txt); open to search engines only in production
 ├── scheduled-tasks.php        Starts scheduled newsletters; for web-based cron, needs ?key=CRON_KEY
