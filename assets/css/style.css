@@ -200,6 +200,8 @@ h3 { font-size: var(--fs-h3); }
     line-height: 1.2;
     color: var(--color-accent-text);
 }
+/* The script font's ampersand sits above the other letters: lower it onto their line. */
+.tagline__amp { display: inline-block; transform: translateY(0.18em); }
 blockquote { margin: 0; }
 
 p { margin: 0 0 var(--space-md); }

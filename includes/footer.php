@@ -21,7 +21,7 @@ if ($layout === 'admin'): ?>
     <div class="container site-footer__inner">
         <div class="site-footer__brand">
             <p class="brand"><?= brand_logo('light') ?></p>
-            <p class="tagline site-footer__tagline"<?= ed_setting('Tagline') ?>><?= e(site_tagline()) ?></p>
+            <p class="tagline site-footer__tagline"<?= ed_setting('Tagline') ?>><?= tagline_html() ?></p>
             <p class="site-footer__about"<?= ed_section($footerContent ?: null, 'Introduction') ?>><?= e($footerContent['Introduction'] ?? '') ?></p>
         </div>
 

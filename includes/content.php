@@ -42,6 +42,15 @@ function site_tagline(): string
 }
 
 /**
+ * The tagline as HTML for the script font. Its "&" is drawn above the line of
+ * the other letters, so it is wrapped to be lowered onto the baseline.
+ */
+function tagline_html(): string
+{
+    return str_replace('&amp;', '<span class="tagline__amp">&amp;</span>', e(site_tagline()));
+}
+
+/**
  * The picture shown when a page without its own image is shared on social
  * media or WhatsApp: the one chosen in Website Settings, otherwise the
  * built-in assets/images/share-default.jpg. Read separately (not through

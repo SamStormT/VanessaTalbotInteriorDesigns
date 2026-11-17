@@ -30,7 +30,7 @@ require_once INCLUDES_PATH . '/header.php';
                 </ol>
             </nav>
             <h1 id="page-title"<?= ed_section($sections['page-header'] ?? null, 'Heading') ?>><?= e($sections['page-header']['Heading'] ?? '') ?></h1>
-            <p class="tagline page-hero__tagline"<?= ed_setting('Tagline') ?>><?= e(site_tagline()) ?></p>
+            <p class="tagline page-hero__tagline"<?= ed_setting('Tagline') ?>><?= tagline_html() ?></p>
         </div>
     </section>
 

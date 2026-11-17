@@ -33,7 +33,7 @@ $tileTones  = ['green', 'gold', 'peach'];
             <div class="hero__content">
                 <?php if (!empty($home['HeroEyebrow'])): ?><p class="eyebrow"<?= ed_home('HeroEyebrow') ?>><?= e($home['HeroEyebrow']) ?></p><?php endif; ?>
                 <h1 id="hero-title" class="display-title hero__title<?= mb_strlen((string) ($home['HeroTitle'] ?? '')) > 24 ? ' hero__title--long' : '' ?>"<?= ed_home('HeroTitle') ?>><?= e($home['HeroTitle'] ?? '') ?></h1>
-                <p class="tagline hero__tagline"<?= ed_setting('Tagline') ?>><?= e(site_tagline()) ?></p>
+                <p class="tagline hero__tagline"<?= ed_setting('Tagline') ?>><?= tagline_html() ?></p>
                 <p class="hero__lead"<?= ed_home('HeroSubtitle') ?>><?= e($home['HeroSubtitle'] ?? '') ?></p>
                 <div class="btn-group">
                     <?= content_link($home['CTA1Text'] ?? '', $home['CTA1Link'] ?? '', 'btn btn--primary', '', ed_home('CTA1Text')) ?>

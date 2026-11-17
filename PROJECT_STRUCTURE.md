@@ -224,6 +224,8 @@ cms_record_list_page('testimonials');     // or cms_record_edit_page(), or cms_s
 | Subheadings | Open Sans SemiBold | `--font-subheading`, `h3`–`h6` | n/a |
 | Body text, forms | Open Sans | `--font-body` | n/a |
 
+The tagline is printed with `tagline_html()` (includes/content.php), which wraps the "&" in `.tagline__amp` so it can be lowered onto the line: Allison draws its ampersand higher than the other letters. Check this again when the licensed Bayshore font is added; it may not be needed.
+
 John Mayer and Bayshore need web-licensed `.woff2` files. Put them in `assets/fonts/` as `john-mayer.woff2` and `bayshore.woff2`, then uncomment the `@font-face` block in `style.css`.
 
 ## Logo
