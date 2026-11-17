@@ -21,6 +21,11 @@ $included = content_lines($service['IncludedItems']);
 $pageTitle       = ($service['MetaTitle'] ?? '') ?: $service['ServiceName'];
 $pageDescription = ($service['MetaDescription'] ?? '') ?: (($service['ShortDescription'] ?? '') ?: SITE_TAGLINE);
 
+// For search engines and AI assistants: the service, and where it sits in the site.
+require_once INCLUDES_PATH . '/seo.php';
+$structuredData            = seo_service($service);
+$GLOBALS['vt_breadcrumbs'] = [['Home', 'index.php'], ['Services', 'services.php'], [$service['ServiceName'], null]];
+
 require_once INCLUDES_PATH . '/header.php';
 ?>
 <main id="main-content">

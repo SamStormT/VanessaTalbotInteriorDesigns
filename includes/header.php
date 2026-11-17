@@ -57,6 +57,18 @@ $staff = $layout !== 'admin' && function_exists('staff_viewer') ? staff_viewer()
     <title><?= e($fullTitle) ?></title>
     <meta name="description" content="<?= e($pageDescription) ?>">
     <meta name="theme-color" content="#243A39">
+<?php
+// Google Search Console and Bing Webmaster Tools ownership checks (Website
+// Settings → Search engines and AI assistants), on public pages only.
+if ($layout !== 'admin' && function_exists('site_search_settings')) {
+    foreach (['google-site-verification' => 'GoogleVerification', 'msvalidate.01' => 'BingVerification'] as $tag => $field) {
+        $code = trim((string) (site_search_settings()[$field] ?? ''));
+        if ($code !== '' && preg_match('/^[A-Za-z0-9_\-]{6,100}$/', $code)) {
+            echo '    <meta name="', $tag, '" content="', e($code), '">', "\n";
+        }
+    }
+}
+?>
 <?php if ($layout === 'admin'): ?>
     <meta name="csrf-token" content="<?= e(csrf_token()) ?>">
     <meta name="media-upload-url" content="<?= e(url('admin/media-upload.php')) ?>">
@@ -86,10 +98,18 @@ $staff = $layout !== 'admin' && function_exists('staff_viewer') ? staff_viewer()
     <meta name="twitter:card" content="summary_large_image">
 <?php endif; ?>
 <?php
-    // Structured data for search engines: the business on its main pages, and each article.
+    // Structured data for search engines and AI assistants (includes/seo.php): the
+    // business on its main pages, the website on the home page, the designer on
+    // About, and whatever the page adds itself (an article or a service).
     require_once INCLUDES_PATH . '/seo.php';
     if (in_array($pagePath, ['', 'about.php', 'contact.php', 'book-consultation.php'], true)) {
-        echo '    ', seo_business() ? seo_script(seo_business()) : '';
+        echo '    ', seo_script(seo_business());
+    }
+    if ($pagePath === '') {
+        echo '    ', seo_script(seo_website());
+    }
+    if ($pagePath === 'about.php') {
+        echo '    ', seo_script(seo_person());
     }
     if (isset($structuredData) && is_array($structuredData)) {
         echo '    ', seo_script($structuredData);

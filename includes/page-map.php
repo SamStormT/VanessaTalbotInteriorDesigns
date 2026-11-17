@@ -90,7 +90,7 @@ function page_map(): array
     }
 
     $map['portfolio'] = ['title' => 'Portfolio', 'path' => 'portfolio.php', 'blocks' => [
-        'page-header' => ['Page header', [$section('portfolio', 'page-header', 'Heading'), $section('portfolio', 'page-header', 'Header image', 'Image')]],
+        'page-header' => ['Page header', [$section('portfolio', 'page-header', 'Heading'), $section('portfolio', 'page-header', 'Header image', 'Image'), $section('portfolio', 'seo', 'Search engine details')]],
         'categories'  => ['Categories', [$section('portfolio', 'categories', 'Heading'), $section('portfolio', 'categories', 'Tiles and tile images', 'items')]],
         'featured'    => ['Featured projects', [$section('portfolio', 'featured', 'Heading'), $projects]],
         'closing'     => ['Closing call to action', [$section('portfolio', 'closing')]],
@@ -104,7 +104,7 @@ function page_map(): array
     ];
     foreach ($categories as $key => [$title, $path, $list]) {
         $map[$key] = ['title' => $title, 'path' => $path, 'blocks' => [
-            'page-header' => ['Page header', [$section($key, 'page-header', 'Heading'), $section($key, 'page-header', 'Header image', 'Image')]],
+            'page-header' => ['Page header', [$section($key, 'page-header', 'Heading'), $section($key, 'page-header', 'Header image', 'Image'), $section($key, 'seo', 'Search engine details')]],
             'intro'       => ['Introduction', [$section($key, 'intro')]],
             'list'        => [$key === 'portfolio-collaborators' ? 'Collaborators' : 'Projects', [$list, $section($key, 'empty', 'Notice while empty')]],
             'closing'     => ['Closing call to action', [$section($key, 'closing')]],
@@ -112,7 +112,7 @@ function page_map(): array
     }
 
     $map['blog'] = ['title' => 'Blog', 'path' => 'blog.php', 'blocks' => [
-        'page-header' => ['Page header', [$section('blog', 'page-header', 'Heading'), $section('blog', 'page-header', 'Header image', 'Image')]],
+        'page-header' => ['Page header', [$section('blog', 'page-header', 'Heading'), $section('blog', 'page-header', 'Header image', 'Image'), $section('blog', 'seo', 'Search engine details')]],
         'posts'       => ['Articles, categories and search', [
             ['admin', 'Blog posts', 'admin/blogs.php', 'blogs.view'],
             ['admin', 'Categories', 'admin/blog-categories.php', 'blogs.view'],
@@ -132,19 +132,20 @@ function page_map(): array
     ]];
 
     $map['consultation'] = ['title' => 'Book a consultation', 'path' => 'book-consultation.php', 'blocks' => [
-        'page-header' => ['Page header', [$section('consultation', 'page-header', 'Heading'), $section('consultation', 'page-header', 'Header image', 'Image')]],
+        'page-header' => ['Page header', [$section('consultation', 'page-header', 'Heading'), $section('consultation', 'page-header', 'Header image', 'Image'), $section('consultation', 'seo', 'Search engine details')]],
         'form'        => ['Booking form wording', [$section('consultation', 'form', 'Heading and introduction')]],
         'next'        => ['What happens next', [$section('consultation', 'next', 'Heading'), $section('consultation', 'next', 'Steps', 'items')]],
     ]];
 
     $map['contact'] = ['title' => 'Contact', 'path' => 'contact.php', 'blocks' => [
-        'page-header' => ['Page header', [$section('contact', 'page-header', 'Heading'), $section('contact', 'page-header', 'Header image', 'Image')]],
+        'page-header' => ['Page header', [$section('contact', 'page-header', 'Heading'), $section('contact', 'page-header', 'Header image', 'Image'), $section('contact', 'seo', 'Search engine details')]],
         'get-in-touch' => ['Contact details, location and enquiry form', [
             $section('contact', 'details', 'Contact details wording'),
             $setting('Phone and email', 'Phone'),
             $setting('Social links', 'Facebook'),
             $section('contact', 'location', 'Location wording'),
             $setting('Address', 'AddressLine1'),
+            $setting('Where you work', 'ServiceAreas'),
             $section('contact', 'form', 'Form wording'),
             $setting('Where messages go', 'EnquiryEmail'),
         ]],

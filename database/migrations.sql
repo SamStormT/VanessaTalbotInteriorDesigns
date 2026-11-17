@@ -1151,3 +1151,62 @@ WHERE s.PageKey = 'consultation' AND s.SectionKey = 'next' AND i.ItemKey = 'meet
   AND NOT EXISTS (SELECT 1 FROM SchemaMigrations WHERE MigrationName = '018_booking_area');
 
 INSERT IGNORE INTO SchemaMigrations (MigrationName) VALUES ('018_booking_area');
+
+-- --------------------------------------------------------------------------
+-- 019: Search engines and AI assistants (SEO and GEO). Where the business
+-- works, the designer's name and title (for "who is behind this"), a short
+-- bio for articles, whether AI companies may train on the site's text and
+-- photos (off by default; AI search tools are always allowed), the Google and
+-- Bing verification codes, and search wording for the pages that had none.
+-- Starting wording runs once and only fills what is empty.
+-- --------------------------------------------------------------------------
+ALTER TABLE WebsiteSettings
+    ADD COLUMN IF NOT EXISTS ServiceAreas TEXT NULL COMMENT 'One place or arrangement per line',
+    ADD COLUMN IF NOT EXISTS OwnerName VARCHAR(150) NULL,
+    ADD COLUMN IF NOT EXISTS OwnerTitle VARCHAR(150) NULL,
+    ADD COLUMN IF NOT EXISTS AllowAITraining TINYINT(1) NOT NULL DEFAULT 0,
+    ADD COLUMN IF NOT EXISTS GoogleVerification VARCHAR(100) NULL,
+    ADD COLUMN IF NOT EXISTS BingVerification VARCHAR(100) NULL;
+
+ALTER TABLE AboutContent
+    ADD COLUMN IF NOT EXISTS ShortBio VARCHAR(500) NULL;
+
+UPDATE WebsiteSettings SET
+    ServiceAreas = COALESCE(ServiceAreas, 'Pietermaritzburg and the KwaZulu-Natal Midlands\nOnline consultations across South Africa\nInternational projects by arrangement (travel costs are covered by the client)'),
+    OwnerName    = COALESCE(OwnerName, 'Vanessa Talbot'),
+    OwnerTitle   = COALESCE(OwnerTitle, 'Interior designer')
+WHERE SettingID = 1 AND NOT EXISTS (SELECT 1 FROM SchemaMigrations WHERE MigrationName = '019_search_and_ai');
+
+INSERT IGNORE INTO PageSections (PageKey, SectionKey, Eyebrow, Heading, Introduction, Body, ButtonText, ButtonLink, SecondaryButtonText, SecondaryButtonLink, DisplayOrder, Status)
+SELECT 'portfolio', 'seo', NULL, NULL, 'Interior design projects by Vanessa Talbot in Pietermaritzburg and the KwaZulu-Natal Midlands: biophilic interiors, colour-led spaces and photography.', NULL, NULL, NULL, NULL, NULL, 1, 'Published'
+FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM SchemaMigrations WHERE MigrationName = '019_search_and_ai');
+
+INSERT IGNORE INTO PageSections (PageKey, SectionKey, Eyebrow, Heading, Introduction, Body, ButtonText, ButtonLink, SecondaryButtonText, SecondaryButtonLink, DisplayOrder, Status)
+SELECT 'portfolio-biophilic-interior-design', 'seo', NULL, NULL, 'Biophilic interior design projects: homes and workplaces brought closer to nature with plants, natural materials and light, in KwaZulu-Natal and beyond.', NULL, NULL, NULL, NULL, NULL, 1, 'Published'
+FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM SchemaMigrations WHERE MigrationName = '019_search_and_ai');
+
+INSERT IGNORE INTO PageSections (PageKey, SectionKey, Eyebrow, Heading, Introduction, Body, ButtonText, ButtonLink, SecondaryButtonText, SecondaryButtonLink, DisplayOrder, Status)
+SELECT 'portfolio-colour-psychology', 'seo', NULL, NULL, 'Colour and design psychology projects: spaces planned around how colour, light and layout make people feel.', NULL, NULL, NULL, NULL, NULL, 1, 'Published'
+FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM SchemaMigrations WHERE MigrationName = '019_search_and_ai');
+
+INSERT IGNORE INTO PageSections (PageKey, SectionKey, Eyebrow, Heading, Introduction, Body, ButtonText, ButtonLink, SecondaryButtonText, SecondaryButtonLink, DisplayOrder, Status)
+SELECT 'portfolio-photography-gallery', 'seo', NULL, NULL, 'Nature and interior photography by Vanessa Talbot, from the KwaZulu-Natal Midlands and further afield.', NULL, NULL, NULL, NULL, NULL, 1, 'Published'
+FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM SchemaMigrations WHERE MigrationName = '019_search_and_ai');
+
+INSERT IGNORE INTO PageSections (PageKey, SectionKey, Eyebrow, Heading, Introduction, Body, ButtonText, ButtonLink, SecondaryButtonText, SecondaryButtonLink, DisplayOrder, Status)
+SELECT 'portfolio-collaborators', 'seo', NULL, NULL, 'The landscapers, makers and specialists Vanessa Talbot Interior Designs works with.', NULL, NULL, NULL, NULL, NULL, 1, 'Published'
+FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM SchemaMigrations WHERE MigrationName = '019_search_and_ai');
+
+INSERT IGNORE INTO PageSections (PageKey, SectionKey, Eyebrow, Heading, Introduction, Body, ButtonText, ButtonLink, SecondaryButtonText, SecondaryButtonLink, DisplayOrder, Status)
+SELECT 'blog', 'seo', NULL, NULL, 'Practical ideas on biophilic design, colour and design psychology and wellbeing at home and at work, from interior designer Vanessa Talbot.', NULL, NULL, NULL, NULL, NULL, 1, 'Published'
+FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM SchemaMigrations WHERE MigrationName = '019_search_and_ai');
+
+INSERT IGNORE INTO PageSections (PageKey, SectionKey, Eyebrow, Heading, Introduction, Body, ButtonText, ButtonLink, SecondaryButtonText, SecondaryButtonLink, DisplayOrder, Status)
+SELECT 'contact', 'seo', NULL, NULL, 'Contact Vanessa Talbot Interior Designs in Pietermaritzburg: in person in the KZN Midlands, online across South Africa, and further afield by arrangement.', NULL, NULL, NULL, NULL, NULL, 1, 'Published'
+FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM SchemaMigrations WHERE MigrationName = '019_search_and_ai');
+
+INSERT IGNORE INTO PageSections (PageKey, SectionKey, Eyebrow, Heading, Introduction, Body, ButtonText, ButtonLink, SecondaryButtonText, SecondaryButtonLink, DisplayOrder, Status)
+SELECT 'consultation', 'seo', NULL, 'Book an interior design consultation', 'Book a consultation with interior designer Vanessa Talbot: tell her about your space and the days that suit you, in Pietermaritzburg or online.', NULL, NULL, NULL, NULL, NULL, 1, 'Published'
+FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM SchemaMigrations WHERE MigrationName = '019_search_and_ai');
+
+INSERT IGNORE INTO SchemaMigrations (MigrationName) VALUES ('019_search_and_ai');

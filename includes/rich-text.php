@@ -368,7 +368,7 @@ function rich_image(string $path, string $caption, string $mode): string
     $caption = $caption !== '' ? $caption : (string) ($row['Caption'] ?? '');
 
     if ($mode === 'web') {
-        return '<figure class="rich-figure"><img src="' . e(image_url($path, 'web')) . '" alt="' . e($alt) . '" loading="lazy">'
+        return '<figure class="rich-figure"><img src="' . e(image_url($path, 'web')) . '"' . image_srcset($path, '(max-width: 800px) 100vw, 760px') . ' alt="' . e($alt) . '" loading="lazy">'
              . ($caption !== '' ? '<figcaption>' . e($caption) . '</figcaption>' : '') . '</figure>';
     }
     require_once INCLUDES_PATH . '/mail.php';

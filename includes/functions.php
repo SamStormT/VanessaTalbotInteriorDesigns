@@ -125,3 +125,25 @@ function mail_origin(): string
     }
     return $origin;
 }
+
+/**
+ * srcset and sizes attributes for an uploaded image, so phones download the
+ * small or medium copy made at upload (400 and 1200 pixels wide) instead of
+ * the largest. Empty for images without those copies. $sizes says roughly
+ * how wide the image is shown on the page.
+ */
+function image_srcset(string $path, string $sizes = '(max-width: 700px) 100vw, (max-width: 1100px) 50vw, 600px'): string
+{
+    $set = [];
+    foreach (['thumb' => 400, 'web' => 1200] as $size => $width) {
+        $variant = (string) preg_replace('/(\.[A-Za-z0-9]+)$/', '-' . $size . '$1', $path);
+        if ($variant !== $path && is_file(ROOT_PATH . '/' . $variant)) {
+            $set[] = url($variant) . ' ' . $width . 'w';
+        }
+    }
+    if ($set === []) {
+        return '';
+    }
+    $set[] = url($path) . ' 1920w';
+    return ' srcset="' . e(implode(', ', $set)) . '" sizes="' . e($sizes) . '"';
+}

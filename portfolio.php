@@ -9,8 +9,7 @@ $sections = site_sections('portfolio');
 $header   = $sections['page-header'] ?? [];
 $featured = site_projects(null, true);
 
-$pageTitle       = $header['Heading'] ?? '';
-$pageDescription = ($header['Introduction'] ?? '') ?: SITE_TAGLINE;
+[$pageTitle, $pageDescription] = content_seo($sections, (string) ($header['Heading'] ?? ''), (string) ($header['Introduction'] ?? ''));
 
 $tones = ['green', 'gold', 'peach', 'light'];
 

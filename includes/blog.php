@@ -243,6 +243,39 @@ function blog_share_links(array $post): string
 }
 
 /**
+ * "About the author" under an article. When the designer wrote it (the
+ * author's name matches Website Settings → Designer's name): her portrait,
+ * name, job title, short bio and a link to the About page, which tells
+ * readers, search engines and AI assistants who is behind the advice.
+ * Anyone else: just their name.
+ */
+function blog_author_box(array $post): string
+{
+    $author = trim((string) ($post['AuthorName'] ?? ''));
+    if ($author === '') {
+        return '';
+    }
+    require_once INCLUDES_PATH . '/seo.php';
+    $search = site_search_settings();
+    $owner  = trim((string) ($search['OwnerName'] ?? ''));
+    if ($owner === '' || strcasecmp($author, $owner) !== 0) {
+        return '<aside class="author-box author-box--simple" aria-label="About the author"><p>Written by <strong>' . e($author) . '</strong></p></aside>';
+    }
+    $about    = site_about();
+    $portrait = trim((string) ($about['PortraitImage'] ?? ''));
+    $bio      = seo_short_bio();
+    $title    = trim((string) ($search['OwnerTitle'] ?? ''));
+    $first    = explode(' ', $owner)[0];
+    return '<aside class="author-box" aria-labelledby="author-title">'
+         . ($portrait !== '' && link_is_safe($portrait) ? '<img class="author-box__photo" src="' . e(image_url($portrait, 'thumb')) . '" alt="' . e($about['PortraitImageAlt'] ?? $owner) . '" width="96" height="96" loading="lazy"' . ed_about('PortraitImage') . '>' : '')
+         . '<div class="author-box__text"><p class="author-box__label">About the author</p>'
+         . '<h2 class="author-box__name" id="author-title"' . ed_setting('OwnerName') . '>' . e($owner) . '</h2>'
+         . ($title !== '' ? '<p class="author-box__title"' . ed_setting('OwnerTitle') . '>' . e($title) . '</p>' : '')
+         . ($bio !== '' ? '<p' . ed_about('ShortBio') . '>' . e($bio) . '</p>' : '')
+         . '<a class="text-link" href="' . e(url('about.php')) . '">More about ' . e($first) . '</a></div></aside>';
+}
+
+/**
  * An Editor asks for a post to be published: every active person who can
  * publish is emailed (after the page loads). Returns false when nobody can be.
  */

@@ -560,6 +560,8 @@ function cms_render_form(array $module, array $row, array $errors, string $cance
         $html .= '<p class="admin-help">Publishing status and web addresses can only be changed by an Admin.</p>';
     }
 
+    $html .= cms_seo_panel($module, $posted ? array_merge($row, array_filter($_POST, 'is_string')) : $row);
+
     return $html . '<div class="admin-actions"><button class="btn btn--primary" type="submit">Save changes</button>'
                  . '<a class="btn btn--outline" href="' . e($cancelUrl) . '">Cancel</a></div></form>';
 }
@@ -621,4 +623,53 @@ function cms_placeholder_page(string $permission, string $title, string $table, 
          admin_empty_state($title . ' is coming soon', 'This screen will be built in a later phase.', $icon),
          '</main>';
     require INCLUDES_PATH . '/footer.php';
+}
+
+// ---------------------------------------------------------------------------
+// "How it may look in Google": a live preview of the search result, and a
+// short checklist in plain words, on the edit screens of blog posts,
+// services, projects, the home and About pages and each page's search
+// engine section. Filled in as you type by admin.js; this says which fields
+// to read.
+// ---------------------------------------------------------------------------
+
+function cms_seo_config(array $module, array $row): ?array
+{
+    require_once INCLUDES_PATH . '/content.php';
+    $config = $module['seo'] ?? match ($module['table']) {
+        'BlogPosts'         => ['title' => ['MetaTitle', 'Title'], 'description' => ['MetaDescription', 'Excerpt'], 'path' => 'blog/blog-post.php?slug={Slug}', 'slugFrom' => 'Title', 'content' => 'Content', 'image' => 'FeaturedImage', 'alt' => 'FeaturedImageAlt', 'category' => 'CategoryID', 'minWords' => 300, 'heading' => true, 'link' => true],
+        'Services'          => ['title' => ['MetaTitle', 'ServiceName'], 'description' => ['MetaDescription', 'ShortDescription', 'Lead'], 'path' => 'services/{Slug}.php', 'content' => 'FullDescription', 'image' => 'FeaturedImage', 'alt' => 'FeaturedImageAlt', 'minWords' => 150],
+        'PortfolioProjects' => ['title' => ['MetaTitle', 'Title'], 'description' => ['MetaDescription', 'Description'], 'path' => 'portfolio/project.php?slug={Slug}', 'slugFrom' => 'Title', 'content' => 'Description', 'image' => 'FeaturedImage', 'alt' => 'FeaturedImageAlt', 'minWords' => 80],
+        'HomePageContent'   => ['title' => ['MetaTitle'], 'description' => ['MetaDescription'], 'path' => '', 'image' => 'HeroImage', 'alt' => 'HeroImageAlt', 'home' => true],
+        'AboutContent'      => ['title' => ['MetaTitle'], 'description' => ['MetaDescription'], 'path' => 'about.php', 'content' => 'Biography', 'image' => 'PortraitImage', 'alt' => 'PortraitImageAlt', 'minWords' => 150, 'fallbackTitle' => (string) (site_sections('about')['page-header']['Heading'] ?? 'About')],
+        default             => null,
+    };
+    if ($config === null) {
+        return null;
+    }
+    $fields = array_merge($config['title'], $config['description'], array_filter([$config['content'] ?? null, $config['image'] ?? null, $config['alt'] ?? null, $config['category'] ?? null, 'Slug', $config['slugFrom'] ?? null]));
+    $values = [];
+    foreach (array_unique($fields) as $field) {
+        $values[$field] = (string) ($row[$field] ?? '');
+    }
+    return $config + [
+        'site'        => absolute_url(''),
+        'brand'       => SITE_NAME,
+        'tagline'     => site_tagline() ?: SITE_TAGLINE,
+        'values'      => $values, // for fields this person can't edit, so aren't on the form
+    ];
+}
+
+function cms_seo_panel(array $module, array $row): string
+{
+    $config = cms_seo_config($module, $row);
+    if ($config === null) {
+        return '';
+    }
+    return '<section class="admin-panel seo-check" data-seo="' . e(json_encode($config, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE)) . '" aria-labelledby="seo-check-title">'
+         . '<h2 class="admin-panel__title" id="seo-check-title">How it may look in Google</h2>'
+         . '<div class="seo-check__preview" aria-hidden="true"><p class="seo-check__site"></p><p class="seo-check__title"></p><p class="seo-check__description"></p></div>'
+         . '<h3 class="seo-check__subtitle">Checklist</h3><ul class="seo-check__list" aria-live="polite"></ul>'
+         . '<p class="admin-help">A guide, not rules: nothing here stops you saving. Search results change the wording slightly as they see fit.</p>'
+         . '</section>';
 }

@@ -269,8 +269,9 @@ function content_frame(string $class, ?string $image, ?string $alt, string $deco
         // Staff can still click the empty frame to add a picture.
         return '<div class="' . e($class) . '"' . ($edit === '' ? ' aria-hidden="true"' : $edit) . '>' . $decoration . '</div>';
     }
-    $src = link_is_safe((string) $image) ? image_url((string) $image, $size) : '#';
-    return '<div class="' . e($class) . '"' . $edit . '><img src="' . e($src) . '" alt="' . e($alt) . '"' . ($size === 'full' ? '' : ' loading="lazy"') . '></div>';
+    $safe = link_is_safe((string) $image);
+    $src  = $safe ? image_url((string) $image, $size) : '#';
+    return '<div class="' . e($class) . '"' . $edit . '><img src="' . e($src) . '"' . ($safe ? image_srcset((string) $image) : '') . ' alt="' . e($alt) . '"' . ($size === 'full' ? '' : ' loading="lazy"') . '></div>';
 }
 
 /**
@@ -287,7 +288,7 @@ function content_hero_open(array $header, string $edit = ''): string
              . ($at !== '' ? '<span class="page-hero__image-spot"' . $at . '>' . botanical('botanical page-hero__botanical') . '</span>' : botanical('botanical page-hero__botanical'));
     }
     return '<section class="page-hero page-hero--image" aria-labelledby="page-title">' . $edit
-         . '<img class="page-hero__image" src="' . e(image_url($image, 'full')) . '" alt="' . e($header['ImageAlt'] ?? '') . '"' . $at . '>';
+         . '<img class="page-hero__image" src="' . e(image_url($image, 'full')) . '"' . image_srcset($image, '100vw') . ' alt="' . e($header['ImageAlt'] ?? '') . '"' . $at . '>';
 }
 
 /**
@@ -303,6 +304,8 @@ function content_page_hero(array $header, array $crumbs, string $edit = '', stri
     }
     $heading = (string) ($header['Heading'] ?? '');
     $intro   = trim((string) ($header['Introduction'] ?? ''));
+    // The same trail for search engines (printed in the footer, see seo_breadcrumbs()).
+    $GLOBALS['vt_breadcrumbs'] = array_merge([['Home', 'index.php']], $crumbs, [[$heading, null]]);
     if (!empty($header['SectionID'])) {
         $headingEdit = ed_section($header, 'Heading');
         $introEdit   = ed_section($header, 'Introduction');
@@ -486,11 +489,57 @@ function content_compare(array $image, string $edit = ''): string
     $altText = static fn(string $when, ?string $alt): string => $when . (trim((string) $alt) !== '' ? ': ' . trim((string) $alt) : '');
     return '<figure class="compare" data-compare' . $edit . '>'
          . '<div class="compare__frame">'
-         . '<div class="compare__side compare__side--after"><img src="' . e(image_url($after, 'full')) . '" alt="' . e($altText('After', $image['AltText'] ?? '')) . '" loading="lazy"><span class="compare__label">After</span></div>'
-         . '<div class="compare__side compare__side--before"><img src="' . e(image_url($before, 'full')) . '" alt="' . e($altText('Before', $image['BeforeImageAlt'] ?? '')) . '" loading="lazy"><span class="compare__label">Before</span></div>'
+         . '<div class="compare__side compare__side--after"><img src="' . e(image_url($after, 'full')) . '"' . image_srcset($after, '(max-width: 1000px) 100vw, 960px') . ' alt="' . e($altText('After', $image['AltText'] ?? '')) . '" loading="lazy"><span class="compare__label">After</span></div>'
+         . '<div class="compare__side compare__side--before"><img src="' . e(image_url($before, 'full')) . '"' . image_srcset($before, '(max-width: 1000px) 100vw, 960px') . ' alt="' . e($altText('Before', $image['BeforeImageAlt'] ?? '')) . '" loading="lazy"><span class="compare__label">Before</span></div>'
          . '<span class="compare__handle" aria-hidden="true"></span>'
          . '<input class="compare__range" type="range" min="0" max="100" value="50" step="1" aria-label="Before and after: move to show more of the before photo (left) or the after photo (right)" hidden>'
          . '</div>'
          . ($caption !== '' ? '<figcaption>' . e($caption) . '</figcaption>' : '')
          . '</figure>';
+}
+
+// ---------------------------------------------------------------------------
+// Search engines and AI assistants
+// ---------------------------------------------------------------------------
+
+/**
+ * Search and AI settings from Website Settings: where the business works,
+ * the designer's name and title, AI training permission and verification
+ * codes. Read separately (not through content_fetch) so a database that
+ * hasn't been updated yet can't switch the page to fallback text.
+ */
+function site_search_settings(): array
+{
+    static $settings = null;
+    if ($settings !== null) {
+        return $settings;
+    }
+    try {
+        $settings = db_row('SELECT ServiceAreas, OwnerName, OwnerTitle, AllowAITraining, GoogleVerification, BingVerification FROM WebsiteSettings WHERE SettingID = 1') ?? [];
+    } catch (Throwable $error) {
+        $settings = [];
+    }
+    return $settings;
+}
+
+/** Where the business works, one line each. */
+function site_service_areas(): array
+{
+    return content_lines(site_search_settings()['ServiceAreas'] ?? null);
+}
+
+/**
+ * A page's search title and description: its "Search engines" section
+ * (Page Sections → this page → seo) when filled in, otherwise the given
+ * fallbacks (usually the page heading and introduction).
+ *
+ * @return array{0: string, 1: string}
+ */
+function content_seo(array $sections, string $title, string $description): array
+{
+    $seo = $sections['seo'] ?? [];
+    return [
+        trim((string) ($seo['Heading'] ?? '')) ?: $title,
+        trim((string) ($seo['Introduction'] ?? '')) ?: ($description !== '' ? $description : SITE_TAGLINE),
+    ];
 }

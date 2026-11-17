@@ -14,6 +14,7 @@ $pageDescription = ($sections['seo']['Introduction'] ?? '') ?: SITE_TAGLINE;
 
 $tones = ['green', 'peach', 'gold'];
 
+$GLOBALS['vt_breadcrumbs'] = [['Home', 'index.php'], ['Services', null]]; // for search engines, as shown below
 require_once INCLUDES_PATH . '/header.php';
 ?>
 <main id="main-content">

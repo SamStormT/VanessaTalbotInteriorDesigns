@@ -87,8 +87,7 @@ $social = array_filter([
     'Pinterest' => $settings['Pinterest'] ?? '',
 ]);
 
-$pageTitle       = $header['Heading'] ?? '';
-$pageDescription = ($header['Introduction'] ?? '') ?: SITE_TAGLINE;
+[$pageTitle, $pageDescription] = content_seo($sections, (string) ($header['Heading'] ?? ''), (string) ($header['Introduction'] ?? ''));
 
 require_once INCLUDES_PATH . '/header.php';
 ?>
@@ -135,6 +134,13 @@ require_once INCLUDES_PATH . '/header.php';
 <?php endforeach; ?>
                         <?= e(implode(', ', $place)) ?><?= $postal !== '' ? ' ' . e($postal) : '' ?>
                     </address>
+<?php endif; ?>
+<?php if ($areas = site_service_areas()): ?>
+                    <ul class="check-list contact-areas" aria-label="Where we work">
+<?php foreach ($areas as $area): ?>
+                        <li<?= ed_setting('ServiceAreas') ?>><?= icon('check') ?><span><?= e($area) ?></span></li>
+<?php endforeach; ?>
+                    </ul>
 <?php endif; ?>
                 </div>
 <?php endif; ?>
@@ -211,6 +217,7 @@ require_once INCLUDES_PATH . '/header.php';
         <div class="container">
             <?= content_section_header($section, 'faq-title') ?>
             <div class="faq">
+<?php require_once INCLUDES_PATH . '/seo.php'; echo seo_script(seo_faq($section['items'])); // the questions and answers, for search engines and AI assistants ?>
 <?php foreach ($section['items'] as $item): ?>
                 <details class="faq__item">
                     <summary<?= ed_item($item, 'Title') ?>><?= e($item['Title']) ?></summary>

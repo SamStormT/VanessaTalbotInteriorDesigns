@@ -27,6 +27,7 @@
 | Newsletter campaigns | Ready | Built from blog posts or as a round-up of the newest articles; preview, test, send now or schedule; batches with an hourly limit; one-click unsubscribe. Scheduled sending on time needs a scheduled task (cron) on the host |
 | Welcome email | Ready, switched off | Sent once when someone confirms. Vanessa reads the wording, sends a test, then switches it on |
 | Search and sharing | Ready | Favicon, home-screen icon, sharing picture, page addresses and sharing tags, `sitemap.xml`, `robots.txt`. Needs `APP_URL` on the live site |
+| SEO and GEO | Ready | Search wording on every page, Google preview on edit screens, structured data (business, Vanessa, services, articles, breadcrumbs, FAQ), author box, category pages, `/llms.txt`, AI crawler rules, speed settings, Search health screen. Works fully once live |
 | Email delivery | **Partly verified** | Login to Xneelo's mail server succeeds with the `.env` settings. Delivery to real inboxes, and the DNS records that keep mail out of spam, still to check |
 | Project documents | Protected | `.htaccess` returns 404 for every `.md` file, tested on Apache |
 | Blog | Ready | Articles, categories, search, featured post, draft preview, scheduled publishing, share links; in the main menu. Shows "first articles are on their way" until posts are published |
@@ -104,7 +105,12 @@ Everything below can be changed in the admin area. Page Sections are listed by p
 - [ ] Decide whether the street address is ever shown
 - [ ] Decide how long to keep login attempts, activity logs, contact messages and IP addresses (POPIA)
 - [x] Favicon, sharing image, sitemap and robots file (replace the sharing picture and icon when the official logo arrives)
-- [ ] Submit `sitemap.xml` in Google Search Console after launch
+- [ ] Submit `sitemap.xml` in Google Search Console after launch (paste the Search Console code in Website Settings first)
+- [ ] Bing Webmaster Tools: add the site (it can import from Search Console); paste its code in Website Settings
+- [ ] Google Business Profile: category "Interior designer", areas served, photos, and ask clients for reviews
+- [ ] Same business name, phone and email on Instagram, Facebook, LinkedIn, Pinterest, Houzz and directories
+- [ ] Open Marketing → Search health and work through the "To improve" items
+- [ ] Check the live site with Google's Rich Results Test
 - [ ] Cookie notice, if analytics is added, and update the Privacy Policy to match
 - [ ] Real-device testing on phones, plus Safari and Firefox, including a real drag and drop upload
 - [ ] Screen reader and keyboard review

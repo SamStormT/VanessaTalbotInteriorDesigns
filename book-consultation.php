@@ -78,8 +78,7 @@ $maxDate = date('Y-m-d', strtotime('+1 year'));
 $phone = trim((string) ($settings['Phone'] ?? ''));
 $email = trim((string) ($settings['Email'] ?? ''));
 
-$pageTitle       = $header['Heading'] ?? 'Book a consultation';
-$pageDescription = ($header['Introduction'] ?? '') ?: SITE_TAGLINE;
+[$pageTitle, $pageDescription] = content_seo($sections, (string) ($header['Heading'] ?? 'Book a consultation'), (string) ($header['Introduction'] ?? ''));
 
 require_once INCLUDES_PATH . '/header.php';
 ?>

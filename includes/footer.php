@@ -73,6 +73,13 @@ if (strlen($whatsApp) === 10 && $whatsApp[0] === '0') {
 if (strlen($whatsApp) >= 9): ?>
 <a class="whatsapp-button" href="https://wa.me/<?= e($whatsApp) ?>?text=<?= e(rawurlencode('Hello, I am getting in touch from your website.')) ?>" target="_blank" rel="noopener"<?= ed_setting('WhatsApp') ?>><?= icon('chat') ?><span class="whatsapp-button__text">Chat on WhatsApp</span><span class="visually-hidden"> (opens WhatsApp)</span></a>
 <?php endif; ?>
+<?php
+// The breadcrumb trail, for search engines (pages with a page header or their own breadcrumb).
+if (!empty($GLOBALS['vt_breadcrumbs']) && count($GLOBALS['vt_breadcrumbs']) > 1 && empty($noindex) && mail_origin() !== '') {
+    require_once INCLUDES_PATH . '/seo.php';
+    echo seo_script(seo_breadcrumbs($GLOBALS['vt_breadcrumbs']));
+}
+?>
 <script src="<?= e(asset('js/main.js')) ?>" defer></script>
 <?php endif; ?>
 </body>

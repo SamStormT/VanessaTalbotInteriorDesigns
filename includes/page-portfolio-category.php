@@ -10,8 +10,7 @@ $sections = site_sections($portfolioPage);
 $header   = $sections['page-header'] ?? [];
 $projects = site_projects($portfolioCategory);
 
-$pageTitle       = $header['Heading'] ?? '';
-$pageDescription = ($header['Introduction'] ?? '') ?: SITE_TAGLINE;
+[$pageTitle, $pageDescription] = content_seo($sections, (string) ($header['Heading'] ?? ''), (string) ($header['Introduction'] ?? ''));
 
 require_once INCLUDES_PATH . '/header.php';
 ?>

@@ -14,6 +14,7 @@ $engagements    = site_engagements();
 $pageTitle       = ($about['MetaTitle'] ?? '') ?: ($sections['page-header']['Heading'] ?? '');
 $pageDescription = ($about['MetaDescription'] ?? '') ?: SITE_TAGLINE;
 
+$GLOBALS['vt_breadcrumbs'] = [['Home', 'index.php'], ['About', null]]; // for search engines, as shown below
 require_once INCLUDES_PATH . '/header.php';
 ?>
 <main id="main-content">

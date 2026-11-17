@@ -16,6 +16,20 @@ if ($row === null) {
 
 // The image fields appear only on sections that show an image on the website.
 $module = cms_section_module($row['PageKey'], $row['SectionKey']);
+if ($row['SectionKey'] === 'seo') {
+    require_once INCLUDES_PATH . '/content.php';
+    // The search preview: Heading is the title and Introduction the description; left empty,
+    // the page uses its own heading and introduction.
+    $page   = page_map()[$row['PageKey']] ?? null;
+    $header = site_sections((string) $row['PageKey'])['page-header'] ?? [];
+    $module['seo'] = [
+        'title'               => ['Heading'],
+        'description'         => ['Introduction'],
+        'path'                => (string) ($page['path'] ?? ''),
+        'fallbackTitle'       => (string) ($header['Heading'] ?? ''),
+        'fallbackDescription' => (string) ($header['Introduction'] ?? ''),
+    ];
+}
 
 $self   = url('admin/section-edit.php?id=' . $id);
 $list   = url('admin/page-sections.php');

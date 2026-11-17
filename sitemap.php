@@ -40,6 +40,11 @@ if (site_collaborators() !== []) {
     $pages[] = ['portfolio/collaborators.php', null];
 }
 
+foreach (blog_categories() as $category) {
+    if ((int) $category['PostCount'] > 0) {
+        $pages[] = ['blog.php?category=' . rawurlencode((string) $category['Slug']), null];
+    }
+}
 foreach (blog_sitemap_posts() as $post) {
     $pages[] = ['blog/blog-post.php?slug=' . rawurlencode((string) $post['Slug']), $post['UpdatedDate'] ?? $post['PublishedDate']];
 }

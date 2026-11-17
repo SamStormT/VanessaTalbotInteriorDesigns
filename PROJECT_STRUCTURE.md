@@ -28,7 +28,8 @@ Stack: HTML5, CSS3, JavaScript, PHP 8, MariaDB, PHPMailer (installed with Compos
 ├── blog.php                   Blog: all articles, ?category=slug, ?q=search, pages of 9
 ├── book-consultation.php      Book a consultation (saved as a Consultation contact message)
 ├── sitemap.php                sitemap.xml for search engines (served at /sitemap.xml)
-├── robots.php                 robots.txt (served at /robots.txt); open to search engines only in production
+├── robots.php                 robots.txt (served at /robots.txt); open to search engines only in production; asks AI training crawlers to stay away
+├── llms.php                   llms.txt (served at /llms.txt): a plain summary of the business for AI assistants
 ├── scheduled-tasks.php        Starts scheduled newsletters; for web-based cron, needs ?key=CRON_KEY
 ├── favicon.ico, site.webmanifest   Browser and phone home-screen icons (artwork in assets/images/)
 │
@@ -80,6 +81,7 @@ Stack: HTML5, CSS3, JavaScript, PHP 8, MariaDB, PHPMailer (installed with Compos
 │   ├── rich-preview.php                             Article editor's Preview button (JSON)
 │   ├── welcome-email.php                            Welcome email: wording, preview, test, on/off
 │   ├── media-describe.php                           Adds a picture's description from the article editor (JSON)
+│   ├── search-health.php                            Search health: search wording, picture descriptions, articles, set-up
 │   ├── history.php                                  History and undo for any edited record
 │   ├── blogs.php, blog-edit.php                     Blog posts: list, write, edit (blog-create.php redirects)
 │   ├── blog-categories.php, blog-category-edit.php  Blog categories

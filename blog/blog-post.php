@@ -40,6 +40,10 @@ $noindex         = $preview;
 
 $return = 'blog/blog-post.php?slug=' . $post['Slug'];
 
+$GLOBALS['vt_breadcrumbs'] = array_merge([['Home', 'index.php'], ['Blog', 'blog.php']],
+    $post['CategoryName'] ? [[$post['CategoryName'], 'blog.php?category=' . rawurlencode((string) $post['CategorySlug'])]] : [],
+    [[$post['Title'], null]]);
+
 require_once INCLUDES_PATH . '/header.php';
 ?>
 <main id="main-content">
@@ -85,6 +89,7 @@ require_once INCLUDES_PATH . '/header.php';
                 </div>
 <?php if (!$preview): ?>
                 <?= blog_share_links($post) ?>
+                <?= blog_author_box($post) ?>
 <?php endif; ?>
                 <p class="blog-post__back"><a class="text-link" href="<?= e(url('blog.php')) ?>"><?= icon('arrow', 'icon icon--inline icon--flip') ?> All articles</a></p>
             </div>

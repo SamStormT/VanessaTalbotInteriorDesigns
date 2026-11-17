@@ -67,6 +67,8 @@ Signed-in staff can edit every piece of website wording without a developer.
 
 **Writing a blog post:** type in the article box as you would in an email; the buttons above it add bold, links, headings, lists, quotes, pictures, coloured sections and buttons. **Picture** lets you drag in or upload a photo (it is saved to the Media Library) or pick one already there, then describe it and add a caption. Then choose **Save draft**, **Publish now** or **Schedule…** (it appears on the website by itself at that time). After publishing you are offered a newsletter made from it. Unsaved typing is kept in the browser and offered back if the page closes.
 
+**Being found (SEO and GEO):** Marketing → **Search health** lists what to improve, with a link to each fix. Every edit screen for an article, service, project or page shows **How it may look in Google** with a short checklist. Website Settings → Search engines and AI assistants holds where you work, the designer's name and title, the AI training choice and the Google and Bing codes. The site gives search engines and AI assistants structured details about the business, Vanessa, each service and each article, and a summary at `/llms.txt`.
+
 **Other:** testimonials (with written permission) show on the home, service and project pages; a project photo can have a "before" photo for a before-and-after slider; visitors can book a consultation at `book-consultation.php` (giving their area and preferred dates); and a WhatsApp number in Website Settings adds a "Chat on WhatsApp" button.
 
 Planned admin areas (placeholders today): Photography Products and Orders.

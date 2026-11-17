@@ -49,6 +49,12 @@ function cms_modules(): array
                 'FooterCopyright' => ['label' => 'Footer copyright text', 'type' => 'text', 'max' => 255, 'group' => 'Footer'],
                 'ShareImage'      => ['label' => 'Default sharing picture', 'type' => 'image', 'alt_field' => 'ShareImageAlt', 'max' => 500, 'group' => 'Sharing on social media', 'help' => 'Shown when a page without its own picture is shared on WhatsApp, Facebook or LinkedIn. Best at 1200 × 630 pixels (a wide rectangle). Leave empty to use the built-in green picture with the business name. Blog articles use their featured image.'],
                 'ShareImageAlt'   => ['label' => 'Picture description (alt text)', 'type' => 'text', 'max' => 255, 'group' => 'Sharing on social media'],
+                'ServiceAreas'    => ['label' => 'Where you work', 'type' => 'lines', 'max' => 1000, 'group' => 'Search engines and AI assistants', 'help' => 'One place or arrangement per line, for example "Online consultations across South Africa". Shown on the contact page and given to search engines and AI assistants.'],
+                'OwnerName'       => ['label' => 'Designer\'s name', 'type' => 'text', 'max' => 150, 'group' => 'Search engines and AI assistants', 'help' => 'The person behind the business. Search engines and AI assistants use it to connect the business, the About page and the articles.'],
+                'OwnerTitle'      => ['label' => 'Designer\'s job title', 'type' => 'text', 'max' => 150, 'group' => 'Search engines and AI assistants', 'help' => 'For example: Interior designer.'],
+                'AllowAITraining' => ['label' => 'Allow AI companies to train their models on this website\'s text and photos', 'type' => 'checkbox', 'group' => 'Search engines and AI assistants', 'help' => 'Off: AI search tools (ChatGPT search, Perplexity, Claude, Google) can still read and recommend the website, but AI companies are asked not to use it to train their models. On: both.'],
+                'GoogleVerification' => ['label' => 'Google Search Console code', 'type' => 'text', 'max' => 100, 'group' => 'Search engines and AI assistants', 'help' => 'From Search Console, "HTML tag" method: only the code inside content="…".'],
+                'BingVerification'   => ['label' => 'Bing Webmaster Tools code', 'type' => 'text', 'max' => 100, 'group' => 'Search engines and AI assistants', 'help' => 'From Bing Webmaster Tools, "HTML meta tag" method: only the code inside content="…". Bing also feeds ChatGPT search and Copilot.'],
             ],
         ],
 
@@ -100,6 +106,7 @@ function cms_modules(): array
             'permission' => 'about',
             'page'       => 'admin/about-content.php',
             'fields'     => [
+                'ShortBio'             => ['label' => 'Short bio (two or three sentences)', 'type' => 'textarea', 'max' => 500, 'help' => 'Shown under blog articles ("About the author") and given to search engines and AI assistants. Leave empty to use the first paragraph of the biography.'],
                 'Biography'            => ['label' => 'Biography', 'type' => 'textarea', 'max' => 50000, 'group' => "Vanessa's story"],
                 'PortraitImage'        => ['label' => 'Portrait image', 'type' => 'image', 'alt_field' => 'PortraitImageAlt', 'max' => 500, 'group' => "Vanessa's story"],
                 'PortraitImageAlt'     => ['label' => 'Portrait description (alt text)', 'type' => 'text', 'max' => 255, 'group' => "Vanessa's story"],

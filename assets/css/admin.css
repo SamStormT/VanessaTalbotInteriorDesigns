@@ -592,3 +592,23 @@ fieldset.admin-panel > .admin-panel__title + * { clear: both; }
 @media (min-width: 640px) { .media-picker__details { grid-template-columns: 220px 1fr; } }
 .media-picker__preview { width: 100%; max-height: 220px; object-fit: contain; background: var(--color-peach-light); }
 .media-picker__details input[readonly] { background: var(--color-peach-light); }
+
+/* "How it may look in Google" */
+.seo-check__preview { max-width: 600px; padding: 1rem 1.25rem; border: 1px solid var(--color-border); border-radius: 8px; background: var(--color-white); font-family: Arial, Helvetica, sans-serif; }
+.seo-check__site { margin: 0 0 0.2rem; font-size: 0.8125rem; color: #4D5156; overflow-wrap: anywhere; }
+.seo-check__title { margin: 0 0 0.25rem; font-size: 1.25rem; line-height: 1.3; color: #1A0DAB; }
+.seo-check__description { margin: 0; font-size: 0.875rem; line-height: 1.55; color: #4D5156; }
+.seo-check__description.is-missing { font-style: italic; }
+.seo-check__subtitle { margin: var(--space-md) 0 0.5rem; font-size: 0.9375rem; }
+.seo-check__list { display: grid; gap: 0.4rem; margin: 0 0 var(--space-sm); padding: 0; list-style: none; }
+.seo-check__mark { display: inline-block; min-width: 6.5rem; padding: 0.05rem 0.5rem; border-radius: 999px; font-size: 0.75rem; font-weight: 600; text-align: center; }
+.is-good .seo-check__mark { background: var(--color-primary); color: var(--color-white); }
+.is-todo .seo-check__mark { background: var(--color-golden-yellow); color: var(--color-primary); }
+
+/* Search health */
+.health-list { display: grid; gap: 0.6rem; margin: 0; padding: 0; list-style: none; }
+.health-list li { display: flex; flex-wrap: wrap; gap: 0.35rem 0.6rem; align-items: baseline; }
+.health-steps { display: grid; gap: 0.6rem; padding-left: 1.25rem; }
+.is-good-mark { background: var(--color-primary); color: var(--color-white); }
+.is-todo-mark { background: var(--color-golden-yellow); color: var(--color-primary); }
+.search-health .admin-panel__title .admin-filter__count { margin-left: 0.5rem; }

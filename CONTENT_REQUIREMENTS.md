@@ -274,6 +274,15 @@ For each platform, give the **full link** (for example `https://www.instagram.co
 
 ---
 
+## 7.6 Being found on Google and in AI assistants
+
+- [ ] 🟢 Short bio (two or three sentences) for under articles: About Content → Short bio
+- [ ] 🟢 Check "Where you work" in Website Settings (currently: Pietermaritzburg and the KZN Midlands; online across South Africa; international projects by arrangement, with travel covered by the client)
+- [ ] 🟢 Questions clients really ask, with short answers, for the contact page FAQ. AI assistants quote these
+- [ ] 🟢 Place names in the wording of the home, About and service pages, for example "interior designer in Pietermaritzburg"
+- [ ] ⚪ Service pages of about 300 words or more each
+- [ ] ⚪ AI training: leave it off (AI search tools can still recommend the website), or allow it
+
 ## 8. Website wording to review
 
 These sections were written from the brand documents. Please read each one on the site and confirm it, or send corrections. Your own words always come first.

@@ -814,3 +814,94 @@ document.querySelectorAll('[data-count-for]').forEach((counter) => {
         });
     });
 })();
+
+// ---------------------------------------------------------------------------
+// "How it may look in Google" (cms_seo_panel() in cms.php): a preview of the
+// search result and a short checklist in plain words, updated while typing.
+// ---------------------------------------------------------------------------
+document.querySelectorAll('[data-seo]').forEach((panel) => {
+    let config;
+    try { config = JSON.parse(panel.dataset.seo); } catch (error) { return; }
+    const form = panel.closest('form');
+    const value = (name) => {
+        const field = form?.elements[name];
+        if (field && typeof field.value === 'string' && !(field instanceof RadioNodeList)) return field.value;
+        return config.values?.[name] ?? '';
+    };
+    const first = (names) => (names || []).map((name) => value(name).trim()).find(Boolean) || '';
+    // The words a reader sees: formatting marks, pictures and buttons left out.
+    const plain = (text) => text.replace(/\[\[[^\]]*\]\]/g, ' ').replace(/\[([^\]]+)\]\([^)]+\)/g, '$1').replace(/[*_#>]/g, ' ').replace(/\s+/g, ' ').trim();
+    const slugify = (text) => text.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+    const cut = (text, max) => (text.length > max ? text.slice(0, max - 1).replace(/\s+\S*$/, '') + ' …' : text);
+    const site = panel.querySelector('.seo-check__site');
+    const title = panel.querySelector('.seo-check__title');
+    const description = panel.querySelector('.seo-check__description');
+    const list = panel.querySelector('.seo-check__list');
+
+    const update = () => {
+        const slug = value('Slug').trim() || (config.slugFrom ? slugify(value(config.slugFrom)) : (config.values?.Slug || ''));
+        const address = config.site + (config.path || '').replace('{Slug}', encodeURIComponent(slug));
+        const own = first(config.title) || (config.home ? '' : config.fallbackTitle || '');
+        const fullTitle = own ? own + ' | ' + config.brand : config.brand + ' | ' + config.tagline;
+        const words = plain(first(config.description) || config.fallbackDescription || '');
+
+        site.textContent = config.brand + ' · ' + address.replace(/^https?:\/\//, '').replace(/\/$/, '').replace(/\//g, ' › ');
+        title.textContent = cut(fullTitle, 62);
+        description.textContent = words ? cut(words, 158) : 'No description yet: Google will pick some words from the page.';
+        description.classList.toggle('is-missing', !words);
+
+        const checks = [];
+        const add = (ok, good, fix) => checks.push([ok, ok ? good : fix]);
+        if (config.home && !own) {
+            add(true, 'Title: the business name and tagline.', '');
+        } else {
+            add(own !== '' && own.length <= 60, `Title: ${own.length} characters.`, own === '' ? 'Add a title.' : `Title: ${own.length} characters. Search results cut off long titles: aim for 60 or fewer.`);
+        }
+        const length = words.length;
+        add(length >= 70 && length <= 160, `Description: ${length} characters.`,
+            length === 0 ? 'Add a search description (or a summary) of one or two sentences, so you choose what Google shows.'
+                : length < 70 ? `Description: ${length} characters. A little short: aim for 70 to 155.`
+                    : `Description: ${length} characters. Search results cut it off: aim for 155 or fewer.`);
+        if (config.image) {
+            const picture = value(config.image).trim() !== '';
+            add(picture, 'Has a picture, shown when the page is shared.', 'Add a picture: it is shown when the page is shared on WhatsApp, Facebook or LinkedIn, and in some search results.');
+            if (picture && config.alt) {
+                add(value(config.alt).trim() !== '', 'The picture is described.', 'Describe the picture (alt text): search engines read it, and it helps people who cannot see it.');
+            }
+        }
+        if (config.content) {
+            const count = plain(value(config.content)).split(' ').filter(Boolean).length;
+            const minimum = config.minWords || 0;
+            add(count >= minimum, `${count} words.`, `${count} words. Pages with more to say are found more often: aim for at least ${minimum}.`);
+        }
+        if (config.heading) {
+            add(/^#{2,3}\s/m.test(value(config.content)), 'Has subheadings, so readers and search engines can see its parts.', 'Add a subheading or two (Heading button): it helps readers skim and search engines understand the article.');
+        }
+        if (config.link) {
+            const text = value(config.content);
+            add(/\]\((?!https?:|mailto:|tel:)[^)\s]+\)/.test(text) || /\[\[button [^|\]]+\|\s*(?!https?:)[^\]\s]+\s*\]\]/.test(text),
+                'Links to another page on the website.', 'Add a link to a service or another article: it helps readers and search engines find more.');
+        }
+        if (config.category) {
+            add(value(config.category).trim() !== '', 'Has a category.', 'Choose a category, so the article also appears on its category page.');
+        }
+
+        list.replaceChildren(...checks.map(([ok, text]) => {
+            const item = document.createElement('li');
+            item.className = ok ? 'is-good' : 'is-todo';
+            const label = document.createElement('span');
+            label.className = 'seo-check__mark';
+            label.textContent = ok ? 'Good' : 'To improve';
+            item.append(label, ' ', text);
+            return item;
+        }));
+    };
+
+    let timer = 0;
+    const later = () => { clearTimeout(timer); timer = setTimeout(update, 250); };
+    form?.addEventListener('input', later);
+    form?.addEventListener('change', later);
+    // Pictures chosen from the library change hidden fields without an event.
+    setInterval(() => { if (!document.hidden) update(); }, 2000);
+    update();
+});

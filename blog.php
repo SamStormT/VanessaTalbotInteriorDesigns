@@ -40,8 +40,18 @@ $listUrl = static fn(array $change = []): string => url('blog.php') . (($q = htt
     static fn($v) => $v !== null && $v !== '' && $v !== 1
 ))) !== '' ? '?' . $q : '');
 
-$pageTitle       = $category ? $category['CategoryName'] . ' | ' . ($header['Heading'] ?? 'Blog') : ($header['Heading'] ?? 'Blog');
-$pageDescription = ($category['Description'] ?? '') ?: (($header['Introduction'] ?? '') ?: SITE_TAGLINE);
+[$pageTitle, $pageDescription] = content_seo($sections, (string) ($header['Heading'] ?? 'Blog'), (string) ($header['Introduction'] ?? ''));
+if ($category !== null) {
+    // A category is a page of its own for search engines: its own address, title and description.
+    $pageTitle       = $category['CategoryName'] . ' | ' . ($header['Heading'] ?? 'Blog');
+    $pageDescription = trim((string) ($category['Description'] ?? '')) ?: $pageDescription;
+    $pagePath        = 'blog.php?category=' . rawurlencode((string) $category['Slug']) . ($page > 1 ? '&page=' . $page : '');
+} elseif ($page > 1) {
+    $pagePath = 'blog.php?page=' . $page;
+}
+// On a category page the heading names the category.
+// (It borrows only the blog header's photo; the wording is edited under Blog Categories.)
+$hero = $category !== null ? ['Heading' => $category['CategoryName'], 'Introduction' => $category['Description'] ?? '', 'Image' => $header['Image'] ?? null, 'ImageAlt' => $header['ImageAlt'] ?? null] : $header;
 $noindex         = $query !== '';  // search results shouldn't appear in search engines
 
 $homeNewsletter = site_sections('home')['newsletter'] ?? null;
@@ -50,7 +60,7 @@ require_once INCLUDES_PATH . '/header.php';
 ?>
 <main id="main-content">
 
-    <?= content_page_hero($header, [], edit_block('blog', 'page-header')) ?>
+    <?= content_page_hero($hero, $category !== null ? [['Blog', 'blog.php']] : [], edit_block('blog', 'page-header')) ?>
 
     <section class="section blog-index" aria-label="Articles">
         <?= edit_block('blog', 'posts') ?>
