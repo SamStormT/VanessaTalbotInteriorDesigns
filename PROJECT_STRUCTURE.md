@@ -142,7 +142,7 @@ Stack: HTML5, CSS3, JavaScript, PHP 8, MariaDB, PHPMailer (installed with Compos
 │   ├── js/visual-editor.js    The visual article editor
 │   ├── js/lib/qrcode.js       QR codes for two-step sign-in (qrcode-generator, MIT licence; not in a "vendor" folder, which .htaccess and Git exclude)
 │   ├── fonts/                 Open Sans, Gilda Display, Allison (.woff2, SIL Open Font License files alongside)
-│   └── images/                Icons, sharing picture; official logo files go here when supplied
+│   └── images/                Icons, sharing picture, butterfly.svg (the logo's butterfly as a line icon, above each closing banner); official logo files go here when supplied
 │
 ├── uploads/                   Created on first upload; ignored by Git; must survive deployments
 │   ├── media/YYYY/MM/         Public images: name.jpg (main), name-web.jpg, name-thumb.jpg

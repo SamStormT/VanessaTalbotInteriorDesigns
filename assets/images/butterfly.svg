@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 48" fill="none" stroke="#000" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
+<!-- The butterfly from the logo, redrawn as a line icon (used as a mask, so its colour comes from the CSS). Replace with the official vector when the logo files arrive. -->
+<path d="M25 2 C 34 13, 35 29, 23 39 C 18 43, 13 45, 8 46"/>
+<path d="M25 2 C 20 10, 18 18, 19.5 25 C 20.5 29, 22.5 31.5, 24 33"/>
+<path d="M7 5 C 13 6, 17.5 10, 19 15"/>
+<path d="M7 5 C 6 12, 7 19, 11 23 C 14 26, 18 28.5, 21 31.5"/>
+<path d="M21 31.5 C 16 27, 8 26.5, 4.5 31 C 1.5 35, 3.5 41, 8.5 40.5 C 12.5 40, 15.5 37.5, 17 35"/>
+</svg>

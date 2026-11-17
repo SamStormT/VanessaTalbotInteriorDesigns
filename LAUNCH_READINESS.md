@@ -47,7 +47,7 @@
 | 7 | Newsletter logo and sending limit | Supply `assets/images/logo-email.png` (PNG, about 400px wide; email apps don't show SVG), and set `NEWSLETTER_HOURLY_LIMIT` below the email provider's hourly limit | Vanessa, Samantha |
 | 8 | No photographs yet | Upload through the admin area | Vanessa |
 | 9 | No portfolio projects | At least a few real projects with client permission | Vanessa |
-| 10 | Stand-in logo text and fonts | Official logo files; web-licensed John Mayer and Bayshore | Vanessa |
+| 10 | Stand-in logo text and fonts | Official logo files (then also replace `assets/images/butterfly.svg`, a hand-drawn copy of the logo's butterfly); web-licensed John Mayer and Bayshore | Vanessa |
 | 11 | Vanessa's phone and street address are in the public GitHub history | Make the repo private, or rewrite history | Samantha |
 | 12 | Public email | The address on the business card, but the questionnaire gives two others (vanessa@talbot.co.za and vanessa@vanessatalbotinteriordesigns.co.za). Confirm the current one and enter it in Website Settings → Email (local copy and live site); it is not stored in the code | Vanessa |
 | 13 | Second domain vtid.co.za | If registered, set a permanent (301) redirect at the host to the main domain | Samantha |
