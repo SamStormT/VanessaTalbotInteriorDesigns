@@ -37,7 +37,7 @@ function user_role_rank(string $role): int
 
 function user_find(int $id): ?array
 {
-    return db_row('SELECT AdminUserID, Name, Surname, Email, Role, Status, CreatedDate, LastLogin, PasswordChangedDate FROM AdminUsers WHERE AdminUserID = ?', [$id]);
+    return db_row('SELECT AdminUserID, Name, Surname, Email, Role, Status, CreatedDate, LastLogin, PasswordChangedDate, TwoFactorEnabledDate FROM AdminUsers WHERE AdminUserID = ?', [$id]);
 }
 
 /** Active SuperAdmins, locked until the transaction ends so two changes can't race past the rule. */

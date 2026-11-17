@@ -1210,3 +1210,49 @@ SELECT 'consultation', 'seo', NULL, 'Book an interior design consultation', 'Boo
 FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM SchemaMigrations WHERE MigrationName = '019_search_and_ai');
 
 INSERT IGNORE INTO SchemaMigrations (MigrationName) VALUES ('019_search_and_ai');
+
+-- --------------------------------------------------------------------------
+-- 020: Security and privacy. Two-step sign-in for admin accounts (an
+-- authenticator app code, with one-time backup codes kept only as hashes);
+-- how long personal details are kept (POPIA), cleaned up automatically once
+-- a day; privacy-friendly visitor statistics (daily counts per page and per
+-- referring website: no cookies, no IP addresses, nothing about the
+-- visitor); gift voucher enquiries, and a gift voucher block on the
+-- Services page (wording runs once and only fills what is empty).
+-- --------------------------------------------------------------------------
+ALTER TABLE AdminUsers
+    ADD COLUMN IF NOT EXISTS TwoFactorSecret VARCHAR(64) NULL,
+    ADD COLUMN IF NOT EXISTS TwoFactorEnabledDate DATETIME NULL,
+    ADD COLUMN IF NOT EXISTS TwoFactorLastStep BIGINT NULL COMMENT 'Stops one code being used twice',
+    ADD COLUMN IF NOT EXISTS TwoFactorRecovery TEXT NULL COMMENT 'JSON list of hashed one-time backup codes';
+
+ALTER TABLE WebsiteSettings
+    ADD COLUMN IF NOT EXISTS KeepLoginDays SMALLINT UNSIGNED NOT NULL DEFAULT 90,
+    ADD COLUMN IF NOT EXISTS KeepMessagesMonths SMALLINT UNSIGNED NOT NULL DEFAULT 24,
+    ADD COLUMN IF NOT EXISTS KeepActivityMonths SMALLINT UNSIGNED NOT NULL DEFAULT 24,
+    ADD COLUMN IF NOT EXISTS KeepUnsubscribedMonths SMALLINT UNSIGNED NOT NULL DEFAULT 24,
+    ADD COLUMN IF NOT EXISTS KeepStatisticsMonths SMALLINT UNSIGNED NOT NULL DEFAULT 25,
+    ADD COLUMN IF NOT EXISTS LastCleanupDate DATETIME NULL;
+
+CREATE TABLE IF NOT EXISTS PageViews (
+    ViewDate DATE NOT NULL,
+    Path     VARCHAR(255) NOT NULL,
+    Views    INT UNSIGNED NOT NULL DEFAULT 0,
+    PRIMARY KEY (ViewDate, Path)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS PageReferrers (
+    ViewDate DATE NOT NULL,
+    Source   VARCHAR(100) NOT NULL COMMENT 'The other website, for example google.com',
+    Views    INT UNSIGNED NOT NULL DEFAULT 0,
+    PRIMARY KEY (ViewDate, Source)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+ALTER TABLE ContactMessages
+    MODIFY EnquiryType ENUM('General','Biophilic Design','Colour Psychology','Photography','Workshop','Speaking Engagement','Collaboration','Consultation','Gift Voucher') NOT NULL DEFAULT 'General';
+
+INSERT IGNORE INTO PageSections (PageKey, SectionKey, Eyebrow, Heading, Introduction, Body, ButtonText, ButtonLink, SecondaryButtonText, SecondaryButtonLink, DisplayOrder, Status)
+SELECT 'services', 'gift-vouchers', 'Gift vouchers', 'Give the gift of a space that feels good', 'A consultation or design service makes a thoughtful gift for a new home, a birthday or a fresh start. Ask about a gift voucher for the amount or service you have in mind.', NULL, 'Ask about a gift voucher', 'contact.php?service=gift-voucher#contact-form', NULL, NULL, 70, 'Published'
+FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM SchemaMigrations WHERE MigrationName = '020_security_privacy');
+
+INSERT IGNORE INTO SchemaMigrations (MigrationName) VALUES ('020_security_privacy');

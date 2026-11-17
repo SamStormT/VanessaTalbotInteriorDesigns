@@ -103,7 +103,12 @@ Everything below can be changed in the admin area. Page Sections are listed by p
 
 - [x] Tagline style: "The balance of art, science & nature in spaces" (from the branding document)
 - [ ] Decide whether the street address is ever shown
-- [ ] Decide how long to keep login attempts, activity logs, contact messages and IP addresses (POPIA)
+- [ ] Confirm how long personal details are kept (Website Settings → Privacy; starting values: sign-ins and IP addresses 90 days, answered messages, activity and unsubscribed people 24 months, statistics 25 months) and say so in the Privacy Policy
+- [ ] Change the email (SMTP) password before launch: it was shared in a chat during development. Only `.env` should hold it
+- [ ] Everyone with an admin account switches on two-step sign-in (My account); the SuperAdmin first
+- [ ] On the host, check the security headers arrive (for example securityheaders.com) and that mod_headers, mod_expires and mod_deflate are on
+- [ ] Run `composer audit` before each deployment, and keep PHPMailer up to date
+- [ ] Uptime monitoring (a free service that checks the home page every few minutes and emails you)
 - [x] Favicon, sharing image, sitemap and robots file (replace the sharing picture and icon when the official logo arrives)
 - [ ] Submit `sitemap.xml` in Google Search Console after launch (paste the Search Console code in Website Settings first)
 - [ ] Bing Webmaster Tools: add the site (it can import from Search Console); paste its code in Website Settings
@@ -111,7 +116,8 @@ Everything below can be changed in the admin area. Page Sections are listed by p
 - [ ] Same business name, phone and email on Instagram, Facebook, LinkedIn, Pinterest, Houzz and directories
 - [ ] Open Marketing → Search health and work through the "To improve" items
 - [ ] Check the live site with Google's Rich Results Test
-- [ ] Cookie notice, if analytics is added, and update the Privacy Policy to match
+- [x] Visitor statistics without cookies (Marketing → Statistics), so no cookie notice is needed. If Google Analytics is ever added, a cookie notice and Privacy Policy update are needed first
+- [ ] Privacy Policy: mention the cookie-free statistics, the "we received it" emails, and the keeping periods
 - [ ] Real-device testing on phones, plus Safari and Firefox, including a real drag and drop upload
 - [ ] Screen reader and keyboard review
 - [ ] Performance check once real photographs are in
@@ -128,8 +134,11 @@ Everything below can be changed in the admin area. Page Sections are listed by p
 - **Fallback text** is a saved copy of the seeded wording. Phone and email are not in it, so they don't show if the database is down. The contact form and newsletter then show a "please try again later" message.
 - **Email** depends on the mail server. If it's unreachable, messages and sign-ups are still saved and the failure is logged, but nobody is notified, so check Contact Messages in the admin area regularly.
 - **Contact Messages** has no reply-from-admin feature: replies go from Vanessa's own mailbox, using the Reply button.
-- **Activity log:** there is no full log screen yet; the dashboard shows the latest eight entries to the SuperAdmin.
-- **Users:** accounts are disabled, never deleted, so names stay on past edits and in the log. There is no "My account" page yet: people change their own password with "Forgot your password?", and a SuperAdmin changes names, emails and roles.
+- **Activity log:** System → Activity log (SuperAdmin). The dashboard shows the latest eight entries.
+- **Users:** accounts are disabled, never deleted, so names stay on past edits and in the log. People change their own name and password on My account; a SuperAdmin changes email addresses and roles.
+- **Two-step sign-in** is optional per person (strongly recommended, and reminded on the dashboard). Someone who loses their phone and their backup codes asks a SuperAdmin to switch it off.
+- **Statistics** count page views, not people, and leave out robots and signed-in staff; visits from a typed address, a bookmark, an email or an app don't show a source.
+- **Error pages:** `.htaccess` assumes the website is at the root of the domain for its 404 and 500 pages; with BASE_URL set, put that folder in front.
 
 ## 7. Recommended route to launch
 

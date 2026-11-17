@@ -34,6 +34,7 @@ $adminNav = [
         ['label' => 'Newsletter Campaigns', 'path' => 'admin/campaigns.php', 'can' => 'subscribers.view'],
         ['label' => 'Welcome Email',        'path' => 'admin/welcome-email.php', 'can' => 'subscribers.view'],
         ['label' => 'Search health',        'path' => 'admin/search-health.php', 'can' => 'page_sections.view'],
+        ['label' => 'Statistics',           'path' => 'admin/statistics.php', 'can' => 'page_sections.view'],
     ],
     'Audience' => [
         ['label' => 'Subscribers',      'path' => 'admin/subscribers.php', 'can' => 'subscribers.view'],
@@ -44,6 +45,7 @@ $adminNav = [
     ],
     'System' => [
         ['label' => 'Website Settings', 'path' => 'admin/settings.php',    'can' => 'settings.view'],
+        ['label' => 'Activity log',     'path' => 'admin/activity-log.php', 'can' => 'activity.view'],
         ['label' => 'Users',            'path' => 'admin/admin-users.php', 'can' => 'users.view'],
     ],
 ];

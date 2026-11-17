@@ -905,3 +905,41 @@ document.querySelectorAll('[data-seo]').forEach((panel) => {
     setInterval(() => { if (!document.hidden) update(); }, 2000);
     update();
 });
+
+// ---------------------------------------------------------------------------
+// Email previews (campaigns and the welcome email): Computer / Phone width,
+// and the frame grows to fit the email. Kept here rather than in the page,
+// so the security policy can refuse any script written into a page.
+// ---------------------------------------------------------------------------
+document.querySelectorAll('[data-preview-widths]').forEach((box) => {
+    const frame = box.querySelector('iframe');
+    box.querySelectorAll('[data-width]').forEach((button) => button.addEventListener('click', () => {
+        frame.style.width = button.dataset.width + 'px';
+        box.querySelectorAll('[data-width]').forEach((b) => {
+            b.classList.toggle('is-active', b === button);
+            b.setAttribute('aria-pressed', String(b === button));
+        });
+    }));
+    frame.addEventListener('load', () => {
+        try { frame.style.height = (frame.contentDocument.documentElement.scrollHeight + 20) + 'px'; } catch (e) { frame.style.height = '1600px'; }
+    });
+});
+
+// ---------------------------------------------------------------------------
+// My account: the QR code for the authenticator app (drawn here from the
+// otpauth address, by assets/js/lib/qrcode.js), a confirmation before a
+// button with data-confirm, and printing the backup codes.
+// ---------------------------------------------------------------------------
+document.querySelectorAll('[data-qr]').forEach((box) => {
+    if (typeof window.qrcode !== 'function') return;
+    const qr = window.qrcode(0, 'M');
+    qr.addData(box.dataset.qr);
+    qr.make();
+    box.innerHTML = qr.createSvgTag({ cellSize: 5, margin: 3, scalable: true });
+});
+document.querySelectorAll('button[data-confirm]').forEach((button) => {
+    button.addEventListener('click', (event) => {
+        if (!window.confirm(button.dataset.confirm)) event.preventDefault();
+    });
+});
+document.querySelectorAll('[data-print]').forEach((button) => button.addEventListener('click', () => window.print()));

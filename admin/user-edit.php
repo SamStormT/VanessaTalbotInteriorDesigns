@@ -79,6 +79,12 @@ if ($posted) {
             flash_set($problem === null ? 'success' : 'error', $problem ?? ($do === 'disable'
                 ? 'The account is disabled. They are signed out and cannot sign in.'
                 : 'The account is active again. They can sign in with their existing password, or you can send a password link.'));
+        } elseif ($do === 'twofactor_off' && !$self && !empty($user['TwoFactorEnabledDate'])) {
+            // For someone who has lost their phone and their backup codes. They sign in with
+            // their password and can set it up again on My account.
+            db_query('UPDATE AdminUsers SET TwoFactorSecret = NULL, TwoFactorEnabledDate = NULL, TwoFactorLastStep = NULL, TwoFactorRecovery = NULL WHERE AdminUserID = ?', [$user['AdminUserID']]);
+            activity_log('twofactor_off', 'AdminUsers', (int) $user['AdminUserID'], 'Switched off by ' . trim($actor['Name'] . ' ' . $actor['Surname']));
+            flash_set('success', 'Two-step sign-in is off for this account. They can sign in with their password, and should set it up again under My account.');
         } elseif ($do === 'password') {
             if ($user['Status'] !== 'Active') {
                 flash_set('error', 'Reactivate the account before sending a password link.');
@@ -182,6 +188,14 @@ require_once INCLUDES_PATH . '/header.php';
             <?= csrf_field() ?><input type="hidden" name="do" value="password">
             <button class="btn btn--outline btn--small" type="submit">Send password reset link</button>
             <span class="admin-help">Their current password keeps working until they choose a new one. The link expires in <?= PASSWORD_RESET_MINUTES ?> minutes.</span>
+        </form>
+<?php endif; ?>
+        <p class="admin-help">Two-step sign-in: <strong><?= !empty($user['TwoFactorEnabledDate']) ? 'on since ' . e(cms_format_date($user['TwoFactorEnabledDate'])) : 'off' ?></strong>.</p>
+<?php if (can('users.edit') && !$self && !empty($user['TwoFactorEnabledDate'])): ?>
+        <form method="post" class="admin-inline-action" data-confirm="Switch off two-step sign-in for <?= e(trim($user['Name'] . ' ' . $user['Surname'])) ?>? Only do this if you are sure it is them, for example they phoned you.">
+            <?= csrf_field() ?><input type="hidden" name="do" value="twofactor_off">
+            <button class="btn btn--outline btn--small" type="submit">Switch off two-step sign-in</button>
+            <span class="admin-help">For someone who has lost their phone and their backup codes.</span>
         </form>
 <?php endif; ?>
 <?php if (can('users.archive')): ?>

@@ -64,6 +64,7 @@ function page_map(): array
             'page-header' => ['Page header', [$section('services', 'page-header', 'Heading'), $section('services', 'page-header', 'Header image', 'Image'), $section('services', 'seo', 'Search engine details')]],
             'service'     => ['Each service', [$services]],
             'process'     => ['How it works', [$section('services', 'process', 'Heading'), $section('services', 'process', 'Steps', 'items')]],
+            'gift-vouchers' => ['Gift vouchers', [$section('services', 'gift-vouchers', 'Wording and button')]],
             'closing'     => ['Closing call to action', [$section('services', 'closing')]],
         ]],
     ];

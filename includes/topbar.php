@@ -13,6 +13,8 @@ $admin = current_admin();
 <?php if ($admin !== null): ?>
         <span class="admin-topbar__user"><?= e($admin['Name'] . ' ' . $admin['Surname']) ?> <span class="admin-badge"><?= e($admin['Role']) ?></span></span>
 <?php endif; ?>
+        <a href="<?= e(url('admin/account.php')) ?>">My account</a>
+        <a href="<?= e(url('admin/help.php')) ?>">Help</a>
         <a href="<?= e(url('index.php')) ?>" target="_blank" rel="noopener">View site</a>
         <form method="post" action="<?= e(url('logout.php')) ?>">
             <?= csrf_field() ?>

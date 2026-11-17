@@ -283,6 +283,11 @@ For each platform, give the **full link** (for example `https://www.instagram.co
 - [ ] ⚪ Service pages of about 300 words or more each
 - [ ] ⚪ AI training: leave it off (AI search tools can still recommend the website), or allow it
 
+## 7.7 Gift vouchers and privacy
+
+- [ ] 🟢 Gift vouchers: how they work (amounts or services, how long they are valid, how they are paid) and the wording of the block on the Services page
+- [ ] 🟢 How long personal details are kept (Website Settings → Privacy), to state in the Privacy Policy
+
 ## 8. Website wording to review
 
 These sections were written from the brand documents. Please read each one on the site and confirm it, or send corrections. Your own words always come first.

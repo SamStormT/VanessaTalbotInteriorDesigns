@@ -25,6 +25,10 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
     } else {
         $result = auth_attempt($email, $password);
 
+        if ($result === 'twofactor') {
+            header('Location: ' . url('login-code.php'));
+            exit;
+        }
         if ($result === 'ok') {
             $next = $_SESSION['login_next'] ?? 'admin/dashboard.php';
             unset($_SESSION['login_next']);

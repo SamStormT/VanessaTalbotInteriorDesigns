@@ -114,21 +114,4 @@ require_once INCLUDES_PATH . '/header.php';
 <?php endif; ?>
 <?php endif; ?>
 </main>
-<?php if (!$editing): ?>
-<script>
-document.querySelectorAll('[data-preview-widths]').forEach((box) => {
-    const frame = box.querySelector('iframe');
-    box.querySelectorAll('[data-width]').forEach((button) => button.addEventListener('click', () => {
-        frame.style.width = button.dataset.width + 'px';
-        box.querySelectorAll('[data-width]').forEach((b) => {
-            b.classList.toggle('is-active', b === button);
-            b.setAttribute('aria-pressed', String(b === button));
-        });
-    }));
-    frame.addEventListener('load', () => {
-        try { frame.style.height = (frame.contentDocument.documentElement.scrollHeight + 20) + 'px'; } catch (e) { frame.style.height = '1600px'; }
-    });
-});
-</script>
-<?php endif; ?>
 <?php require_once INCLUDES_PATH . '/footer.php'; ?>

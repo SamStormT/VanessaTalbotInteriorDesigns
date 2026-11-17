@@ -42,7 +42,7 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
     if (!csrf_valid()) {
         $status = ['type' => 'error', 'text' => 'This form expired for security reasons. Please check your details and send it again.'];
     } else {
-        [$data, $errors] = consultation_validate($_POST, $services);
+        [$data, $errors, $summary] = consultation_validate($_POST, $services);
         if ($errors !== []) {
             $status = ['type' => 'error', 'text' => 'Please check the highlighted fields.'];
         } else {
@@ -50,7 +50,7 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
                 if (contact_rate_limited(client_ip())) {
                     $status = ['type' => 'error', 'text' => 'We have received several messages from your connection in the last hour. ' . $contactLine];
                 } else {
-                    contact_submit($data);
+                    contact_submit($data, $summary);
                     flash_set('success', $thanks . ($data['SubscribeToNewsletter']
                         ? ' If you are new to the newsletter, please check your inbox for an email to confirm your subscription.'
                         : ''));

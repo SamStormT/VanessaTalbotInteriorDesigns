@@ -45,6 +45,8 @@ if ($layout !== 'admin' && empty($noindex) && mail_origin() !== '') {
     unset($shareScript, $shareImage);
 }
 
+security_headers($layout === 'admin');
+
 // Signed-in staff see a bar and Edit buttons on the public website. Checked
 // here, before any output, because it may open their session.
 $staff = $layout !== 'admin' && function_exists('staff_viewer') ? staff_viewer() : null;
@@ -126,9 +128,8 @@ if ($layout !== 'admin' && function_exists('site_search_settings')) {
     <link rel="apple-touch-icon" href="<?= e(asset('images/apple-touch-icon.png')) ?>">
     <link rel="manifest" href="<?= e(url('site.webmanifest')) ?>">
 
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Allison&family=Gilda+Display&family=Open+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <!-- The fonts are served from this website (assets/fonts), not Google, so no visitor details go to a third party. -->
+    <link rel="preload" href="<?= e(url('assets/fonts/open-sans.woff2')) ?>" as="font" type="font/woff2" crossorigin>
 
     <link rel="stylesheet" href="<?= e(asset('css/style.css')) ?>">
 <?php if ($layout === 'admin' || !empty($noindex)): ?>

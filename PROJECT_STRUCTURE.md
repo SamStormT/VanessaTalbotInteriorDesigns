@@ -20,6 +20,8 @@ Stack: HTML5, CSS3, JavaScript, PHP 8, MariaDB, PHPMailer (installed with Compos
 ├── terms-and-conditions.php   ├ Legal pages, wording from SitePages
 ├── copyright.php              ┘
 ├── login.php                  Admin sign-in
+├── login-code.php             Sign-in, second step: the authenticator app code or a backup code
+├── 404.php, error.php         "Page not found" and "Something went wrong" pages (error.php needs no database)
 ├── forgot-password.php        Emails a password reset link
 ├── reset-password.php         Choose a new password from the link
 ├── logout.php                 Sign-out (POST with CSRF token only)
@@ -75,7 +77,11 @@ Stack: HTML5, CSS3, JavaScript, PHP 8, MariaDB, PHPMailer (installed with Compos
 │   ├── media-upload.php, media-list.php             JSON endpoints for drop zones and the picker
 │   ├── enquiries.php, enquiry.php                   Contact Messages: list by status, one message
 │   ├── subscribers.php                              Newsletter subscribers
-│   ├── admin-users.php, user-edit.php               Users: list, add, role, disable, password links
+│   ├── admin-users.php, user-edit.php               Users: list, add, role, disable, password links, switch off someone's two-step sign-in
+│   ├── account.php                                  My account: name, password, two-step sign-in, recent sign-ins
+│   ├── activity-log.php                             Activity log (SuperAdmin): filters, clean-up status, Clean up now
+│   ├── statistics.php                               Statistics: views per day, most read, where visitors came from
+│   ├── help.php                                     Help: everyday how-tos in plain words
 │   ├── campaigns.php, campaign-edit.php             Newsletter campaigns: list; write, test, ready, send, archive
 │   ├── campaign-preview.php, campaign-send.php      Email preview (computer/phone/text); batch sending (JSON)
 │   ├── rich-preview.php                             Article editor's Preview button (JSON)
@@ -94,6 +100,9 @@ Stack: HTML5, CSS3, JavaScript, PHP 8, MariaDB, PHPMailer (installed with Compos
 │   ├── icons.php              icon() inline SVG icons, botanical() decoration
 │   ├── database.php           Central PDO connection and query helpers
 │   ├── auth.php               Sessions, sign-in, CSRF, activity log, admin_guard(), password resets
+│   ├── twofactor.php          Two-step sign-in: codes (RFC 6238), backup codes, the second sign-in step
+│   ├── retention.php          data_cleanup(): removes personal details past their keeping period, once a day
+│   ├── statistics.php         stats_record(): privacy-friendly page and referrer counts
 │   ├── permissions.php        Role and permission map
 │   ├── cms.php                CMS framework: view, form, validation, save, audit
 │   ├── cms-modules.php        Field definitions for every editable module
@@ -129,8 +138,11 @@ Stack: HTML5, CSS3, JavaScript, PHP 8, MariaDB, PHPMailer (installed with Compos
 │   ├── css/admin.css          Admin layout, forms, Media Library and drop zones
 │   ├── css/responsive.css     Breakpoints at 1100px (menu), 1024px, 768px and 600px
 │   ├── js/main.js             Mobile menu; contact form checks; newsletter sign-up in the background
-│   ├── js/admin.js            Admin sidebar, delete confirmation, drag and drop, library picker
-│   └── images/                Official logo files go here when supplied
+│   ├── js/admin.js            Admin sidebar, delete confirmation, drag and drop, picture chooser, previews, account
+│   ├── js/visual-editor.js    The visual article editor
+│   ├── js/lib/qrcode.js       QR codes for two-step sign-in (qrcode-generator, MIT licence; not in a "vendor" folder, which .htaccess and Git exclude)
+│   ├── fonts/                 Open Sans, Gilda Display, Allison (.woff2, SIL Open Font License files alongside)
+│   └── images/                Icons, sharing picture; official logo files go here when supplied
 │
 ├── uploads/                   Created on first upload; ignored by Git; must survive deployments
 │   ├── media/YYYY/MM/         Public images: name.jpg (main), name-web.jpg, name-thumb.jpg

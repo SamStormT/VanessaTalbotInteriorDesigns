@@ -105,6 +105,25 @@ require_once INCLUDES_PATH . '/header.php';
     </section>
 <?php endif; ?>
 
+    <!-- Gift vouchers: arranged by enquiry (no online payment). -->
+<?= hidden_block('services', 'gift-vouchers', $sections) ?>
+<?php if ($section = $sections['gift-vouchers'] ?? null): ?>
+    <section class="section gift-voucher"<?= content_labelled($section, 'gift-title') ?>>
+        <?= edit_block('services', 'gift-vouchers') ?>
+        <div class="container">
+            <div class="gift-voucher__card">
+                <span class="gift-voucher__icon"><?= icon('sprout') ?></span>
+                <div class="gift-voucher__text">
+                    <?= content_eyebrow($section) ?>
+                    <?= content_heading($section, 'gift-title') ?>
+                    <?= content_paragraphs($section['Introduction'], '', ed_section($section, 'Introduction')) ?>
+                </div>
+                <?= content_link($section['ButtonText'] ?? '', $section['ButtonLink'] ?? '', 'btn btn--primary', '', ed_section($section, 'ButtonText')) ?>
+            </div>
+        </div>
+    </section>
+<?php endif; ?>
+
     <!-- Call-to-action -->
 <?= hidden_block('services', 'closing', $sections) ?>
 <?php if ($section = $sections['closing'] ?? null): ?>

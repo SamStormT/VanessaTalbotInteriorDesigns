@@ -161,7 +161,9 @@ function login_record_attempt(string $email, string $ip, bool $successful): void
 }
 
 /**
- * Try to sign in. Returns 'ok', 'invalid' or 'locked'.
+ * Try to sign in. Returns 'ok', 'invalid', 'locked', or 'twofactor' when the
+ * password is right and the account also needs its authenticator code
+ * (login-code.php asks for it; see includes/twofactor.php).
  * Unknown emails, wrong passwords and inactive accounts are all 'invalid'.
  */
 function auth_attempt(string $email, string $password): string
@@ -173,7 +175,7 @@ function auth_attempt(string $email, string $password): string
         return 'locked';
     }
 
-    $user  = db_row('SELECT AdminUserID, PasswordHash, Status FROM AdminUsers WHERE Email = ?', [$email]);
+    $user  = db_row('SELECT AdminUserID, PasswordHash, Status, TwoFactorEnabledDate FROM AdminUsers WHERE Email = ?', [$email]);
     $valid = password_verify($password, $user['PasswordHash'] ?? DUMMY_PASSWORD_HASH);
 
     if ($user === null || !$valid || $user['Status'] !== 'Active') {
@@ -185,22 +187,34 @@ function auth_attempt(string $email, string $password): string
         db_query('UPDATE AdminUsers SET PasswordHash = ? WHERE AdminUserID = ?', [password_hash($password, PASSWORD_DEFAULT), $user['AdminUserID']]);
     }
 
-    login_record_attempt($email, $ip, true);
+    // Two-step sign-in: the password was right; the code comes next.
+    if (!empty($user['TwoFactorEnabledDate'])) {
+        session_regenerate_id(true);
+        $_SESSION['twofactor'] = ['id' => (int) $user['AdminUserID'], 'email' => $email, 'at' => time()];
+        return 'twofactor';
+    }
+
+    auth_complete_login((int) $user['AdminUserID'], $email);
+    return 'ok';
+}
+
+/** Finish signing in (after the password, and the code when needed). */
+function auth_complete_login(int $adminId, string $email): void
+{
+    login_record_attempt($email, client_ip(), true);
 
     // A new session ID and CSRF token at the moment of sign-in stop session fixation.
     $next = $_SESSION['login_next'] ?? null;
     auth_reset_session();
-    $_SESSION['admin_id']      = (int) $user['AdminUserID'];
+    $_SESSION['admin_id']      = $adminId;
     $_SESSION['login_at']      = time();
     $_SESSION['last_activity'] = time();
     if ($next !== null) {
         $_SESSION['login_next'] = $next;
     }
 
-    db_query('UPDATE AdminUsers SET LastLogin = NOW() WHERE AdminUserID = ?', [$user['AdminUserID']]);
-    activity_log('login', 'AdminUsers', (int) $user['AdminUserID']);
-
-    return 'ok';
+    db_query('UPDATE AdminUsers SET LastLogin = NOW() WHERE AdminUserID = ?', [$adminId]);
+    activity_log('login', 'AdminUsers', $adminId);
 }
 
 function auth_logout(): void
@@ -240,7 +254,7 @@ function current_admin(): ?array
     }
 
     $user = db_row(
-        'SELECT AdminUserID, Name, Surname, Email, Role, Status, PasswordChangedDate FROM AdminUsers WHERE AdminUserID = ?',
+        'SELECT AdminUserID, Name, Surname, Email, Role, Status, PasswordChangedDate, TwoFactorEnabledDate FROM AdminUsers WHERE AdminUserID = ?',
         [(int) $_SESSION['admin_id']]
     );
 

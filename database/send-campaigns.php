@@ -12,6 +12,7 @@
  * emails anyone twice.
  *
  * Hosts without cron can call scheduled-tasks.php instead (see CRON_KEY).
+ * Once a day it also removes personal details past their keeping period.
  */
 
 declare(strict_types=1);
@@ -29,4 +30,10 @@ require_once INCLUDES_PATH . '/campaigns.php';
 // Up to nine minutes, so a run every ten minutes never overlaps the next.
 foreach (campaign_run(540) as $line) {
     echo $line, "\n";
+}
+
+// Once a day: remove personal details past their keeping period (includes/retention.php).
+require_once INCLUDES_PATH . '/retention.php';
+if ($removed = data_cleanup()) {
+    echo 'Clean-up: ', implode(', ', array_map(static fn($label, $count) => $count . ' ' . $label, array_keys($removed), $removed)), "\n";
 }

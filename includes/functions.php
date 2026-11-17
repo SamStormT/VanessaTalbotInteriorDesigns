@@ -147,3 +147,51 @@ function image_srcset(string $path, string $sizes = '(max-width: 700px) 100vw, (
     $set[] = url($path) . ' 1920w';
     return ' srcset="' . e(implode(', ', $set)) . '" sizes="' . e($sizes) . '"';
 }
+
+/**
+ * Security headers for every page (sent from header.php):
+ *
+ *   - Content-Security-Policy: scripts, fonts, styles and pictures only from
+ *     this website, nothing may frame it except itself, forms only post here.
+ *     No scripts are written into pages (all are in assets/js), so a script
+ *     slipped into content by an attacker would not run.
+ *   - X-Content-Type-Options, a referrer policy and a permissions policy
+ *     (no camera, microphone, location or payment features).
+ *   - Strict-Transport-Security on the live https site, so browsers always
+ *     use https. (Subdomains are not included, so webmail or other services
+ *     on the domain are not affected.)
+ *
+ * .htaccess sends the simpler ones for files that don't go through PHP.
+ */
+function security_headers(bool $admin = false): void
+{
+    if (headers_sent()) {
+        return;
+    }
+    $https = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') || (int) ($_SERVER['SERVER_PORT'] ?? 0) === 443;
+    $policy = [
+        "default-src 'self'",
+        "script-src 'self'",
+        "style-src 'self' 'unsafe-inline'",   // style="" attributes are used for layout
+        "img-src 'self' data:",
+        "font-src 'self'",
+        "connect-src 'self'",
+        "frame-src 'self'",                    // the email previews in the admin area
+        "frame-ancestors 'self'",
+        "form-action 'self'",
+        "base-uri 'self'",
+        "object-src 'none'",
+    ];
+    if ($https && APP_ENV === 'production') {
+        $policy[] = 'upgrade-insecure-requests';
+        header('Strict-Transport-Security: max-age=31536000');
+    }
+    header('Content-Security-Policy: ' . implode('; ', $policy));
+    header_remove('X-Powered-By'); // don't announce the PHP version
+    header('X-Content-Type-Options: nosniff');
+    header('Referrer-Policy: ' . ($admin ? 'same-origin' : 'strict-origin-when-cross-origin'));
+    header('Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=(), usb=()');
+    if (!$admin) {
+        header('X-Frame-Options: SAMEORIGIN');
+    }
+}

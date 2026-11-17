@@ -69,7 +69,9 @@ Signed-in staff can edit every piece of website wording without a developer.
 
 **Being found (SEO and GEO):** Marketing → **Search health** lists what to improve, with a link to each fix. Every edit screen for an article, service, project or page shows **How it may look in Google** with a short checklist. Website Settings → Search engines and AI assistants holds where you work, the designer's name and title, the AI training choice and the Google and Bing codes. The site gives search engines and AI assistants structured details about the business, Vanessa, each service and each article, and a summary at `/llms.txt`.
 
-**Other:** testimonials (with written permission) show on the home, service and project pages; a project photo can have a "before" photo for a before-and-after slider; visitors can book a consultation at `book-consultation.php` (giving their area and preferred dates); and a WhatsApp number in Website Settings adds a "Chat on WhatsApp" button.
+**Your account and help:** **My account** (top of every admin screen) changes your name and password, switches on two-step sign-in and shows your recent sign-ins. **Help** explains the everyday jobs in plain words. Marketing → **Statistics** shows page views, the most-read pages and where visitors came from (no cookies, nothing personal). The SuperAdmin has System → **Activity log**.
+
+**Other:** testimonials (with written permission) show on the home, service and project pages; a project photo can have a "before" photo for a before-and-after slider; visitors can book a consultation at `book-consultation.php` (giving their area and preferred dates; they get a "we received it" email, as do people using the contact form); gift vouchers are asked about through the contact form (Services page block); and a WhatsApp number in Website Settings adds a "Chat on WhatsApp" button.
 
 Planned admin areas (placeholders today): Photography Products and Orders.
 
@@ -142,6 +144,11 @@ Configuration and secrets live only in `.env`, which Git ignores. On the live se
 - Uploads checked by their real content, stored under generated names, and scripts blocked in `uploads/`
 - Published images are re-encoded, which removes hidden photo data such as GPS location; originals are not publicly reachable
 - `.env`, `database/`, `includes/`, `logs/`, `vendor/`, Composer files and all `.md` documents blocked from the web
+- Two-step sign-in (authenticator app code, one-time backup codes stored as hashes, codes never accepted twice); a SuperAdmin can switch it off for someone who lost their phone
+- Security headers on every page: a Content Security Policy (scripts, fonts and styles only from this website; no scripts written into pages), no framing by other sites, nosniff, referrer and permissions policies, and HSTS on the live https site
+- Old personal details removed automatically once a day (POPIA), for periods set in Website Settings → Privacy
+- Full activity log for the SuperAdmin; everyone can see their own recent sign-ins on My account
+- Fonts served from the website itself and statistics counted without cookies, so no visitor details go to third parties
 
 ---
 

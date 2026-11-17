@@ -29,6 +29,7 @@ function enquiry_types(): array
         'Speaking Engagement' => 'Speaking Engagement',
         'Consultation'        => 'Consultation',
         'Collaboration'       => 'Collaboration',
+        'Gift Voucher'        => 'Gift voucher',
     ];
 }
 
@@ -42,6 +43,7 @@ function enquiry_type_for_service(string $slug): string
         'workshops'            => 'Workshop',
         'speaking-engagements' => 'Speaking Engagement',
         'consultations'        => 'Consultation',
+        'gift-voucher'         => 'Gift Voucher',
     ][$slug] ?? 'General';
 }
 
@@ -148,10 +150,12 @@ function contact_recipient(): ?string
 }
 
 /**
- * Save a validated message, handle the newsletter tick-box and queue the
- * notification email. Returns the new MessageID.
+ * Save a validated message, handle the newsletter tick-box, and queue the
+ * notification email to the business and a short "we received it" email to
+ * the visitor. $choices: a consultation's choices, repeated in that email.
+ * Returns the new MessageID.
  */
-function contact_submit(array $data): int
+function contact_submit(array $data, array $choices = []): int
 {
     db_query(
         'INSERT INTO ContactMessages (Name, Surname, Email, Phone, Subject, Message, EnquiryType, SubscribeToNewsletter, IPAddress)
@@ -169,6 +173,13 @@ function contact_submit(array $data): int
         } catch (Throwable $error) {
             error_log('Newsletter sign-up from contact message ' . $id . ' failed: ' . $error->getMessage());
         }
+    }
+
+    // A short "we received it" email to the visitor; a problem never affects the saved message.
+    try {
+        contact_acknowledge($data, $choices);
+    } catch (Throwable $error) {
+        error_log('Acknowledgement for contact message ' . $id . ' not queued: ' . $error->getMessage());
     }
 
     $recipient = contact_recipient();
@@ -285,5 +296,37 @@ function consultation_validate(array $input, array $services): array
     ]);
     unset($contactErrors['message'], $contactErrors['subject']);
 
-    return [$data, $contactErrors + $errors];
+    // The choices, for the "we received it" email (not the free-text notes).
+    $summary = array_filter([
+        'Type of space' => $space,
+        'Service'       => (string) $service,
+        'Area'          => $area,
+        'First choice'  => $choices[1] ?? '',
+        'Second choice' => $choices[2] ?? '',
+    ]);
+
+    return [$data, $contactErrors + $errors, $summary];
+}
+
+/**
+ * The "we received it" email to someone who used the contact or booking form.
+ * Replies go to the business. Their own message is not repeated (see the
+ * template), so the form can't be used to send text to other people.
+ */
+function contact_acknowledge(array $data, array $choices = []): void
+{
+    $settings = db_row('SELECT Phone, Email FROM WebsiteSettings WHERE SettingID = 1') ?? [];
+    $business = filter_var((string) ($settings['Email'] ?? ''), FILTER_VALIDATE_EMAIL) ? (string) $settings['Email'] : '';
+    mail_send_later((string) $data['Email'], 'enquiry-received', [
+        'name'         => (string) $data['Name'],
+        'consultation' => ($data['EnquiryType'] ?? '') === 'Consultation',
+        'choices'      => $choices,
+        'phone'        => trim((string) ($settings['Phone'] ?? '')),
+        'email'        => $business,
+        'siteUrl'      => absolute_url(''),
+    ], array_filter([
+        'to_name'    => trim($data['Name'] . ' ' . ($data['Surname'] ?? '')),
+        'reply_to'   => $business ?: null,
+        'reply_name' => $business !== '' ? SITE_NAME : null,
+    ]));
 }

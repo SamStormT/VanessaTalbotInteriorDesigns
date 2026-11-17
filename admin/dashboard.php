@@ -51,11 +51,17 @@ $latestMessages = can('messages.view')
 $pageTitle = 'Dashboard';
 $layout    = 'admin';
 $admin     = current_admin();
+// The daily clean-up of old personal details, in case the scheduled task isn't set up.
+require_once INCLUDES_PATH . '/retention.php';
+data_cleanup();
 
 require_once INCLUDES_PATH . '/header.php';
 ?>
 <main id="main-content" class="admin-content">
     <?= cms_flash() ?>
+<?php if (empty($admin['TwoFactorEnabledDate'])): ?>
+    <p class="admin-alert admin-alert--<?= $admin['Role'] === 'SuperAdmin' ? 'error' : 'info' ?> dashboard-twofactor">Protect your account: switch on <strong>two-step sign-in</strong>, so a stolen password alone can't be used to get in. <a href="<?= e(url('admin/account.php#two-step')) ?>">Set it up on My account</a>.</p>
+<?php endif; ?>
     <p class="admin-welcome">Welcome back, <?= e($admin['Name']) ?>.</p>
 
     <h2 class="admin-section-title">At a glance</h2>
@@ -79,7 +85,7 @@ require_once INCLUDES_PATH . '/header.php';
     <p class="admin-help">Statistics will appear here once website analytics is connected.</p>
 
 <?php if ($activity !== []): ?>
-    <h2 class="admin-section-title">Recent activity</h2>
+    <h2 class="admin-section-title">Recent activity <a class="admin-section-title__link" href="<?= e(url('admin/activity-log.php')) ?>">See all</a></h2>
     <div class="admin-table-wrap">
         <table class="admin-table">
             <thead><tr><th scope="col">When</th><th scope="col">User</th><th scope="col">Action</th><th scope="col">Table</th><th scope="col">Record</th></tr></thead>

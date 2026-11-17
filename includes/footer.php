@@ -74,6 +74,12 @@ if (strlen($whatsApp) >= 9): ?>
 <a class="whatsapp-button" href="https://wa.me/<?= e($whatsApp) ?>?text=<?= e(rawurlencode('Hello, I am getting in touch from your website.')) ?>" target="_blank" rel="noopener"<?= ed_setting('WhatsApp') ?>><?= icon('chat') ?><span class="whatsapp-button__text">Chat on WhatsApp</span><span class="visually-hidden"> (opens WhatsApp)</span></a>
 <?php endif; ?>
 <?php
+// Count this view for Marketing → Statistics: no cookies or personal details (includes/statistics.php).
+// Staff and pages kept out of search engines are not counted.
+if (empty($noindex) && empty($staff)) {
+    require_once INCLUDES_PATH . '/statistics.php';
+    stats_record();
+}
 // The breadcrumb trail, for search engines (pages with a page header or their own breadcrumb).
 if (!empty($GLOBALS['vt_breadcrumbs']) && count($GLOBALS['vt_breadcrumbs']) > 1 && empty($noindex) && mail_origin() !== '') {
     require_once INCLUDES_PATH . '/seo.php';

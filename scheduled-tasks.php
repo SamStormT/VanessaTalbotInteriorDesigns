@@ -37,3 +37,9 @@ set_time_limit(120);
 foreach (campaign_run(25) as $line) {
     echo $line, "\n";
 }
+
+// Once a day: remove personal details past their keeping period (includes/retention.php).
+require_once INCLUDES_PATH . '/retention.php';
+if ($removed = data_cleanup()) {
+    echo 'Clean-up: ', implode(', ', array_map(static fn($label, $count) => $count . ' ' . $label, array_keys($removed), $removed)), "\n";
+}

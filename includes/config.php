@@ -71,11 +71,9 @@ set_exception_handler(static function (Throwable $error): void {
         http_response_code(500);
         header('Content-Type: text/html; charset=UTF-8');
     }
-    echo '<!DOCTYPE html><html lang="en-ZA"><head><meta charset="UTF-8"><title>Something went wrong</title></head>'
-       . '<body style="font-family:sans-serif;padding:2rem"><h1>Something went wrong</h1>'
-       . '<p>Please try again in a few minutes.</p>'
-       . (APP_ENV === 'development' ? '<pre>' . htmlspecialchars((string) $error) . '</pre>' : '')
-       . '</body></html>';
+    // The branded "Something went wrong" page (error.php); details only in development.
+    $errorDetail = APP_ENV === 'development' ? (string) $error : null;
+    require ROOT_PATH . '/error.php';
 });
 
 // ---------------------------------------------------------------------------
