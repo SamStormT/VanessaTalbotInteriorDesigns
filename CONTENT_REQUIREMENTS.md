@@ -114,10 +114,11 @@ These go in the "Training and expertise" section of the About page, which curren
 
 Checklist:
 
-- [ ] 🟢 **Science qualification(s).** What field of science did you study, and where? This is the foundation of the "science to interior design" story, so it matters most.
-- [ ] 🟢 **Interior design qualification(s)**
-- [ ] ⚪ Any biophilic design training or courses
-- [ ] ⚪ Any colour psychology or colour theory training
+- [x] 🟢 **Science qualification(s).** Analytical Chemistry (questionnaire, Nov 2026)
+- [x] 🟢 **Interior design qualification(s).** Diploma in Interior Design; also Postgraduate Diploma in Business Administration, and Business, Branding, Marketing and Social Media for Interior Designers
+- [x] ⚪ Any biophilic design training or courses: Biophilic & Well-being Design
+- [x] ⚪ Any colour psychology or colour theory training: Colour and Design Psychology
+- [ ] 🟢 **Still needed:** the institution and year for each (they are on the About page without them for now; add them in About → Qualifications)
 - [ ] ⚪ Any photography training
 - [ ] ⚪ Any other relevant studies (for example: horticulture, wellness, sustainability, art)
 - [ ] ⚪ Years of experience in interior design. Since when? (shown only if you want it)
@@ -128,7 +129,7 @@ Checklist:
 
 List anything that adds credibility. For each one: **name, issuing organisation, membership or certificate number (only if you want it shown), year, and expiry date if it has one.**
 
-- [ ] 🟢 Professional bodies you belong to (for example, an interior design or decor institute)
+- [x] 🟢 Professional bodies you belong to: Green Living Biophilic Society (Kenya) and Habitarmonia Academy & Ecosystem, shown on the About page under "Professional memberships". **Please check the society's exact name:** the questionnaire gives the initials as GBLS, which doesn't match "Green Living Biophilic Society" (GLBS), so the website shows the name without initials
 - [ ] ⚪ Biophilic design certifications
 - [ ] ⚪ Colour consultancy certifications
 - [ ] ⚪ Sustainability or wellness-building accreditations
@@ -159,7 +160,7 @@ For **each** engagement, please provide:
 | A quote from the organiser | Optional, but it doubles as a testimonial |
 
 - [ ] 🟢 At least 2 to 3 past engagements (or confirm there are none yet, and the section will instead invite bookings)
-- [ ] ⚪ Any upcoming engagements, with dates
+- [x] ⚪ Any upcoming engagements, with dates: Kenya College of Interior Design, presentation to first-year students, 30 September 2026 (added; please send the talk title and a photo if you have one)
 
 ### 4.2 Speaker information
 
@@ -230,7 +231,9 @@ For each platform, give the **full link** (for example `https://www.instagram.co
 - [ ] 🟢 Address on your business card: this looks like a residential address. Should it appear on the public website? Options: full address, town and province only, or not shown.
 - [ ] 🟢 Website address: is **vanessatalbotinteriordesigns.co.za** registered, and is it the domain we'll launch on? (Xneelo keeps the domain; the hosting company is still to be decided.)
 - [ ] ⚪ Business hours, or "by appointment only"
-- [ ] ⚪ Your title on the site ("Director", as on the business card, or something else)
+- [x] ⚪ Your title on the site: **Interior Designer – Biophilic & Well-being** (Website Settings → Designer's job title)
+- [ ] 🟢 **Email: three different addresses.** The questionnaire cover says vanessa@talbot.co.za, its contact section says vanessa@vanessatalbotinteriordesigns.co.za, and the business card says vanessa@vanessatalbot.co.za. Please confirm which one is current; that one goes in Website Settings → Email
+- [ ] 🟢 **Second domain vtid.co.za:** if it is registered, it should send visitors on to the main website address (a permanent redirect set up at the host), so there aren't two copies of the site
 
 ### 7.2 Business and legal
 
@@ -238,19 +241,22 @@ For each platform, give the **full link** (for example `https://www.instagram.co
 - [ ] 🟢 Company registration number (CIPC), if registered. Needed for the terms and conditions and the online store
 - [ ] 🟢 VAT registered? If yes, the VAT number. This affects how store prices are shown
 - [ ] 🟢 Information Officer name, for the Privacy Policy (POPIA requires one; usually the owner)
-- [ ] 🟢 Areas you serve: Pietermaritzburg, KwaZulu-Natal, nationally, or internationally/online
+- [x] 🟢 Areas you serve: Pietermaritzburg and the KZN Midlands in person, online across South Africa, and across Africa (including Kenya) and further afield by arrangement, with travel paid by the client
 - [ ] 🟢 Year the business was founded (optional to show)
 - [ ] ⚪ Do you have a lawyer, or existing terms, privacy policy or copyright wording you'd like us to use? If not, we'll draft standard South African wording for your review.
 
 ### 7.3 Services and pricing
 
-- [ ] 🟢 Confirm **every service listed is one you offer**: Biophilic Design, Colour Psychology, Photography, Speaking Engagements, Workshops, Consultations
+- [ ] 🟢 Confirm **every service listed is one you offer**. The questionnaire gives three current services: Biophilic & Well-being Design (the Biophilic Design page has been renamed to this), Colour & Design Psychology, and Interior Design. Still to answer: should Photography, Speaking Engagements, Workshops and Consultations stay as services, become "future", or be removed? (the Active / Future / Retired table was left blank)
+- [ ] 🟢 **Interior Design** needs its own service page: what it includes, how it works (process), deliverables and pricing approach. Visitors can already choose "Interior Design" on the contact form
+- [ ] ⚪ Future services (Online Courses, Forest Therapy Guide, Nature Photography): not on the website yet; tell us when each should appear
 - [ ] 🟢 Photography services: do you offer **commissioned interior photography** for businesses and designers, or only fine-art prints? The Services page currently mentions both.
 - [ ] 🟢 Workshops: do you offer **corporate/team** workshops, public workshops, or both?
 - [ ] 🟢 Consultations: in person only, or also online? How long is a consultation, and where does it take place?
 - [ ] 🟢 Pricing approach for each service: show prices, "from R…", or "on request"
 - [ ] 🟢 How should people book: contact form, email, phone/WhatsApp, or an online booking calendar?
 - [ ] ⚪ Gift vouchers: the brand pack includes a 20% gift voucher design. Should vouchers be offered on the website?
+- [x] 🟢 Budgets: biophilic design is offered in tiers (low, medium, high), as the FAQ now says. Prices themselves are still to come
 
 ### 7.4 Photography store (only if it launches with the site)
 
@@ -265,6 +271,7 @@ For each platform, give the **full link** (for example `https://www.instagram.co
 - [ ] 🟢 PayFast merchant account: do you have one? (Don't send the keys. We'll set this up together.)
 - [ ] ⚪ Limited editions or open editions? Signed prints?
 - [ ] ⚪ Digital downloads or image licensing (listed as a future idea in the README)
+- [ ] 🟢 **Photo protection (later, with the photography store): show a visible watermark on gallery and store photos, publish only reduced web-size copies (never the print files), and switch off right-click saving on those images. No website can fully stop screenshots, so the watermark and the low resolution are what actually protect the work; originals are only ever sent to paying customers.** Needed before any photography goes on sale
 
 ### 7.5 Newsletter
 
@@ -276,9 +283,10 @@ For each platform, give the **full link** (for example `https://www.instagram.co
 
 ## 7.6 Being found on Google and in AI assistants
 
-- [ ] 🟢 Short bio (two or three sentences) for under articles: About Content → Short bio
-- [ ] 🟢 Check "Where you work" in Website Settings (currently: Pietermaritzburg and the KZN Midlands; online across South Africa; international projects by arrangement, with travel covered by the client)
-- [ ] 🟢 Questions clients really ask, with short answers, for the contact page FAQ. AI assistants quote these
+- [ ] 🟢 Short bio (two or three sentences) for under articles: About Content → Short bio. **Drafted** from the questionnaire; please check it
+- [x] 🟢 "Where you work" in Website Settings now includes Africa and Kenya
+- [ ] 🟢 Questions clients really ask, with short answers, for the contact page FAQ. AI assistants quote these. **Added from your pain points:** "Can't I just ask AI to design my space?" and "Do you work outside South Africa?"; the budget and "What is biophilic design?" answers now use your words. Please check them
+- [ ] 🟢 Keywords, locations and search terms clients use (questionnaire section 18, not answered yet)
 - [ ] 🟢 Place names in the wording of the home, About and service pages, for example "interior designer in Pietermaritzburg"
 - [ ] ⚪ Service pages of about 300 words or more each
 - [ ] ⚪ AI training: leave it off (AI search tools can still recommend the website), or allow it
@@ -292,17 +300,38 @@ For each platform, give the **full link** (for example `https://www.instagram.co
 
 These sections were written from the brand documents. Please read each one on the site and confirm it, or send corrections. Your own words always come first.
 
-- [ ] 🟢 **Home:** introduction ("Where science, art and nature meet")
-- [ ] 🟢 **About:** "Vanessa's story". It is currently written in general terms; please add your real story: what drew you to design, key moments, where you're based
-- [ ] 🟢 **About:** "From science to interior design", the three steps of your journey
+- [x] 🟢 **Home:** hero headline is now "Designing Spaces that Nurture Mind, Body, and Soul"; the introduction says why clients choose you (biophilic design and colour & design psychology, backed by science; your final-reflection answer)
+- [x] 🟢 **Home:** new "What nature brings to a space" block with your four key messages (Sustainable living & working, Sensory enrichment, Performance & productivity, Timeless aesthetic appeal). Message number 2 seems to be missing from the questionnaire (the numbering goes 1, 3, 4, 5); send it if there is one
+- [ ] 🟢 **Home:** primary and secondary buttons (questionnaire left blank; they are "Book a consultation" and "Explore services")
+- [x] 🟢 **About:** "Vanessa's story" now tells your own story (born in the UK, a childhood in nature in Zimbabwe, then South Africa). Family details (siblings, marriage, children) were left out on purpose; say if you would like any of them in
+- [x] 🟢 **About:** "From science to interior design" uses your science background (30 years, SANAS ISO 17025, director) and career-change story. It mentions "personal tragedy" in your own words; please confirm you are comfortable with that on the public site
+- [x] 🟢 **About:** new "Mission & vision" block with your mission, vision and the impact you want to create (written as "Vanessa's", like the rest of the page)
+- [x] 🟢 **About:** your personal philosophy quote now sits beside the biophilic approach (the Kellert quote stays on the home page)
 - [ ] 🟢 **About:** the biophilic design philosophy and its five principles
-- [ ] 🟢 **About:** the descriptions of your five values (Authenticity, Creativity, Individuality, Honesty, Integrity)
+- [ ] 🟢 **About:** your eleven values are in (Honesty, which wasn't on your list, is archived). Each has a one-line description we wrote; please check them
+- [x] 🟢 **Biophilic & Well-being Design page:** your definition, the spaces you work in (homes, offices, health clinics and gyms, schools and frail care, education) and a new "benefits" block with your six benefits. Please check the one-line text under each benefit
 - [ ] 🟢 **Services:** the description, "What's included" list and "Ideal for" tags for each of the six services
 - [ ] 🟢 **Services:** the four-step process (Listen, Explore, Design, Bring to life). Is this how you work?
-- [ ] 🟢 **Tagline style:** the website uses "The Balance of Art, Science and Nature in Spaces", while the brand pack uses "The balance of art, science & nature in spaces". Which should we use everywhere?
+- [x] 🟢 **Tagline style** (decided: the brand pack style): the website uses "The Balance of Art, Science and Nature in Spaces", while the brand pack uses "The balance of art, science & nature in spaces". Which should we use everywhere?
 - [ ] ⚪ **Quote:** we use the Stephen R. Kellert quote from the brand pack on the Home and About pages. Happy with that?
 - [ ] ⚪ **Blog:** confirm the planned topics (biophilic design, colour psychology, wellbeing at home, healthier workspaces, photography), and send 2 or 3 first articles if you'd like the blog to launch with content
 - [ ] ⚪ **Collaborators:** the names of people and businesses you've worked with, what each did, links, and their permission to be listed
+
+## 9. Discovery questionnaire (November 2026): still unanswered
+
+Applied to the website on 17 November 2026 (migration 021). These questions were left blank and we will come back to them:
+
+- Primary and secondary call to action; how clients describe you; the Active / Future / Retired service table
+- Process, deliverables and pricing for each service; Colour & Design Psychology services, outcomes and methods; research interests
+- Speaking topics, workshops, corporate talks, universities and target organisers
+- Portfolio projects, concept projects, case study template and images needed
+- Photography business, e-commerce (payment, orders, refunds, downloads)
+- Blog topics and frequency; newsletter benefits, lead magnets and frequency; community ideas
+- Search keywords, locations and search terms; favourite websites; design style
+- Content inventory (photos, videos, presentations, testimonials, certificates); awards and media mentions
+- Revenue streams; 1, 3 and 5-year vision; must-have / should-have / nice-to-have features; success measures; success in five years
+
+**What we took from the websites you listed:** Habitarmonia's structure (a clear statement of purpose, the benefits of nature-based design, the founder's credentials and memberships, an educational tone) for the home key messages, About mission and memberships, and the biophilic benefits block; Rainey Skyes' short, clearly labelled mission and vision block; BHD's "exactly what they provide" lists (the spaces she works in); D3 and Cherylin's clean, uncluttered layouts (each new block is short, with a heading and a few cards). Like CRE Spaces' visitors, nobody here gets boxes "flying in": the website has no entrance animations. ARRCC's indoor-outdoor nature photography needs real photos, so it waits for the photo shoot.
 
 ---
 

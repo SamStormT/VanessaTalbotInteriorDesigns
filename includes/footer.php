@@ -38,7 +38,7 @@ if ($layout === 'admin'): ?>
         <nav class="site-footer__col" aria-labelledby="footer-services">
             <h2 id="footer-services" class="site-footer__heading">Services</h2>
             <ul>
-                <li><a href="<?= e(url('services/biophilic-design.php')) ?>">Biophilic Design</a></li>
+                <li><a href="<?= e(url('services/biophilic-design.php')) ?>">Biophilic &amp; Well-being Design</a></li>
                 <li><a href="<?= e(url('services/colour-psychology.php')) ?>">Colour &amp; Design Psychology</a></li>
                 <li><a href="<?= e(url('services/workshops.php')) ?>">Workshops</a></li>
                 <li><a href="<?= e(url('services/consultations.php')) ?>">Consultations</a></li>

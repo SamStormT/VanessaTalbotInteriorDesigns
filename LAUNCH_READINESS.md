@@ -49,7 +49,8 @@
 | 9 | No portfolio projects | At least a few real projects with client permission | Vanessa |
 | 10 | Stand-in logo text and fonts | Official logo files; web-licensed John Mayer and Bayshore | Vanessa |
 | 11 | Vanessa's phone and street address are in the public GitHub history | Make the repo private, or rewrite history | Samantha |
-| 12 | Public email | **Decided:** the address on the business card. Enter it in Website Settings → Email (local copy and live site); it is not stored in the code | Vanessa |
+| 12 | Public email | The address on the business card, but the questionnaire gives two others (vanessa@talbot.co.za and vanessa@vanessatalbotinteriordesigns.co.za). Confirm the current one and enter it in Website Settings → Email (local copy and live site); it is not stored in the code | Vanessa |
+| 13 | Second domain vtid.co.za | If registered, set a permanent (301) redirect at the host to the main domain | Samantha |
 
 Store placeholder pages still exist at their old addresses, but nothing links to them. Old blog addresses redirect to the blog page.
 
@@ -89,7 +90,7 @@ Everything below can be changed in the admin area. Page Sections are listed by p
 - [ ] Add an HTTP-to-HTTPS redirect (sign-in needs HTTPS in production)
 - [ ] Create the production database and a dedicated database user
 - [ ] Put `.env` in the folder above the website with `APP_ENV=production`
-- [ ] Run `database/setup.php` on the server (table names must not come from a Windows export)
+- [ ] Run `database/setup.php` on the server (table names must not come from a Windows export). On an existing copy, back up the database first; setup then adds migrations 016 to 021 (021 brings in Vanessa's questionnaire answers, changing only wording that hasn't been edited)
 - [ ] Create the real SuperAdmin with `setup.php`, then add the other people from the Users screen; no test accounts on the server
 - [ ] Make a second SuperAdmin (or keep developer access) so the site can never be left without one who can manage users
 - [ ] Confirm `.htaccess` is honoured: `/.env`, `/database/`, `/includes/`, `/vendor/`, `/composer.json` and `/README.md` must return 404, a script placed in `uploads/` must not run, and nothing in `uploads/originals/` may be downloadable
@@ -149,4 +150,6 @@ Everything below can be changed in the admin area. Page Sections are listed by p
 | 3 | **First public launch** as a brochure site, with the contact form and newsletter sign-up working | Confirmed wording, legal review, hosting checklist, website mailbox |
 | 4 | Newsletter campaigns | Done |
 | 5 | Blog | Done |
-| 6 | Photography store and PayFast | Approval, product decision, merchant account |
+| 6 | Photography store and PayFast | Approval, product decision, merchant account, and photo protection (watermark, web-size copies only, no right-click saving) |
+
+**Later, with the photography store:** Photo protection (later, with the photography store): show a visible watermark on gallery and store photos, publish only reduced web-size copies (never the print files), and switch off right-click saving on those images. No website can fully stop screenshots, so the watermark and the low resolution are what actually protect the work; originals are only ever sent to paying customers.

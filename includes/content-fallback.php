@@ -13,8 +13,8 @@ return array (
   ),
   'home' => 
   array (
-    'HeroEyebrow' => 'Biophilic Interior Design · Colour & Design Psychology · Photography',
-    'HeroTitle' => 'Vanessa Talbot',
+    'HeroEyebrow' => 'Biophilic & Well-being Design · Colour & Design Psychology · Interior Design',
+    'HeroTitle' => 'Designing Spaces that Nurture Mind, Body, and Soul',
     'HeroSubtitle' => 'Interiors designed around the way people are meant to live: connected to light, colour and the natural world. Grounded in science, shaped by art, inspired by nature.',
     'HeroImage' => NULL,
     'HeroImageAlt' => NULL,
@@ -35,11 +35,9 @@ return array (
   ),
   'about' => 
   array (
-    'Biography' => 'Vanessa Talbot has always been fascinated by the relationship between people and the places they spend their lives in.
+    'Biography' => 'Vanessa Talbot was born in the UK but has lived her whole life in Africa, first in Zimbabwe and then in South Africa. A free-rein childhood of climbing trees, fetching tadpoles from rivers and building forts made her a child of nature, and nature is still where she is happiest, whether hiking or simply sitting outdoors. It is also where her love of colour and design began: in the colours and patterns nature shows in every season.
 
-It is a curiosity that has carried her from science to interior design, and into photography. Each one has taught her to look a little more closely, at how light moves through a room, how colour changes a mood, and how a single living plant can soften an entire space.
-
-Today, Vanessa Talbot Interior Designs brings those threads together. Vanessa works with homeowners, businesses, wellness practitioners, retailers and event organisers to create interiors that are beautiful, personal and good for the people in them.',
+Curiosity led her first to science, and eventually to design. Vanessa Talbot Interior Designs brings her studies, her experience and her love of nature together, to create spaces that are beautiful, meaningful and good for the people in them.',
     'Journey' => NULL,
     'ScienceBackground' => NULL,
     'DesignBackground' => NULL,
@@ -55,24 +53,29 @@ Seeing like a photographer: light, texture and detail at home',
     'PortraitImageAlt' => NULL,
     'MetaTitle' => 'About Vanessa',
     'MetaDescription' => 'Meet Vanessa Talbot: an interior designer with a background in science, creating biophilic, colour-led spaces that support wellbeing and reconnect people with nature.',
+    'ShortBio' => 'Vanessa Talbot is an interior designer specialising in biophilic & well-being design and colour & design psychology. She brings thirty years in analytical chemistry and environmental science to creating spaces that support health, well-being and our connection with nature.',
   ),
   'services' => 
   array (
     0 => 
     array (
-      'ServiceName' => 'Biophilic Design',
+      'ServiceName' => 'Biophilic & Well-being Design',
       'Slug' => 'biophilic-design',
       'Icon' => 'leaf',
       'ShortDescription' => 'Interiors that reconnect people with nature through light, living plants, natural materials and organic form.',
-      'Lead' => 'People are wired to feel better around nature. Biophilic design brings that connection indoors, deliberately and beautifully.',
-      'FullDescription' => 'Drawing on research into how natural light, greenery, texture, water and views affect the way we feel and function, Vanessa designs spaces that calm the mind, lift energy and support everyday wellbeing. The result is an interior that feels alive, grounded and quietly restorative.',
+      'Lead' => 'Biophilia is our innate connection to nature. Biophilic design brings that connection back into the places where we live and work.',
+      'FullDescription' => 'Reconnect your spaces with nature through biophilic design, integrating natural elements to create healthier, calmer and more restorative living or working spaces for improved well-being.
+
+Drawing on research into how natural light, greenery, texture, water and views affect the way we feel and function, Vanessa designs spaces that calm the mind, lift energy and support everyday well-being. Biophilic design can be brought into a new or existing space at many budget levels.',
       'IncludedItems' => 'Assessment of light, airflow, views and how the space is used
 Natural materials, textures and organic shapes
 Planting schemes suited to the space and the people who care for it
 Layouts that support rest, focus and connection',
-      'IdealFor' => 'Residential homes
-Workspaces
-Health & wellness centres',
+      'IdealFor' => 'Homes and residential
+Offices and workplaces
+Health clinics, gyms and wellness rooms
+Schools and frail care
+Education',
       'FeaturedImage' => NULL,
       'FeaturedImageAlt' => NULL,
       'MetaTitle' => NULL,
@@ -204,16 +207,16 @@ Health & wellness centres',
     ),
     2 => 
     array (
-      'Title' => 'Individuality',
-      'Description' => 'Every person, business and building is different, so every design begins with listening.',
-      'Icon' => 'person',
+      'Title' => 'Curiosity',
+      'Description' => 'A sense of wonder that led from science to design, and keeps every project asking why.',
+      'Icon' => 'eye',
       'DisplayOrder' => 30,
     ),
     3 => 
     array (
-      'Title' => 'Honesty',
-      'Description' => 'Clear advice, realistic expectations and straightforward communication at every stage.',
-      'Icon' => 'eye',
+      'Title' => 'Individuality',
+      'Description' => 'Every person, business and building is different, so every design begins with listening.',
+      'Icon' => 'person',
       'DisplayOrder' => 40,
     ),
     4 => 
@@ -222,6 +225,138 @@ Health & wellness centres',
       'Description' => 'Recommendations grounded in evidence and made with care for people and the natural world.',
       'Icon' => 'shield',
       'DisplayOrder' => 50,
+    ),
+    5 => 
+    array (
+      'Title' => 'Wellness',
+      'Description' => 'Spaces that support physical and mental health, rest and recovery.',
+      'Icon' => 'leaf',
+      'DisplayOrder' => 60,
+    ),
+    6 => 
+    array (
+      'Title' => 'Sustainability',
+      'Description' => 'Local, natural and lasting choices that respect the environment.',
+      'Icon' => 'sprout',
+      'DisplayOrder' => 70,
+    ),
+    7 => 
+    array (
+      'Title' => 'Education',
+      'Description' => 'Sharing what biophilic design can do, through talks, workshops and writing.',
+      'Icon' => 'pen',
+      'DisplayOrder' => 80,
+    ),
+    8 => 
+    array (
+      'Title' => 'Research',
+      'Description' => 'Design decisions informed by evidence about how people respond to their surroundings.',
+      'Icon' => 'flask',
+      'DisplayOrder' => 90,
+    ),
+    9 => 
+    array (
+      'Title' => 'Community',
+      'Description' => 'Working with clients, makers and fellow designers, and spaces that bring people together.',
+      'Icon' => 'group',
+      'DisplayOrder' => 100,
+    ),
+    10 => 
+    array (
+      'Title' => 'Nature Connection',
+      'Description' => 'Reconnecting people with the natural world, wherever they live and work.',
+      'Icon' => 'leaf',
+      'DisplayOrder' => 110,
+    ),
+  ),
+  'qualifications' => 
+  array (
+    0 => 
+    array (
+      'Title' => 'Analytical Chemistry',
+      'Type' => 'Qualification',
+      'Institution' => NULL,
+      'FieldOfStudy' => NULL,
+      'YearCompleted' => NULL,
+      'DisplayOrder' => 10,
+    ),
+    1 => 
+    array (
+      'Title' => 'Postgraduate Diploma in Business Administration',
+      'Type' => 'Qualification',
+      'Institution' => NULL,
+      'FieldOfStudy' => NULL,
+      'YearCompleted' => NULL,
+      'DisplayOrder' => 20,
+    ),
+    2 => 
+    array (
+      'Title' => 'Diploma in Interior Design',
+      'Type' => 'Qualification',
+      'Institution' => NULL,
+      'FieldOfStudy' => NULL,
+      'YearCompleted' => NULL,
+      'DisplayOrder' => 30,
+    ),
+    3 => 
+    array (
+      'Title' => 'Business, Branding, Marketing and Social Media for Interior Designers',
+      'Type' => 'Certification',
+      'Institution' => NULL,
+      'FieldOfStudy' => NULL,
+      'YearCompleted' => NULL,
+      'DisplayOrder' => 40,
+    ),
+    4 => 
+    array (
+      'Title' => 'Colour and Design Psychology',
+      'Type' => 'Certification',
+      'Institution' => NULL,
+      'FieldOfStudy' => NULL,
+      'YearCompleted' => NULL,
+      'DisplayOrder' => 50,
+    ),
+    5 => 
+    array (
+      'Title' => 'Biophilic & Well-being Design',
+      'Type' => 'Certification',
+      'Institution' => NULL,
+      'FieldOfStudy' => NULL,
+      'YearCompleted' => NULL,
+      'DisplayOrder' => 60,
+    ),
+    6 => 
+    array (
+      'Title' => 'Green Living Biophilic Society, Kenya',
+      'Type' => 'Membership',
+      'Institution' => NULL,
+      'FieldOfStudy' => NULL,
+      'YearCompleted' => NULL,
+      'DisplayOrder' => 70,
+    ),
+    7 => 
+    array (
+      'Title' => 'Habitarmonia Academy & Ecosystem',
+      'Type' => 'Membership',
+      'Institution' => NULL,
+      'FieldOfStudy' => NULL,
+      'YearCompleted' => NULL,
+      'DisplayOrder' => 80,
+    ),
+  ),
+  'engagements' => 
+  array (
+    0 => 
+    array (
+      'Title' => 'Presentation to first-year interior design students',
+      'Slug' => 'kenya-college-of-interior-design-2026',
+      'Organiser' => 'Kenya College of Interior Design',
+      'Venue' => 'Kenya College of Interior Design',
+      'City' => 'Kenya',
+      'EventLink' => NULL,
+      'Description' => NULL,
+      'FeaturedImage' => NULL,
+      'FeaturedImageAlt' => NULL,
     ),
   ),
   'sections_home' => 
@@ -252,7 +387,7 @@ Health & wellness centres',
       'Eyebrow' => 'Meet Vanessa',
       'Heading' => 'Where science, art and nature meet',
       'Introduction' => 'Vanessa Talbot brings together a background in science and a passion for interior design to create spaces that do more than look beautiful. They help people feel well.',
-      'Body' => 'Her work is built on a simple idea: the spaces we spend our days in shape how we think, feel and connect. By combining biophilic design, the psychology of colour and a photographer\'s eye for light and detail, Vanessa designs interiors that are calm, personal and deeply connected to the natural world.',
+      'Body' => 'Her knowledge of biophilic design and colour & design psychology, backed by thirty years in science, means every choice is made for a reason. Vanessa listens to your vision for your space and its colours, and transforms it into something tangible, natural and sustainable.',
       'ButtonText' => 'Read Vanessa\'s story',
       'ButtonLink' => 'about.php',
       'SecondaryButtonText' => NULL,
@@ -294,6 +429,69 @@ Health & wellness centres',
           'Image' => NULL,
           'ImageAlt' => NULL,
           'DisplayOrder' => 30,
+        ),
+      ),
+    ),
+    'key-messages' => 
+    array (
+      'PageKey' => 'home',
+      'SectionKey' => 'key-messages',
+      'Eyebrow' => 'Why biophilic design',
+      'Heading' => 'What nature brings to a space',
+      'Introduction' => 'Most of us spend most of our lives indoors. Biophilic design brings nature back in, with benefits that go far beyond the way a room looks.',
+      'Body' => NULL,
+      'ButtonText' => NULL,
+      'ButtonLink' => NULL,
+      'SecondaryButtonText' => NULL,
+      'SecondaryButtonLink' => NULL,
+      'Image' => NULL,
+      'ImageAlt' => NULL,
+      'DisplayOrder' => 35,
+      'items' => 
+      array (
+        0 => 
+        array (
+          'ItemKey' => 'sustainable',
+          'Title' => 'Sustainable living & working',
+          'Text' => 'Spaces that nurture people and protect the planet, with renewable materials, eco-friendly practices and energy-efficient choices.',
+          'Icon' => 'leaf',
+          'Link' => NULL,
+          'Image' => NULL,
+          'ImageAlt' => NULL,
+          'DisplayOrder' => 10,
+        ),
+        1 => 
+        array (
+          'ItemKey' => 'sensory',
+          'Title' => 'Sensory enrichment',
+          'Text' => 'Light, greenery, textures and natural patterns engage all the senses, creating calm, immersive spaces that reduce stress and help you focus.',
+          'Icon' => 'sprout',
+          'Link' => NULL,
+          'Image' => NULL,
+          'ImageAlt' => NULL,
+          'DisplayOrder' => 20,
+        ),
+        2 => 
+        array (
+          'ItemKey' => 'performance',
+          'Title' => 'Performance & productivity',
+          'Text' => 'Nature-inspired spaces support creativity, concentration and collaboration, in workplaces, schools and homes alike.',
+          'Icon' => 'flask',
+          'Link' => NULL,
+          'Image' => NULL,
+          'ImageAlt' => NULL,
+          'DisplayOrder' => 30,
+        ),
+        3 => 
+        array (
+          'ItemKey' => 'timeless',
+          'Title' => 'Timeless aesthetic appeal',
+          'Text' => 'Organic beauty that never goes out of style, blending modern living with natural elegance.',
+          'Icon' => 'brush',
+          'Link' => NULL,
+          'Image' => NULL,
+          'ImageAlt' => NULL,
+          'DisplayOrder' => 40,
         ),
       ),
     ),
@@ -368,6 +566,25 @@ Health & wellness centres',
         ),
       ),
     ),
+    'testimonials' => 
+    array (
+      'PageKey' => 'home',
+      'SectionKey' => 'testimonials',
+      'Eyebrow' => 'Kind words',
+      'Heading' => 'What clients say',
+      'Introduction' => NULL,
+      'Body' => NULL,
+      'ButtonText' => NULL,
+      'ButtonLink' => NULL,
+      'SecondaryButtonText' => NULL,
+      'SecondaryButtonLink' => NULL,
+      'Image' => NULL,
+      'ImageAlt' => NULL,
+      'DisplayOrder' => 65,
+      'items' => 
+      array (
+      ),
+    ),
     'blog' => 
     array (
       'PageKey' => 'home',
@@ -376,8 +593,8 @@ Health & wellness centres',
       'Heading' => 'Ideas for living closer to nature',
       'Introduction' => NULL,
       'Body' => NULL,
-      'ButtonText' => NULL,
-      'ButtonLink' => NULL,
+      'ButtonText' => 'Read the blog',
+      'ButtonLink' => 'blog.php',
       'SecondaryButtonText' => NULL,
       'SecondaryButtonLink' => NULL,
       'Image' => NULL,
@@ -595,6 +812,47 @@ Health & wellness centres',
       array (
       ),
     ),
+    'mission' => 
+    array (
+      'PageKey' => 'about',
+      'SectionKey' => 'mission',
+      'Eyebrow' => 'Mission & vision',
+      'Heading' => 'Why Vanessa does this work',
+      'Introduction' => 'Vanessa believes everyone has the basic human right to live and work in spaces that connect them to nature. The benefits of biophilic design go far beyond aesthetics: they improve physical and mental health, boost cognition and encourage better stewardship of the environment.',
+      'Body' => NULL,
+      'ButtonText' => NULL,
+      'ButtonLink' => NULL,
+      'SecondaryButtonText' => NULL,
+      'SecondaryButtonLink' => NULL,
+      'Image' => NULL,
+      'ImageAlt' => NULL,
+      'DisplayOrder' => 25,
+      'items' => 
+      array (
+        0 => 
+        array (
+          'ItemKey' => 'mission',
+          'Title' => 'Mission',
+          'Text' => 'To create beautiful, harmonious, safe and functional spaces, bringing in elements of biophilic design in a way that resonates and aligns with each client\'s specific needs.',
+          'Icon' => 'leaf',
+          'Link' => NULL,
+          'Image' => NULL,
+          'ImageAlt' => NULL,
+          'DisplayOrder' => 10,
+        ),
+        1 => 
+        array (
+          'ItemKey' => 'vision',
+          'Title' => 'Vision',
+          'Text' => 'To co-create spaces that support human health and well-being with clients and stakeholders, in a way that supports our relationship with nature and our environment.',
+          'Icon' => 'eye',
+          'Link' => NULL,
+          'Image' => NULL,
+          'ImageAlt' => NULL,
+          'DisplayOrder' => 20,
+        ),
+      ),
+    ),
     'journey' => 
     array (
       'PageKey' => 'about',
@@ -616,7 +874,7 @@ Health & wellness centres',
         array (
           'ItemKey' => 'science',
           'Title' => 'A scientific foundation',
-          'Text' => 'A background in science taught Vanessa to observe carefully, ask questions and look for evidence. It also gave her a lasting respect for the natural systems that sustain us.',
+          'Text' => 'Vanessa studied analytical chemistry and spent thirty years running an environmental testing laboratory, where she achieved SANAS accreditation to ISO 17025 and became director of the laboratory and the company. Science taught her to observe carefully, ask questions and look for evidence.',
           'Icon' => 'flask',
           'Link' => NULL,
           'Image' => NULL,
@@ -627,7 +885,7 @@ Health & wellness centres',
         array (
           'ItemKey' => 'design',
           'Title' => 'A creative calling',
-          'Text' => 'Her love of beauty, colour and composition drew her to interior design, where she discovered she could use both sides of her thinking at once.',
+          'Text' => 'Personal tragedy led her to let go of the reins and try her wings at something that would fulfil her and feed her creative soul. The more she researched interior design, the more she saw that science and design are intertwined.',
           'Icon' => 'brush',
           'Link' => NULL,
           'Image' => NULL,
@@ -638,7 +896,7 @@ Health & wellness centres',
         array (
           'ItemKey' => 'nature',
           'Title' => 'Nature as the bridge',
-          'Text' => 'Biophilic design and colour & design psychology brought it all together: design choices informed by how people actually respond to their surroundings, expressed with an artist\'s eye.',
+          'Text' => 'A lifelong connection to nature showed her the way: a career as a biophilic designer, bringing together interior design, colour & design psychology and biophilic & well-being design.',
           'Icon' => 'sprout',
           'Link' => NULL,
           'Image' => NULL,
@@ -653,7 +911,7 @@ Health & wellness centres',
       'SectionKey' => 'philosophy',
       'Eyebrow' => 'Philosophy',
       'Heading' => 'A biophilic approach to design',
-      'Introduction' => 'Biophilia is our innate need to connect with nature. Vanessa\'s work starts from the belief that this connection is not a luxury. It is essential to how we rest, focus and feel.',
+      'Introduction' => 'Biophilia is our innate connection to nature. Vanessa\'s work starts from the belief that this connection is not a luxury. It is essential to how we rest, focus and feel.',
       'Body' => 'In practice, that means designing with:',
       'ButtonText' => NULL,
       'ButtonLink' => NULL,
@@ -740,9 +998,9 @@ Health & wellness centres',
       array (
         0 => 
         array (
-          'ItemKey' => 'kellert',
-          'Title' => 'Stephen R. Kellert',
-          'Text' => 'Nature remains our magic well: the more we draw from its nourishing waters, the more we sustain the human body, mind and spirit.',
+          'ItemKey' => 'philosophy',
+          'Title' => 'Vanessa Talbot',
+          'Text' => 'I strive to live with integrity, pursue lifelong learning, and treat others and nature with compassion, believing that respecting nature and people shapes a fulfilling life.',
           'Icon' => NULL,
           'Link' => NULL,
           'Image' => NULL,
@@ -906,6 +1164,25 @@ Health & wellness centres',
       array (
       ),
     ),
+    'gift-vouchers' => 
+    array (
+      'PageKey' => 'services',
+      'SectionKey' => 'gift-vouchers',
+      'Eyebrow' => 'Gift vouchers',
+      'Heading' => 'Give the gift of a space that feels good',
+      'Introduction' => 'A consultation or design service makes a thoughtful gift for a new home, a birthday or a fresh start. Ask about a gift voucher for the amount or service you have in mind.',
+      'Body' => NULL,
+      'ButtonText' => 'Ask about a gift voucher',
+      'ButtonLink' => 'contact.php?service=gift-voucher#contact-form',
+      'SecondaryButtonText' => NULL,
+      'SecondaryButtonLink' => NULL,
+      'Image' => NULL,
+      'ImageAlt' => NULL,
+      'DisplayOrder' => 70,
+      'items' => 
+      array (
+      ),
+    ),
     'process' => 
     array (
       'PageKey' => 'services',
@@ -1013,6 +1290,25 @@ Health & wellness centres',
   ),
   'sections_contact' => 
   array (
+    'seo' => 
+    array (
+      'PageKey' => 'contact',
+      'SectionKey' => 'seo',
+      'Eyebrow' => NULL,
+      'Heading' => NULL,
+      'Introduction' => 'Contact Vanessa Talbot Interior Designs in Pietermaritzburg: in person in the KZN Midlands, online across South Africa, and further afield by arrangement.',
+      'Body' => NULL,
+      'ButtonText' => NULL,
+      'ButtonLink' => NULL,
+      'SecondaryButtonText' => NULL,
+      'SecondaryButtonLink' => NULL,
+      'Image' => NULL,
+      'ImageAlt' => NULL,
+      'DisplayOrder' => 1,
+      'items' => 
+      array (
+      ),
+    ),
     'page-header' => 
     array (
       'PageKey' => 'contact',
@@ -1110,7 +1406,7 @@ Health & wellness centres',
         array (
           'ItemKey' => 'what-is-biophilic',
           'Title' => 'What is biophilic design?',
-          'Text' => 'Biophilic design brings the natural world into the spaces where we live and work, through light, plants, water, natural materials and organic form, to support health and wellbeing.',
+          'Text' => 'Biophilia is our innate connection to nature. Biophilic design brings the natural world into the spaces where we live and work, through light, plants, water, natural materials and organic form, to create healthier, calmer and more restorative spaces.',
           'Icon' => NULL,
           'Link' => NULL,
           'Image' => NULL,
@@ -1154,7 +1450,7 @@ Health & wellness centres',
         array (
           'ItemKey' => 'budget',
           'Title' => 'Can you work within my budget?',
-          'Text' => 'Yes. Every project starts with a realistic budget, agreed with you before any work begins.',
+          'Text' => 'Yes. Biophilic design can be brought into a new or existing design at many budget levels, so projects can be planned in tiers, from a few well-chosen changes to a complete redesign. The budget is agreed with you before any work begins.',
           'Icon' => NULL,
           'Link' => NULL,
           'Image' => NULL,
@@ -1172,11 +1468,52 @@ Health & wellness centres',
           'ImageAlt' => NULL,
           'DisplayOrder' => 60,
         ),
+        6 => 
+        array (
+          'ItemKey' => 'ai',
+          'Title' => 'Can\'t I just ask AI to design my space?',
+          'Text' => 'AI can suggest ideas, but it can\'t stand in your space, see how the light moves through it, or understand how you live and what you need the space to do. Vanessa combines biophilic design and colour & design psychology with a background in science, and turns your vision into something tangible, natural and sustainable.',
+          'Icon' => NULL,
+          'Link' => NULL,
+          'Image' => NULL,
+          'ImageAlt' => NULL,
+          'DisplayOrder' => 70,
+        ),
+        7 => 
+        array (
+          'ItemKey' => 'where',
+          'Title' => 'Do you work outside South Africa?',
+          'Text' => 'Yes. Vanessa works in person in Pietermaritzburg and the KwaZulu-Natal Midlands, online across South Africa, and across Africa, including Kenya, and further afield by arrangement, with travel costs covered by the client.',
+          'Icon' => NULL,
+          'Link' => NULL,
+          'Image' => NULL,
+          'ImageAlt' => NULL,
+          'DisplayOrder' => 80,
+        ),
       ),
     ),
   ),
   'sections_portfolio' => 
   array (
+    'seo' => 
+    array (
+      'PageKey' => 'portfolio',
+      'SectionKey' => 'seo',
+      'Eyebrow' => NULL,
+      'Heading' => NULL,
+      'Introduction' => 'Interior design projects by Vanessa Talbot in Pietermaritzburg and the KwaZulu-Natal Midlands: biophilic interiors, colour-led spaces and photography.',
+      'Body' => NULL,
+      'ButtonText' => NULL,
+      'ButtonLink' => NULL,
+      'SecondaryButtonText' => NULL,
+      'SecondaryButtonLink' => NULL,
+      'Image' => NULL,
+      'ImageAlt' => NULL,
+      'DisplayOrder' => 1,
+      'items' => 
+      array (
+      ),
+    ),
     'page-header' => 
     array (
       'PageKey' => 'portfolio',
@@ -1300,6 +1637,25 @@ Health & wellness centres',
   ),
   'sections_portfolio-biophilic-interior-design' => 
   array (
+    'seo' => 
+    array (
+      'PageKey' => 'portfolio-biophilic-interior-design',
+      'SectionKey' => 'seo',
+      'Eyebrow' => NULL,
+      'Heading' => NULL,
+      'Introduction' => 'Biophilic interior design projects: homes and workplaces brought closer to nature with plants, natural materials and light, in KwaZulu-Natal and beyond.',
+      'Body' => NULL,
+      'ButtonText' => NULL,
+      'ButtonLink' => NULL,
+      'SecondaryButtonText' => NULL,
+      'SecondaryButtonLink' => NULL,
+      'Image' => NULL,
+      'ImageAlt' => NULL,
+      'DisplayOrder' => 1,
+      'items' => 
+      array (
+      ),
+    ),
     'page-header' => 
     array (
       'PageKey' => 'portfolio-biophilic-interior-design',
@@ -1379,6 +1735,25 @@ Health & wellness centres',
   ),
   'sections_portfolio-colour-psychology' => 
   array (
+    'seo' => 
+    array (
+      'PageKey' => 'portfolio-colour-psychology',
+      'SectionKey' => 'seo',
+      'Eyebrow' => NULL,
+      'Heading' => NULL,
+      'Introduction' => 'Colour and design psychology projects: spaces planned around how colour, light and layout make people feel.',
+      'Body' => NULL,
+      'ButtonText' => NULL,
+      'ButtonLink' => NULL,
+      'SecondaryButtonText' => NULL,
+      'SecondaryButtonLink' => NULL,
+      'Image' => NULL,
+      'ImageAlt' => NULL,
+      'DisplayOrder' => 1,
+      'items' => 
+      array (
+      ),
+    ),
     'page-header' => 
     array (
       'PageKey' => 'portfolio-colour-psychology',
@@ -1458,6 +1833,25 @@ Health & wellness centres',
   ),
   'sections_portfolio-photography-gallery' => 
   array (
+    'seo' => 
+    array (
+      'PageKey' => 'portfolio-photography-gallery',
+      'SectionKey' => 'seo',
+      'Eyebrow' => NULL,
+      'Heading' => NULL,
+      'Introduction' => 'Nature and interior photography by Vanessa Talbot, from the KwaZulu-Natal Midlands and further afield.',
+      'Body' => NULL,
+      'ButtonText' => NULL,
+      'ButtonLink' => NULL,
+      'SecondaryButtonText' => NULL,
+      'SecondaryButtonLink' => NULL,
+      'Image' => NULL,
+      'ImageAlt' => NULL,
+      'DisplayOrder' => 1,
+      'items' => 
+      array (
+      ),
+    ),
     'page-header' => 
     array (
       'PageKey' => 'portfolio-photography-gallery',
@@ -1537,6 +1931,25 @@ Health & wellness centres',
   ),
   'sections_portfolio-collaborators' => 
   array (
+    'seo' => 
+    array (
+      'PageKey' => 'portfolio-collaborators',
+      'SectionKey' => 'seo',
+      'Eyebrow' => NULL,
+      'Heading' => NULL,
+      'Introduction' => 'The landscapers, makers and specialists Vanessa Talbot Interior Designs works with.',
+      'Body' => NULL,
+      'ButtonText' => NULL,
+      'ButtonLink' => NULL,
+      'SecondaryButtonText' => NULL,
+      'SecondaryButtonLink' => NULL,
+      'Image' => NULL,
+      'ImageAlt' => NULL,
+      'DisplayOrder' => 1,
+      'items' => 
+      array (
+      ),
+    ),
     'page-header' => 
     array (
       'PageKey' => 'portfolio-collaborators',
@@ -1676,6 +2089,91 @@ Health & wellness centres',
           'Image' => NULL,
           'ImageAlt' => NULL,
           'DisplayOrder' => 40,
+        ),
+      ),
+    ),
+    'benefits' => 
+    array (
+      'PageKey' => 'service-biophilic-design',
+      'SectionKey' => 'benefits',
+      'Eyebrow' => 'The benefits',
+      'Heading' => 'What biophilic design does for you',
+      'Introduction' => 'The benefits of biophilic design go far beyond aesthetics.',
+      'Body' => NULL,
+      'ButtonText' => NULL,
+      'ButtonLink' => NULL,
+      'SecondaryButtonText' => NULL,
+      'SecondaryButtonLink' => NULL,
+      'Image' => NULL,
+      'ImageAlt' => NULL,
+      'DisplayOrder' => 15,
+      'items' => 
+      array (
+        0 => 
+        array (
+          'ItemKey' => 'well-being',
+          'Title' => 'Enhanced well-being and mental health',
+          'Text' => 'Spaces that help you feel calmer, more rested and more like yourself.',
+          'Icon' => 'leaf',
+          'Link' => NULL,
+          'Image' => NULL,
+          'ImageAlt' => NULL,
+          'DisplayOrder' => 10,
+        ),
+        1 => 
+        array (
+          'ItemKey' => 'productivity',
+          'Title' => 'Increased productivity and creativity',
+          'Text' => 'Natural light, greenery and views that help people think clearly and work well.',
+          'Icon' => 'brush',
+          'Link' => NULL,
+          'Image' => NULL,
+          'ImageAlt' => NULL,
+          'DisplayOrder' => 20,
+        ),
+        2 => 
+        array (
+          'ItemKey' => 'stress',
+          'Title' => 'Stress reduction and improved cognitive function',
+          'Text' => 'Restorative surroundings that lower stress and support focus and memory.',
+          'Icon' => 'flask',
+          'Link' => NULL,
+          'Image' => NULL,
+          'ImageAlt' => NULL,
+          'DisplayOrder' => 30,
+        ),
+        3 => 
+        array (
+          'ItemKey' => 'urban',
+          'Title' => 'Connection to nature in urban environments',
+          'Text' => 'A daily connection with the natural world, even in the middle of a city.',
+          'Icon' => 'sprout',
+          'Link' => NULL,
+          'Image' => NULL,
+          'ImageAlt' => NULL,
+          'DisplayOrder' => 40,
+        ),
+        4 => 
+        array (
+          'ItemKey' => 'sustainability',
+          'Title' => 'Sustainability and environmental stewardship',
+          'Text' => 'Natural, local and lasting materials that respect the environment.',
+          'Icon' => 'eye',
+          'Link' => NULL,
+          'Image' => NULL,
+          'ImageAlt' => NULL,
+          'DisplayOrder' => 50,
+        ),
+        5 => 
+        array (
+          'ItemKey' => 'community',
+          'Title' => 'Community and social interaction',
+          'Text' => 'Spaces that invite people to gather, connect and feel they belong.',
+          'Icon' => 'group',
+          'Link' => NULL,
+          'Image' => NULL,
+          'ImageAlt' => NULL,
+          'DisplayOrder' => 60,
         ),
       ),
     ),
@@ -2120,8 +2618,8 @@ Health & wellness centres',
       'Heading' => 'Book a consultation',
       'Introduction' => 'Tell Vanessa about your space and we will arrange a time.',
       'Body' => NULL,
-      'ButtonText' => 'Enquire about this service',
-      'ButtonLink' => 'contact.php?service=consultations',
+      'ButtonText' => 'Book a consultation',
+      'ButtonLink' => 'book-consultation.php',
       'SecondaryButtonText' => 'View all services',
       'SecondaryButtonLink' => 'services.php',
       'Image' => NULL,

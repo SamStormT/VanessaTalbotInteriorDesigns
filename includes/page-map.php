@@ -42,6 +42,7 @@ function page_map(): array
             'hero'         => ['Hero: heading, wording, buttons and main image', [$home('Hero wording', 'HeroEyebrow'), $home('Hero image', 'HeroImage'), $home('Hero buttons', 'CTA1Text'), $setting('Tagline', 'Tagline')]],
             'feature-cta'  => ['Featured box', [$home('Featured box wording and link', 'FeaturedCTATitle'), $section('home', 'feature-cta', 'Button text', 'ButtonText')]],
             'introduction' => ['Introduction to Vanessa', [$section('home', 'introduction', 'Wording'), $section('home', 'introduction', 'Three foundations', 'items'), $home('Introduction image', 'IntroductionImage')]],
+            'key-messages' => ['Key messages', [$section('home', 'key-messages', 'Heading'), $section('home', 'key-messages', 'Messages', 'items')]],
             'quote'        => ['Quote', [$home('Quote', 'FeaturedQuote')]],
             'services'     => ['Services overview', [$section('home', 'services', 'Heading and button'), ['admin', 'Service cards', 'admin/services.php', 'services.view']]],
             'portfolio'    => ['Portfolio highlights', [$section('home', 'portfolio', 'Heading and button'), $section('home', 'portfolio', 'Tiles and tile images', 'items')]],
@@ -53,10 +54,11 @@ function page_map(): array
         'about' => ['title' => 'About', 'path' => 'about.php', 'blocks' => [
             'page-header'    => ['Page header', [$section('about', 'page-header', 'Heading'), $section('about', 'page-header', 'Header image', 'Image'), $setting('Tagline', 'Tagline')]],
             'story'          => ["Vanessa's story", [$section('about', 'story', 'Heading'), $about('Story', 'Biography'), $about('Portrait', 'PortraitImage')]],
+            'mission'        => ['Mission & vision', [$section('about', 'mission', 'Heading and impact'), $section('about', 'mission', 'Mission and vision', 'items')]],
             'journey'        => ['Journey steps', [$section('about', 'journey', 'Heading'), $section('about', 'journey', 'Steps', 'items')]],
             'philosophy'     => ['Philosophy', [$section('about', 'philosophy', 'Wording'), $section('about', 'philosophy', 'List', 'items'), $section('about', 'quote', 'Quote', 'items')]],
             'values'         => ['Values', [$section('about', 'values', 'Heading'), $about('Introduction', 'CoreValues'), ['admin', 'Values', 'admin/about-values.php', 'about_items.view']]],
-            'qualifications' => ['Qualifications', [$section('about', 'qualifications', 'Heading'), $about('Introduction', 'Qualifications'), ['admin', 'Qualifications', 'admin/qualifications.php', 'about_items.view'], $section('about', 'qualifications-notice', 'Notice while empty')]],
+            'qualifications' => ['Qualifications', [$section('about', 'qualifications', 'Heading'), $about('Introduction', 'Qualifications'), ['admin', 'Qualifications and memberships', 'admin/qualifications.php', 'about_items.view'], $section('about', 'qualifications-notice', 'Notice while empty')]],
             'speaking'       => ['Speaking', [$section('about', 'speaking', 'Wording and buttons'), $section('about', 'speaking', 'Speaking image', 'Image'), $about('Speaking topics', 'SpeakingTopics'), ['admin', 'Engagements', 'admin/speaking-engagements.php', 'speaking.view'], $section('about', 'speaking-notice', 'Notice while empty')]],
             'closing'        => ['Closing call to action', [$section('about', 'closing')]],
         ]],
@@ -70,7 +72,7 @@ function page_map(): array
     ];
 
     $servicePages = [
-        'biophilic-design' => 'Biophilic Design', 'colour-psychology' => 'Colour & Design Psychology',
+        'biophilic-design' => 'Biophilic & Well-being Design', 'colour-psychology' => 'Colour & Design Psychology',
         'photography-services' => 'Photography', 'workshops' => 'Workshops',
         'speaking-engagements' => 'Speaking Engagements', 'consultations' => 'Consultations',
     ];
@@ -81,6 +83,7 @@ function page_map(): array
             'approach'    => ['How it works', [$section('service-' . $slug, 'approach', 'Heading'), $section('service-' . $slug, 'approach', 'Steps', 'items')]],
         ];
         if ($slug === 'biophilic-design') {
+            $blocks['benefits']    = ['Benefits', [$section('service-' . $slug, 'benefits', 'Heading'), $section('service-' . $slug, 'benefits', 'Benefits', 'items')]];
             $blocks['specialised'] = ['Specialised services', [$section('service-' . $slug, 'specialised', 'Heading'), $section('service-' . $slug, 'specialised', 'Items', 'items')]];
         }
         if ($slug === 'speaking-engagements') {

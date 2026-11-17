@@ -39,6 +39,8 @@ Fields marked *(empty)* exist but have nothing to hold yet.
 | Home | Meet Vanessa | Science | `PageSectionItems` | `home/introduction#science` | `Title`, `Text`, `Icon` |
 | Home | Meet Vanessa | Nature | `PageSectionItems` | `home/introduction#nature` | `Title`, `Text`, `Icon` |
 | Home | Meet Vanessa | Portrait | `HomePageContent` | Row 1 | `IntroductionImage`, `IntroductionImageAlt` *(empty)* |
+| Home | Key messages | Small heading, heading, introduction | `PageSections` | `home/key-messages` | `Eyebrow`, `Heading`, `Introduction` |
+| Home | Key messages | Four messages | `PageSectionItems` | `home/key-messages#sustainable`, `#sensory`, `#performance`, `#timeless` | `Title`, `Text`, `Icon` |
 | Home | Quote | Quote | `HomePageContent` | Row 1 | `FeaturedQuote` |
 | Home | Quote | Author | `HomePageContent` | Row 1 | `FeaturedQuoteAuthor` |
 | Home | Services overview | Small heading | `PageSections` | `home/services` | `Eyebrow` |
@@ -97,6 +99,8 @@ Fields marked *(empty)* exist but have nothing to hold yet.
 | About | Vanessa's story | Heading | `PageSections` | `about/story` | `Heading` |
 | About | Vanessa's story | Opening sentence and two paragraphs | `AboutContent` | Row 1 | `Biography` |
 | About | Vanessa's story | Portrait | `AboutContent` | Row 1 | `PortraitImage`, `PortraitImageAlt` *(empty)* |
+| About | Mission & vision | Small heading, heading, impact statement | `PageSections` | `about/mission` | `Eyebrow`, `Heading`, `Introduction` |
+| About | Mission & vision | Mission, vision | `PageSectionItems` | `about/mission#mission`, `#vision` | `Title`, `Text`, `Icon` |
 | About | Journey | Small heading | `PageSections` | `about/journey` | `Eyebrow` |
 | About | Journey | Heading | `PageSections` | `about/journey` | `Heading` |
 | About | Journey | Paragraph | `PageSections` | `about/journey` | `Introduction` |
@@ -112,17 +116,18 @@ Fields marked *(empty)* exist but have nothing to hold yet.
 | About | Philosophy | Natural materials | `PageSectionItems` | `about/philosophy#natural-materials` | `Title`, `Text` |
 | About | Philosophy | Colour with purpose | `PageSectionItems` | `about/philosophy#colour-with-purpose` | `Title`, `Text` |
 | About | Philosophy | Organic form | `PageSectionItems` | `about/philosophy#organic-form` | `Title`, `Text` |
-| About | Philosophy | Quote and author | `PageSectionItems` | `about/quote#kellert` | `Text`, `Title` |
+| About | Philosophy | Quote and author (Vanessa's personal philosophy since migration 021) | `PageSectionItems` | `about/quote#philosophy` | `Text`, `Title` |
 | About | Values | Small heading | `PageSections` | `about/values` | `Eyebrow` |
 | About | Values | Heading | `PageSections` | `about/values` | `Heading` |
 | About | Values | Introduction | `AboutContent` | Row 1 | `CoreValues` *(empty; the page has none)* |
-| About | Values | Five values | `AboutValues` | One row each, by `Title` | `Title`, `Description`, `Icon`, `DisplayOrder` |
+| About | Values | Eleven values (rows of five, last row centred) | `AboutValues` | One row each, by `Title` | `Title`, `Description`, `Icon`, `DisplayOrder` |
 | About | Qualifications | Small heading | `PageSections` | `about/qualifications` | `Eyebrow` |
 | About | Qualifications | Heading | `PageSections` | `about/qualifications` | `Heading` |
 | About | Qualifications | Paragraph | `AboutContent` | Row 1 | `Qualifications` |
 | About | Qualifications | "Full details coming soon" heading | `PageSections` | `about/qualifications-notice` | `Heading` |
 | About | Qualifications | "Full details coming soon" text | `PageSections` | `about/qualifications-notice` | `Introduction`, `ButtonLink` |
-| About | Qualifications | Qualifications, once confirmed | `AboutQualifications` | One row each | `Title`, `Type`, `Institution`, `YearCompleted` *(empty)* |
+| About | Qualifications | Qualifications and certifications | `AboutQualifications` | One row each, `Type` not Membership | `Title`, `Type`, `Institution`, `YearCompleted` |
+| About | Qualifications | Professional memberships (own list under its own heading) | `AboutQualifications` | `Type` = Membership | `Title`, `Institution`, `YearCompleted` |
 | About | Speaking | Small heading | `PageSections` | `about/speaking` | `Eyebrow` |
 | About | Speaking | Heading | `PageSections` | `about/speaking` | `Heading` |
 | About | Speaking | Paragraph | `PageSections` | `about/speaking` | `Introduction` |
@@ -223,7 +228,8 @@ Page keys follow `PageSections.PageKey`. Sections are listed in the admin area u
 | Each service page | Heading | Title and opening sentence | `Services` | Each service | `ServiceName`, `Lead` |
 | Each service page | Main | Description, included list, ideal for, image | `Services` | Each service | `FullDescription`, `IncludedItems`, `IdealFor`, `FeaturedImage`, `FeaturedImageAlt` |
 | Each service page | How it works | Heading and steps | `PageSections`, `PageSectionItems` | `service-{slug}/approach` | Heading fields; item `Title`, `Text`, `Icon` |
-| Biophilic Design | Specialised services | Heading and items | `PageSections`, `PageSectionItems` | `service-biophilic-design/specialised` | Heading fields; item `Title`, `Text`, `Icon` |
+| Biophilic & Well-being Design | Benefits | Heading and six benefits | `PageSections`, `PageSectionItems` | `service-biophilic-design/benefits` | Heading fields; item `Title`, `Text`, `Icon` |
+| Biophilic & Well-being Design | Specialised services | Heading and items | `PageSections`, `PageSectionItems` | `service-biophilic-design/specialised` | Heading fields; item `Title`, `Text`, `Icon` |
 | Each service page | Closing | Heading, text, buttons | `PageSections` | `service-{slug}/closing` | `Heading`, `Introduction`, button fields |
 | Portfolio | Heading | Title and text | `PageSections` | `portfolio/page-header` | `Heading`, `Introduction` |
 | Portfolio | Categories | Four tiles | `PageSections`, `PageSectionItems` | `portfolio/categories` | Heading fields; item `Title`, `Text`, `Icon`, `Link`, `Image` |

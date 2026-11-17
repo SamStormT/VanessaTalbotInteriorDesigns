@@ -9,6 +9,8 @@ $about          = site_about();
 $sections       = site_sections('about');
 $values         = site_values();
 $qualifications = site_qualifications();
+$memberships    = array_values(array_filter($qualifications, static fn(array $item): bool => ($item['Type'] ?? '') === 'Membership'));
+$qualifications = array_values(array_filter($qualifications, static fn(array $item): bool => ($item['Type'] ?? '') !== 'Membership'));
 $engagements    = site_engagements();
 
 $pageTitle       = ($about['MetaTitle'] ?? '') ?: ($sections['page-header']['Heading'] ?? '');
@@ -48,6 +50,12 @@ require_once INCLUDES_PATH . '/header.php';
             </div>
         </div>
     </section>
+<?php endif; ?>
+
+    <!-- Mission and vision -->
+<?= hidden_block('about', 'mission', $sections) ?>
+<?php if ($section = $sections['mission'] ?? null): ?>
+    <?= content_items_section($section, 'mission-title', false, edit_block('about', 'mission')) ?>
 <?php endif; ?>
 
     <!-- Science to interior design journey -->
@@ -133,14 +141,28 @@ require_once INCLUDES_PATH . '/header.php';
         <?= edit_block('about', 'qualifications') ?>
         <div class="container">
             <?= content_section_header($section, 'qualifications-title', $about['Qualifications'] ?? '', ed_about('Qualifications')) ?>
+<?php if ($qualifications || $memberships): ?>
+            <div class="credentials">
 <?php if ($qualifications): ?>
-            <ul class="check-list content-narrow">
+            <ul class="check-list">
 <?php foreach ($qualifications as $item):
     $detail = array_filter([$item['Institution'] ?? '', $item['FieldOfStudy'] ?? '', $item['YearCompleted'] ?? '']);
 ?>
                 <li<?= ed_record('qualifications', 'admin/qualification-edit.php', (int) ($item['QualificationID'] ?? 0), 'Title', 'about_items.edit') ?>><?= icon('check') ?><span><strong><?= e($item['Title']) ?></strong><?= $detail ? ', ' . e(implode(', ', $detail)) : '' ?></span></li>
 <?php endforeach; ?>
             </ul>
+<?php endif; ?>
+<?php if ($memberships): ?>
+            <h3 class="subheading">Professional memberships</h3>
+            <ul class="check-list">
+<?php foreach ($memberships as $item):
+    $detail = array_filter([$item['Institution'] ?? '', $item['YearCompleted'] ?? '']);
+?>
+                <li<?= ed_record('qualifications', 'admin/qualification-edit.php', (int) ($item['QualificationID'] ?? 0), 'Title', 'about_items.edit') ?>><?= icon('group') ?><span><strong><?= e($item['Title']) ?></strong><?= $detail ? ', ' . e(implode(', ', $detail)) : '' ?></span></li>
+<?php endforeach; ?>
+            </ul>
+<?php endif; ?>
+            </div>
 <?php elseif ($notice): ?>
             <div class="info-panel">
                 <span class="info-panel__icon"><?= icon('shield') ?></span>

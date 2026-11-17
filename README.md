@@ -17,7 +17,7 @@ The website reflects Vanessa Talbot's background in science and interior design:
 | Page | Status |
 |---|---|
 | Home, About, Services | Built, wording managed in the CMS |
-| Six service pages: Biophilic Design, Colour & Design Psychology, Photography, Workshops, Speaking Engagements, Consultations | Built |
+| Six service pages: Biophilic & Well-being Design, Colour & Design Psychology, Photography, Workshops, Speaking Engagements, Consultations | Built |
 | Portfolio: landing page, Biophilic Interior Design, Colour & Design Psychology, Photography, Collaborators, single project | Built; shows "coming soon" until projects are published |
 | Contact: details, location, frequently asked questions, enquiry form | Built; messages are saved and emailed to the business |
 | Newsletter sign-up (home page, and a tick-box on the contact form) | Built; confirmed by email, with an unsubscribe link |
@@ -154,7 +154,9 @@ Configuration and secrets live only in `.env`, which Git ignores. On the live se
 
 ## Future enhancements
 
-Online consultations, workshop bookings, corporate training, online courses, a client portal, a community membership area, photography licensing, event registration and digital product sales.
+Online consultations, workshop bookings, corporate training, online courses, a client portal, a community membership area, photography licensing, event registration and digital product sales. An Interior Design service page, and later Online Courses, Forest Therapy Guide and Nature Photography (Vanessa's future services).
+
+Photo protection (later, with the photography store): show a visible watermark on gallery and store photos, publish only reduced web-size copies (never the print files), and switch off right-click saving on those images. No website can fully stop screenshots, so the watermark and the low resolution are what actually protect the work; originals are only ever sent to paying customers.
 
 ---
 

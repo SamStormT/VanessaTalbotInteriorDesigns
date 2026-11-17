@@ -436,7 +436,7 @@ function cms_page_label(string $page): string
 {
     return [
         'home' => 'Home', 'about' => 'About', 'services' => 'Services', 'global' => 'All pages', 'contact' => 'Contact', 'portfolio' => 'Portfolio', 'blog' => 'Blog',
-        'service-biophilic-design' => 'Service: Biophilic Design',
+        'service-biophilic-design' => 'Service: Biophilic & Well-being Design',
         'service-colour-psychology' => 'Service: Colour & Design Psychology',
         'service-photography-services' => 'Service: Photography',
         'service-workshops' => 'Service: Workshops',

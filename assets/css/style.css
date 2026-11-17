@@ -615,6 +615,7 @@ label {
 }
 .hero__content { max-width: 640px; }
 .hero__title { color: var(--color-primary); margin-bottom: 0.75rem; }
+.hero__title--long { font-size: clamp(2.5rem, 5.2vw, 4.25rem); line-height: 1.08; text-wrap: balance; }
 .hero__tagline { margin-bottom: var(--space-lg); }
 .hero__lead { max-width: 540px; font-size: var(--fs-lg); line-height: 1.75; }
 .hero__media { position: relative; }
@@ -765,11 +766,19 @@ label {
     color: var(--color-primary);
 }
 
+/* Values: rows of five (fewer on smaller screens); a shorter last row is centred. */
 .values-grid {
-    display: grid;
-    grid-template-columns: repeat(5, 1fr);
+    --value-cols: 5;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
     gap: 1.25rem;
 }
+.values-grid > .value { flex: 0 0 calc((100% - (var(--value-cols) - 1) * 1.25rem) / var(--value-cols)); }
+
+/* About: qualifications and memberships, one readable column. */
+.credentials { max-width: 680px; margin-inline: auto; text-align: left; }
+.credentials .subheading { margin-top: var(--space-lg); }
 .value {
     padding: 2.25rem 1.25rem;
     text-align: center;

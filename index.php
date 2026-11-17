@@ -32,7 +32,7 @@ $tileTones  = ['green', 'gold', 'peach'];
         <div class="container hero__inner">
             <div class="hero__content">
                 <?php if (!empty($home['HeroEyebrow'])): ?><p class="eyebrow"<?= ed_home('HeroEyebrow') ?>><?= e($home['HeroEyebrow']) ?></p><?php endif; ?>
-                <h1 id="hero-title" class="display-title hero__title"<?= ed_home('HeroTitle') ?>><?= e($home['HeroTitle'] ?? '') ?></h1>
+                <h1 id="hero-title" class="display-title hero__title<?= mb_strlen((string) ($home['HeroTitle'] ?? '')) > 24 ? ' hero__title--long' : '' ?>"<?= ed_home('HeroTitle') ?>><?= e($home['HeroTitle'] ?? '') ?></h1>
                 <p class="tagline hero__tagline"<?= ed_setting('Tagline') ?>><?= e(site_tagline()) ?></p>
                 <p class="hero__lead"<?= ed_home('HeroSubtitle') ?>><?= e($home['HeroSubtitle'] ?? '') ?></p>
                 <div class="btn-group">
@@ -92,6 +92,12 @@ $tileTones  = ['green', 'gold', 'peach'];
             </div>
         </div>
     </section>
+<?php endif; ?>
+
+    <!-- Key messages: what nature brings to a space -->
+<?= hidden_block('home', 'key-messages', $sections) ?>
+<?php if ($section = $sections['key-messages'] ?? null): ?>
+    <?= content_items_section($section, 'key-messages-title', true, edit_block('home', 'key-messages')) ?>
 <?php endif; ?>
 
     <!-- Brand quote -->

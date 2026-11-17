@@ -4,7 +4,7 @@
    ========================================================================== */
 
 @media (max-width: 1200px) {
-    .values-grid { grid-template-columns: repeat(3, 1fr); }
+    .values-grid { --value-cols: 3; }
 }
 
 /* Navigation collapses to a menu button below 1100px:
@@ -99,7 +99,7 @@
 
     .journey,
     .journey--2 { grid-template-columns: 1fr; }
-    .values-grid { grid-template-columns: repeat(2, 1fr); }
+    .values-grid { --value-cols: 2; }
     .pillars { grid-template-columns: 1fr; gap: 1rem; }
     .pillar { flex-direction: row; align-items: center; gap: 1rem; }
 
@@ -135,8 +135,8 @@
     .portfolio-grid,
     .portfolio-grid--4,
     .process,
-    .values-grid,
     .site-footer__inner { grid-template-columns: 1fr; }
+    .values-grid { --value-cols: 1; }
 
     .portfolio-tile .art-frame { aspect-ratio: 1 / 1; }
     .brand__lockup { font-size: 1.5rem; }

@@ -22,8 +22,9 @@ function enquiry_types(): array
 {
     return [
         'General'             => 'General enquiry',
-        'Biophilic Design'    => 'Biophilic Design',
+        'Biophilic Design'    => 'Biophilic & Well-being Design',
         'Colour Psychology'   => 'Colour & Design Psychology',
+        'Interior Design'     => 'Interior Design',
         'Photography'         => 'Photography',
         'Workshop'            => 'Workshop',
         'Speaking Engagement' => 'Speaking Engagement',

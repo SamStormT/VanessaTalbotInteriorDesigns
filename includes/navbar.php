@@ -7,7 +7,7 @@ $navItems = [
     ['label' => 'Home',        'path' => 'index.php'],
     ['label' => 'About',       'path' => 'about.php'],
     ['label' => 'Services',    'path' => 'services.php', 'children' => [
-        ['label' => 'Biophilic Design',     'path' => 'services/biophilic-design.php'],
+        ['label' => 'Biophilic & Well-being Design', 'path' => 'services/biophilic-design.php'],
         ['label' => 'Colour & Design Psychology',    'path' => 'services/colour-psychology.php'],
         ['label' => 'Photography',          'path' => 'services/photography-services.php'],
         ['label' => 'Workshops',            'path' => 'services/workshops.php'],

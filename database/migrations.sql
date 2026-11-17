@@ -1256,3 +1256,236 @@ SELECT 'services', 'gift-vouchers', 'Gift vouchers', 'Give the gift of a space t
 FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM SchemaMigrations WHERE MigrationName = '020_security_privacy');
 
 INSERT IGNORE INTO SchemaMigrations (MigrationName) VALUES ('020_security_privacy');
+
+-- --------------------------------------------------------------------------
+-- 021: Vanessa's own answers (discovery questionnaire, November 2026). Her
+-- hero headline, job title, mission and vision, eleven core values,
+-- qualifications and memberships, first speaking engagement, story and
+-- career change, personal philosophy, the biophilic service in her words
+-- with its six benefits, the key messages on the home page, more frequently
+-- asked questions, and Africa (including Kenya) as a place she works. Runs
+-- once; each change only replaces wording that is still the original (or
+-- fills what is empty), so anything edited in the admin is kept.
+-- --------------------------------------------------------------------------
+
+-- Interior design is one of her three current services, so visitors can
+-- choose it on the contact form.
+ALTER TABLE ContactMessages
+    MODIFY EnquiryType ENUM('General','Biophilic Design','Colour Psychology','Interior Design','Photography','Workshop','Speaking Engagement','Collaboration','Consultation','Gift Voucher') NOT NULL DEFAULT 'General';
+
+-- Website Settings: job title and where she works.
+UPDATE WebsiteSettings SET OwnerTitle = 'Interior Designer – Biophilic & Well-being'
+WHERE SettingID = 1 AND (OwnerTitle IS NULL OR OwnerTitle = 'Interior designer')
+  AND NOT EXISTS (SELECT 1 FROM SchemaMigrations WHERE MigrationName = '021_vanessa_questionnaire');
+
+UPDATE WebsiteSettings SET ServiceAreas = 'Pietermaritzburg and the KwaZulu-Natal Midlands\nOnline consultations across South Africa\nAcross Africa, including Kenya, and further afield by arrangement (travel costs are covered by the client)'
+WHERE SettingID = 1 AND ServiceAreas = 'Pietermaritzburg and the KwaZulu-Natal Midlands\nOnline consultations across South Africa\nInternational projects by arrangement (travel costs are covered by the client)'
+  AND NOT EXISTS (SELECT 1 FROM SchemaMigrations WHERE MigrationName = '021_vanessa_questionnaire');
+
+-- Home page: her headline, her three current services, why choose her.
+UPDATE HomePageContent SET HeroTitle = 'Designing Spaces that Nurture Mind, Body, and Soul'
+WHERE HomePageID = 1 AND HeroTitle = 'Vanessa Talbot'
+  AND NOT EXISTS (SELECT 1 FROM SchemaMigrations WHERE MigrationName = '021_vanessa_questionnaire');
+
+UPDATE HomePageContent SET HeroEyebrow = 'Biophilic & Well-being Design · Colour & Design Psychology · Interior Design'
+WHERE HomePageID = 1 AND HeroEyebrow = 'Biophilic Interior Design · Colour & Design Psychology · Photography'
+  AND NOT EXISTS (SELECT 1 FROM SchemaMigrations WHERE MigrationName = '021_vanessa_questionnaire');
+
+UPDATE PageSections SET Body = 'Her knowledge of biophilic design and colour & design psychology, backed by thirty years in science, means every choice is made for a reason. Vanessa listens to your vision for your space and its colours, and transforms it into something tangible, natural and sustainable.'
+WHERE PageKey = 'home' AND SectionKey = 'introduction'
+  AND Body = 'Her work is built on a simple idea: the spaces we spend our days in shape how we think, feel and connect. By combining biophilic design, the psychology of colour and a photographer''s eye for light and detail, Vanessa designs interiors that are calm, personal and deeply connected to the natural world.'
+  AND NOT EXISTS (SELECT 1 FROM SchemaMigrations WHERE MigrationName = '021_vanessa_questionnaire');
+
+-- Home page: the four key messages, after the introduction.
+INSERT IGNORE INTO PageSections (PageKey, SectionKey, Eyebrow, Heading, Introduction, Body, ButtonText, ButtonLink, SecondaryButtonText, SecondaryButtonLink, DisplayOrder, Status)
+SELECT 'home', 'key-messages', 'Why biophilic design', 'What nature brings to a space', 'Most of us spend most of our lives indoors. Biophilic design brings nature back in, with benefits that go far beyond the way a room looks.', NULL, NULL, NULL, NULL, NULL, 35, 'Published'
+FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM SchemaMigrations WHERE MigrationName = '021_vanessa_questionnaire');
+
+INSERT IGNORE INTO PageSectionItems (SectionID, ItemKey, Title, Text, Icon, Link, DisplayOrder, Status)
+SELECT s.SectionID, 'sustainable', 'Sustainable living & working', 'Spaces that nurture people and protect the planet, with renewable materials, eco-friendly practices and energy-efficient choices.', 'leaf', NULL, 10, 'Published'
+FROM PageSections s WHERE s.PageKey = 'home' AND s.SectionKey = 'key-messages' AND NOT EXISTS (SELECT 1 FROM SchemaMigrations WHERE MigrationName = '021_vanessa_questionnaire');
+
+INSERT IGNORE INTO PageSectionItems (SectionID, ItemKey, Title, Text, Icon, Link, DisplayOrder, Status)
+SELECT s.SectionID, 'sensory', 'Sensory enrichment', 'Light, greenery, textures and natural patterns engage all the senses, creating calm, immersive spaces that reduce stress and help you focus.', 'sprout', NULL, 20, 'Published'
+FROM PageSections s WHERE s.PageKey = 'home' AND s.SectionKey = 'key-messages' AND NOT EXISTS (SELECT 1 FROM SchemaMigrations WHERE MigrationName = '021_vanessa_questionnaire');
+
+INSERT IGNORE INTO PageSectionItems (SectionID, ItemKey, Title, Text, Icon, Link, DisplayOrder, Status)
+SELECT s.SectionID, 'performance', 'Performance & productivity', 'Nature-inspired spaces support creativity, concentration and collaboration, in workplaces, schools and homes alike.', 'flask', NULL, 30, 'Published'
+FROM PageSections s WHERE s.PageKey = 'home' AND s.SectionKey = 'key-messages' AND NOT EXISTS (SELECT 1 FROM SchemaMigrations WHERE MigrationName = '021_vanessa_questionnaire');
+
+INSERT IGNORE INTO PageSectionItems (SectionID, ItemKey, Title, Text, Icon, Link, DisplayOrder, Status)
+SELECT s.SectionID, 'timeless', 'Timeless aesthetic appeal', 'Organic beauty that never goes out of style, blending modern living with natural elegance.', 'brush', NULL, 40, 'Published'
+FROM PageSections s WHERE s.PageKey = 'home' AND s.SectionKey = 'key-messages' AND NOT EXISTS (SELECT 1 FROM SchemaMigrations WHERE MigrationName = '021_vanessa_questionnaire');
+
+-- About: her story and short bio.
+UPDATE AboutContent SET Biography = 'Vanessa Talbot was born in the UK but has lived her whole life in Africa, first in Zimbabwe and then in South Africa. A free-rein childhood of climbing trees, fetching tadpoles from rivers and building forts made her a child of nature, and nature is still where she is happiest, whether hiking or simply sitting outdoors. It is also where her love of colour and design began: in the colours and patterns nature shows in every season.\n\nCuriosity led her first to science, and eventually to design. Vanessa Talbot Interior Designs brings her studies, her experience and her love of nature together, to create spaces that are beautiful, meaningful and good for the people in them.'
+WHERE AboutID = 1 AND Biography LIKE 'Vanessa Talbot has always been fascinated by the relationship between people and the places they spend their lives in.%'
+  AND Biography LIKE '%Today, Vanessa Talbot Interior Designs brings those threads together.%'
+  AND NOT EXISTS (SELECT 1 FROM SchemaMigrations WHERE MigrationName = '021_vanessa_questionnaire');
+
+UPDATE AboutContent SET ShortBio = 'Vanessa Talbot is an interior designer specialising in biophilic & well-being design and colour & design psychology. She brings thirty years in analytical chemistry and environmental science to creating spaces that support health, well-being and our connection with nature.'
+WHERE AboutID = 1 AND (ShortBio IS NULL OR ShortBio = '')
+  AND NOT EXISTS (SELECT 1 FROM SchemaMigrations WHERE MigrationName = '021_vanessa_questionnaire');
+
+-- About: the journey from science to design, in her words.
+UPDATE PageSectionItems i JOIN PageSections s ON s.SectionID = i.SectionID
+SET i.Text = 'Vanessa studied analytical chemistry and spent thirty years running an environmental testing laboratory, where she achieved SANAS accreditation to ISO 17025 and became director of the laboratory and the company. Science taught her to observe carefully, ask questions and look for evidence.'
+WHERE s.PageKey = 'about' AND s.SectionKey = 'journey' AND i.ItemKey = 'science'
+  AND i.Text = 'A background in science taught Vanessa to observe carefully, ask questions and look for evidence. It also gave her a lasting respect for the natural systems that sustain us.'
+  AND NOT EXISTS (SELECT 1 FROM SchemaMigrations WHERE MigrationName = '021_vanessa_questionnaire');
+
+UPDATE PageSectionItems i JOIN PageSections s ON s.SectionID = i.SectionID
+SET i.Text = 'Personal tragedy led her to let go of the reins and try her wings at something that would fulfil her and feed her creative soul. The more she researched interior design, the more she saw that science and design are intertwined.'
+WHERE s.PageKey = 'about' AND s.SectionKey = 'journey' AND i.ItemKey = 'design'
+  AND i.Text = 'Her love of beauty, colour and composition drew her to interior design, where she discovered she could use both sides of her thinking at once.'
+  AND NOT EXISTS (SELECT 1 FROM SchemaMigrations WHERE MigrationName = '021_vanessa_questionnaire');
+
+UPDATE PageSectionItems i JOIN PageSections s ON s.SectionID = i.SectionID
+SET i.Text = 'A lifelong connection to nature showed her the way: a career as a biophilic designer, bringing together interior design, colour & design psychology and biophilic & well-being design.'
+WHERE s.PageKey = 'about' AND s.SectionKey = 'journey' AND i.ItemKey = 'nature'
+  AND i.Text = 'Biophilic design and colour & design psychology brought it all together: design choices informed by how people actually respond to their surroundings, expressed with an artist''s eye.'
+  AND NOT EXISTS (SELECT 1 FROM SchemaMigrations WHERE MigrationName = '021_vanessa_questionnaire');
+
+-- About: mission, vision and the impact she wants to make.
+INSERT IGNORE INTO PageSections (PageKey, SectionKey, Eyebrow, Heading, Introduction, Body, ButtonText, ButtonLink, SecondaryButtonText, SecondaryButtonLink, DisplayOrder, Status)
+SELECT 'about', 'mission', 'Mission & vision', 'Why Vanessa does this work', 'Vanessa believes everyone has the basic human right to live and work in spaces that connect them to nature. The benefits of biophilic design go far beyond aesthetics: they improve physical and mental health, boost cognition and encourage better stewardship of the environment.', NULL, NULL, NULL, NULL, NULL, 25, 'Published'
+FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM SchemaMigrations WHERE MigrationName = '021_vanessa_questionnaire');
+
+INSERT IGNORE INTO PageSectionItems (SectionID, ItemKey, Title, Text, Icon, Link, DisplayOrder, Status)
+SELECT s.SectionID, 'mission', 'Mission', 'To create beautiful, harmonious, safe and functional spaces, bringing in elements of biophilic design in a way that resonates and aligns with each client''s specific needs.', 'leaf', NULL, 10, 'Published'
+FROM PageSections s WHERE s.PageKey = 'about' AND s.SectionKey = 'mission' AND NOT EXISTS (SELECT 1 FROM SchemaMigrations WHERE MigrationName = '021_vanessa_questionnaire');
+
+INSERT IGNORE INTO PageSectionItems (SectionID, ItemKey, Title, Text, Icon, Link, DisplayOrder, Status)
+SELECT s.SectionID, 'vision', 'Vision', 'To co-create spaces that support human health and well-being with clients and stakeholders, in a way that supports our relationship with nature and our environment.', 'eye', NULL, 20, 'Published'
+FROM PageSections s WHERE s.PageKey = 'about' AND s.SectionKey = 'mission' AND NOT EXISTS (SELECT 1 FROM SchemaMigrations WHERE MigrationName = '021_vanessa_questionnaire');
+
+-- About: her personal philosophy beside the biophilic approach (the
+-- Stephen Kellert quote stays on the home page).
+UPDATE PageSectionItems i JOIN PageSections s ON s.SectionID = i.SectionID
+SET i.ItemKey = 'philosophy', i.Title = 'Vanessa Talbot',
+    i.Text = 'I strive to live with integrity, pursue lifelong learning, and treat others and nature with compassion, believing that respecting nature and people shapes a fulfilling life.'
+WHERE s.PageKey = 'about' AND s.SectionKey = 'quote' AND i.ItemKey = 'kellert'
+  AND i.Text = 'Nature remains our magic well: the more we draw from its nourishing waters, the more we sustain the human body, mind and spirit.'
+  AND NOT EXISTS (SELECT 1 FROM SchemaMigrations WHERE MigrationName = '021_vanessa_questionnaire');
+
+UPDATE PageSections SET Introduction = 'Biophilia is our innate connection to nature. Vanessa''s work starts from the belief that this connection is not a luxury. It is essential to how we rest, focus and feel.'
+WHERE PageKey = 'about' AND SectionKey = 'philosophy'
+  AND Introduction = 'Biophilia is our innate need to connect with nature. Vanessa''s work starts from the belief that this connection is not a luxury. It is essential to how we rest, focus and feel.'
+  AND NOT EXISTS (SELECT 1 FROM SchemaMigrations WHERE MigrationName = '021_vanessa_questionnaire');
+
+-- About: her eleven core values, in her order. Honesty was not one of them,
+-- so it is archived (still in the admin) if its wording is unchanged.
+UPDATE AboutValues SET Status = 'Archived'
+WHERE Title = 'Honesty' AND Description = 'Clear advice, realistic expectations and straightforward communication at every stage.'
+  AND NOT EXISTS (SELECT 1 FROM SchemaMigrations WHERE MigrationName = '021_vanessa_questionnaire');
+
+UPDATE AboutValues SET DisplayOrder = 40 WHERE Title = 'Individuality' AND DisplayOrder = 30
+  AND NOT EXISTS (SELECT 1 FROM SchemaMigrations WHERE MigrationName = '021_vanessa_questionnaire');
+
+INSERT IGNORE INTO AboutValues (Title, Description, Icon, DisplayOrder, Status)
+SELECT 'Curiosity', 'A sense of wonder that led from science to design, and keeps every project asking why.', 'eye', 30, 'Published'
+FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM SchemaMigrations WHERE MigrationName = '021_vanessa_questionnaire');
+
+INSERT IGNORE INTO AboutValues (Title, Description, Icon, DisplayOrder, Status)
+SELECT 'Wellness', 'Spaces that support physical and mental health, rest and recovery.', 'leaf', 60, 'Published'
+FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM SchemaMigrations WHERE MigrationName = '021_vanessa_questionnaire');
+
+INSERT IGNORE INTO AboutValues (Title, Description, Icon, DisplayOrder, Status)
+SELECT 'Sustainability', 'Local, natural and lasting choices that respect the environment.', 'sprout', 70, 'Published'
+FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM SchemaMigrations WHERE MigrationName = '021_vanessa_questionnaire');
+
+INSERT IGNORE INTO AboutValues (Title, Description, Icon, DisplayOrder, Status)
+SELECT 'Education', 'Sharing what biophilic design can do, through talks, workshops and writing.', 'pen', 80, 'Published'
+FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM SchemaMigrations WHERE MigrationName = '021_vanessa_questionnaire');
+
+INSERT IGNORE INTO AboutValues (Title, Description, Icon, DisplayOrder, Status)
+SELECT 'Research', 'Design decisions informed by evidence about how people respond to their surroundings.', 'flask', 90, 'Published'
+FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM SchemaMigrations WHERE MigrationName = '021_vanessa_questionnaire');
+
+INSERT IGNORE INTO AboutValues (Title, Description, Icon, DisplayOrder, Status)
+SELECT 'Community', 'Working with clients, makers and fellow designers, and spaces that bring people together.', 'group', 100, 'Published'
+FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM SchemaMigrations WHERE MigrationName = '021_vanessa_questionnaire');
+
+INSERT IGNORE INTO AboutValues (Title, Description, Icon, DisplayOrder, Status)
+SELECT 'Nature Connection', 'Reconnecting people with the natural world, wherever they live and work.', 'leaf', 110, 'Published'
+FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM SchemaMigrations WHERE MigrationName = '021_vanessa_questionnaire');
+
+-- About: qualifications and professional memberships (only if none have
+-- been added yet).
+INSERT INTO AboutQualifications (Title, Type, DisplayOrder, Status)
+SELECT q.Title, q.Type, q.DisplayOrder, 'Published' FROM (
+    SELECT 'Analytical Chemistry' AS Title, 'Qualification' AS Type, 10 AS DisplayOrder
+    UNION ALL SELECT 'Postgraduate Diploma in Business Administration', 'Qualification', 20
+    UNION ALL SELECT 'Diploma in Interior Design', 'Qualification', 30
+    UNION ALL SELECT 'Business, Branding, Marketing and Social Media for Interior Designers', 'Certification', 40
+    UNION ALL SELECT 'Colour and Design Psychology', 'Certification', 50
+    UNION ALL SELECT 'Biophilic & Well-being Design', 'Certification', 60
+    UNION ALL SELECT 'Green Living Biophilic Society, Kenya', 'Membership', 70
+    UNION ALL SELECT 'Habitarmonia Academy & Ecosystem', 'Membership', 80
+) q
+WHERE NOT EXISTS (SELECT 1 FROM AboutQualifications)
+  AND NOT EXISTS (SELECT 1 FROM SchemaMigrations WHERE MigrationName = '021_vanessa_questionnaire');
+
+-- Speaking: her first engagement.
+INSERT IGNORE INTO SpeakingEngagements (Title, Slug, Organiser, Venue, City, EventDate, Status)
+SELECT 'Presentation to first-year interior design students', 'kenya-college-of-interior-design-2026', 'Kenya College of Interior Design', 'Kenya College of Interior Design', 'Kenya', '2026-09-30', 'Published'
+FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM SchemaMigrations WHERE MigrationName = '021_vanessa_questionnaire');
+
+-- Services: biophilic design under her name for it, in her words, with the
+-- spaces she works in and the benefits to clients.
+UPDATE Services SET ServiceName = 'Biophilic & Well-being Design'
+WHERE Slug = 'biophilic-design' AND ServiceName = 'Biophilic Design'
+  AND NOT EXISTS (SELECT 1 FROM SchemaMigrations WHERE MigrationName = '021_vanessa_questionnaire');
+
+UPDATE Services SET Lead = 'Biophilia is our innate connection to nature. Biophilic design brings that connection back into the places where we live and work.'
+WHERE Slug = 'biophilic-design' AND Lead = 'People are wired to feel better around nature. Biophilic design brings that connection indoors, deliberately and beautifully.'
+  AND NOT EXISTS (SELECT 1 FROM SchemaMigrations WHERE MigrationName = '021_vanessa_questionnaire');
+
+UPDATE Services SET FullDescription = 'Reconnect your spaces with nature through biophilic design, integrating natural elements to create healthier, calmer and more restorative living or working spaces for improved well-being.\n\nDrawing on research into how natural light, greenery, texture, water and views affect the way we feel and function, Vanessa designs spaces that calm the mind, lift energy and support everyday well-being. Biophilic design can be brought into a new or existing space at many budget levels.'
+WHERE Slug = 'biophilic-design' AND FullDescription = 'Drawing on research into how natural light, greenery, texture, water and views affect the way we feel and function, Vanessa designs spaces that calm the mind, lift energy and support everyday wellbeing. The result is an interior that feels alive, grounded and quietly restorative.'
+  AND NOT EXISTS (SELECT 1 FROM SchemaMigrations WHERE MigrationName = '021_vanessa_questionnaire');
+
+UPDATE Services SET IdealFor = 'Homes and residential\nOffices and workplaces\nHealth clinics, gyms and wellness rooms\nSchools and frail care\nEducation'
+WHERE Slug = 'biophilic-design' AND IdealFor = 'Residential homes\nWorkspaces\nHealth & wellness centres'
+  AND NOT EXISTS (SELECT 1 FROM SchemaMigrations WHERE MigrationName = '021_vanessa_questionnaire');
+
+INSERT IGNORE INTO PageSections (PageKey, SectionKey, Eyebrow, Heading, Introduction, Body, ButtonText, ButtonLink, SecondaryButtonText, SecondaryButtonLink, DisplayOrder, Status)
+SELECT 'service-biophilic-design', 'benefits', 'The benefits', 'What biophilic design does for you', 'The benefits of biophilic design go far beyond aesthetics.', NULL, NULL, NULL, NULL, NULL, 15, 'Published'
+FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM SchemaMigrations WHERE MigrationName = '021_vanessa_questionnaire');
+
+INSERT IGNORE INTO PageSectionItems (SectionID, ItemKey, Title, Text, Icon, Link, DisplayOrder, Status)
+SELECT s.SectionID, b.ItemKey, b.Title, b.Text, b.Icon, NULL, b.DisplayOrder, 'Published'
+FROM PageSections s JOIN (
+    SELECT 'well-being' AS ItemKey, 'Enhanced well-being and mental health' AS Title, 'Spaces that help you feel calmer, more rested and more like yourself.' AS Text, 'leaf' AS Icon, 10 AS DisplayOrder
+    UNION ALL SELECT 'productivity', 'Increased productivity and creativity', 'Natural light, greenery and views that help people think clearly and work well.', 'brush', 20
+    UNION ALL SELECT 'stress', 'Stress reduction and improved cognitive function', 'Restorative surroundings that lower stress and support focus and memory.', 'flask', 30
+    UNION ALL SELECT 'urban', 'Connection to nature in urban environments', 'A daily connection with the natural world, even in the middle of a city.', 'sprout', 40
+    UNION ALL SELECT 'sustainability', 'Sustainability and environmental stewardship', 'Natural, local and lasting materials that respect the environment.', 'eye', 50
+    UNION ALL SELECT 'community', 'Community and social interaction', 'Spaces that invite people to gather, connect and feel they belong.', 'group', 60
+) b
+WHERE s.PageKey = 'service-biophilic-design' AND s.SectionKey = 'benefits'
+  AND NOT EXISTS (SELECT 1 FROM SchemaMigrations WHERE MigrationName = '021_vanessa_questionnaire');
+
+-- Frequently asked questions: her definition, budgets in tiers, AI, and
+-- working further afield.
+UPDATE PageSectionItems i JOIN PageSections s ON s.SectionID = i.SectionID
+SET i.Text = 'Biophilia is our innate connection to nature. Biophilic design brings the natural world into the spaces where we live and work, through light, plants, water, natural materials and organic form, to create healthier, calmer and more restorative spaces.'
+WHERE s.PageKey = 'contact' AND s.SectionKey = 'faq' AND i.ItemKey = 'what-is-biophilic'
+  AND i.Text = 'Biophilic design brings the natural world into the spaces where we live and work, through light, plants, water, natural materials and organic form, to support health and wellbeing.'
+  AND NOT EXISTS (SELECT 1 FROM SchemaMigrations WHERE MigrationName = '021_vanessa_questionnaire');
+
+UPDATE PageSectionItems i JOIN PageSections s ON s.SectionID = i.SectionID
+SET i.Text = 'Yes. Biophilic design can be brought into a new or existing design at many budget levels, so projects can be planned in tiers, from a few well-chosen changes to a complete redesign. The budget is agreed with you before any work begins.'
+WHERE s.PageKey = 'contact' AND s.SectionKey = 'faq' AND i.ItemKey = 'budget'
+  AND i.Text = 'Yes. Every project starts with a realistic budget, agreed with you before any work begins.'
+  AND NOT EXISTS (SELECT 1 FROM SchemaMigrations WHERE MigrationName = '021_vanessa_questionnaire');
+
+INSERT IGNORE INTO PageSectionItems (SectionID, ItemKey, Title, Text, Icon, Link, DisplayOrder, Status)
+SELECT s.SectionID, 'ai', 'Can''t I just ask AI to design my space?', 'AI can suggest ideas, but it can''t stand in your space, see how the light moves through it, or understand how you live and what you need the space to do. Vanessa combines biophilic design and colour & design psychology with a background in science, and turns your vision into something tangible, natural and sustainable.', NULL, NULL, 70, 'Published'
+FROM PageSections s WHERE s.PageKey = 'contact' AND s.SectionKey = 'faq' AND NOT EXISTS (SELECT 1 FROM SchemaMigrations WHERE MigrationName = '021_vanessa_questionnaire');
+
+INSERT IGNORE INTO PageSectionItems (SectionID, ItemKey, Title, Text, Icon, Link, DisplayOrder, Status)
+SELECT s.SectionID, 'where', 'Do you work outside South Africa?', 'Yes. Vanessa works in person in Pietermaritzburg and the KwaZulu-Natal Midlands, online across South Africa, and across Africa, including Kenya, and further afield by arrangement, with travel costs covered by the client.', NULL, NULL, 80, 'Published'
+FROM PageSections s WHERE s.PageKey = 'contact' AND s.SectionKey = 'faq' AND NOT EXISTS (SELECT 1 FROM SchemaMigrations WHERE MigrationName = '021_vanessa_questionnaire');
+
+INSERT IGNORE INTO SchemaMigrations (MigrationName) VALUES ('021_vanessa_questionnaire');
