@@ -61,6 +61,7 @@ $staff = $layout !== 'admin' && function_exists('staff_viewer') ? staff_viewer()
     <meta name="csrf-token" content="<?= e(csrf_token()) ?>">
     <meta name="media-upload-url" content="<?= e(url('admin/media-upload.php')) ?>">
     <meta name="media-list-url" content="<?= e(url('admin/media-list.php')) ?>">
+    <meta name="media-describe-url" content="<?= e(url('admin/media-describe.php')) ?>">
 <?php endif; ?>
 <?php if ($layout === 'admin' || !empty($noindex)): ?>
     <meta name="robots" content="noindex, nofollow">

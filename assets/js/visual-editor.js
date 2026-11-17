@@ -472,7 +472,7 @@
             image: async () => {
                 if (!window.vtChooseImage) return;
                 const keep = saved;
-                const item = await window.vtChooseImage();
+                const item = await window.vtChooseImage({ details: true, category: location.pathname.includes('blog-edit') ? 'Blog Posts' : '' });
                 saved = keep;
                 if (!item) return;
                 insertWidget(widgets.image(item.path, (item.caption || '').replace(/[|\]]/g, ''), base));

@@ -1126,7 +1126,7 @@ SELECT s.SectionID, 'confirm', 'I confirm a time', 'I''ll reply to suggest a dat
 FROM PageSections s WHERE s.PageKey = 'consultation' AND s.SectionKey = 'next' AND NOT EXISTS (SELECT 1 FROM SchemaMigrations WHERE MigrationName = '017_consultations_testimonials');
 
 INSERT IGNORE INTO PageSectionItems (SectionID, ItemKey, Title, Text, Icon, Link, DisplayOrder, Status)
-SELECT s.SectionID, 'meet', 'We meet', 'At your space, or online if that is easier. We talk about how you live and work, and what you would like the space to feel like.', 'leaf', NULL, 20, 'Published'
+SELECT s.SectionID, 'meet', 'We meet', 'We talk about how you live and work, and what you would like the space to feel like. Where we meet is agreed when the time is confirmed.', 'leaf', NULL, 20, 'Published'
 FROM PageSections s WHERE s.PageKey = 'consultation' AND s.SectionKey = 'next' AND NOT EXISTS (SELECT 1 FROM SchemaMigrations WHERE MigrationName = '017_consultations_testimonials');
 
 INSERT IGNORE INTO PageSectionItems (SectionID, ItemKey, Title, Text, Icon, Link, DisplayOrder, Status)
@@ -1138,3 +1138,16 @@ WHERE PageKey = 'service-consultations' AND SectionKey = 'closing' AND ButtonLin
   AND NOT EXISTS (SELECT 1 FROM SchemaMigrations WHERE MigrationName = '017_consultations_testimonials');
 
 INSERT IGNORE INTO SchemaMigrations (MigrationName) VALUES ('017_consultations_testimonials');
+
+-- --------------------------------------------------------------------------
+-- 018: The booking form no longer asks where to meet (that is agreed when the
+-- time is confirmed), so the "We meet" step stops promising a place. Only
+-- changed if it still has the original wording.
+-- --------------------------------------------------------------------------
+UPDATE PageSectionItems i JOIN PageSections s ON s.SectionID = i.SectionID
+SET i.Text = 'We talk about how you live and work, and what you would like the space to feel like. Where we meet is agreed when the time is confirmed.'
+WHERE s.PageKey = 'consultation' AND s.SectionKey = 'next' AND i.ItemKey = 'meet'
+  AND i.Text = 'At your space, or online if that is easier. We talk about how you live and work, and what you would like the space to feel like.'
+  AND NOT EXISTS (SELECT 1 FROM SchemaMigrations WHERE MigrationName = '018_booking_area');
+
+INSERT IGNORE INTO SchemaMigrations (MigrationName) VALUES ('018_booking_area');

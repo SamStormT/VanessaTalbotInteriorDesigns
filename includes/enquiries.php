@@ -202,11 +202,6 @@ function consultation_spaces(): array
     return ['Home', 'Office or workspace', 'Boutique or shop', 'Hospitality or wellness venue', 'Special occasion or event', 'Something else'];
 }
 
-function consultation_formats(): array
-{
-    return ['visit' => 'At my space', 'online' => 'Online video call', 'either' => 'Either suits me'];
-}
-
 function consultation_times(): array
 {
     return ['morning' => 'Morning', 'afternoon' => 'Afternoon', 'any' => 'Any time'];
@@ -238,7 +233,6 @@ function consultation_validate(array $input, array $services): array
 {
     $errors = [];
     $space  = form_text($input, 'space');
-    $format = form_text($input, 'format');
     $area   = form_text($input, 'area');
     $notes  = form_multiline($input, 'notes');
     $slug   = form_text($input, 'service');
@@ -246,10 +240,10 @@ function consultation_validate(array $input, array $services): array
     if (!in_array($space, consultation_spaces(), true)) {
         $errors['space'] = 'Please choose the type of space.';
     }
-    if (!isset(consultation_formats()[$format])) {
-        $errors['format'] = 'Please choose where you would like to meet.';
-    }
-    if (mb_strlen($area) > 150) {
+    // Only the visitor's area is asked for: where to meet is agreed when the time is confirmed.
+    if ($area === '') {
+        $errors['area'] = 'Please tell us which suburb or town you are in.';
+    } elseif (mb_strlen($area) > 150) {
         $errors['area'] = 'Please use 150 characters or fewer.';
     }
     if (mb_strlen($notes) > 3000) {
@@ -271,11 +265,10 @@ function consultation_validate(array $input, array $services): array
         }
     }
 
-    $place   = consultation_formats()[$format] ?? '';
     $message = "Consultation request\n\n"
              . 'Type of space: ' . $space . "\n"
              . 'Service: ' . $service . "\n"
-             . 'Where: ' . $place . ($area !== '' ? ' (' . $area . ')' : '') . "\n"
+             . 'Area: ' . $area . "\n"
              . 'First choice: ' . ($choices[1] ?? '') . "\n"
              . (isset($choices[2]) ? 'Second choice: ' . $choices[2] . "\n" : '')
              . "\nAbout the space:\n" . ($notes !== '' ? $notes : '(nothing added)');

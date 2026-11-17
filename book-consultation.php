@@ -1,7 +1,8 @@
 <?php
 /**
- * Book a consultation: the type of space, the service, where to meet and two
- * preferred dates. Saved as a Contact Message of type Consultation (so it is
+ * Book a consultation: the type of space, the service, the visitor's area
+ * (suburb or town) and two preferred dates. Where to meet is agreed when the
+ * time is confirmed. Saved as a Contact Message of type Consultation (so it is
  * in the same admin list and notification email as other enquiries), with
  * the same spam trap, security token and hourly limit as the contact form.
  * Wording comes from the CMS under the page key "consultation".
@@ -19,7 +20,7 @@ foreach (site_services() as $service) {
     $services[(string) $service['Slug']] = (string) $service['ServiceName'];
 }
 
-$values      = ['service' => is_string($_GET['service'] ?? null) && isset($services[$_GET['service']]) ? $_GET['service'] : '', 'format' => 'either', 'time1' => 'any', 'time2' => 'any'];
+$values      = ['service' => is_string($_GET['service'] ?? null) && isset($services[$_GET['service']]) ? $_GET['service'] : '', 'time1' => 'any', 'time2' => 'any'];
 $errors      = [];
 $status      = null;
 $contactLine = 'Please try again later, or phone or email using the details on this page.';
@@ -27,7 +28,7 @@ $thanks      = 'Thank you, your request has been sent. You will hear back soon t
 $self        = url('book-consultation.php') . '#booking-form';
 
 if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
-    foreach (['name', 'surname', 'email', 'phone', 'space', 'service', 'format', 'area', 'date1', 'time1', 'date2', 'time2', 'notes', 'newsletter'] as $key) {
+    foreach (['name', 'surname', 'email', 'phone', 'space', 'service', 'area', 'date1', 'time1', 'date2', 'time2', 'notes', 'newsletter'] as $key) {
         $values[$key] = is_string($_POST[$key] ?? null) ? $_POST[$key] : '';
     }
 
@@ -159,16 +160,9 @@ require_once INCLUDES_PATH . '/header.php';
 
                     <fieldset class="booking-group">
                         <legend>Where and when</legend>
-                        <fieldset class="form-choices"<?= isset($errors['format']) ? ' aria-describedby="booking-format-error"' : '' ?>>
-                            <legend>Where would you like to meet? <span class="required" aria-hidden="true">*</span></legend>
-<?php foreach (consultation_formats() as $key => $label): ?>
-                            <label class="form-check"><input type="radio" name="format" value="<?= e($key) ?>"<?= $key === ($values['format'] ?? '') ? ' checked' : '' ?> required> <?= e($label) ?></label>
-<?php endforeach; ?>
-                            <?= $errorText('format') ?>
-                        </fieldset>
                         <div class="form-field">
-                            <label for="booking-area">Suburb or town</label>
-                            <input id="booking-area" name="area" type="text" autocomplete="address-level2" maxlength="150" value="<?= $value('area') ?>"<?= $invalid('area') ?>>
+                            <label for="booking-area">Your area (suburb or town) <span class="required" aria-hidden="true">*</span></label>
+                            <input id="booking-area" name="area" type="text" autocomplete="address-level2" maxlength="150" required value="<?= $value('area') ?>"<?= $invalid('area') ?>>
                             <?= $errorText('area') ?>
                         </div>
 <?php foreach ([1 => 'First choice', 2 => 'Second choice (optional)'] as $n => $label): ?>

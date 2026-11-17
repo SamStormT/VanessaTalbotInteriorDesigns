@@ -465,7 +465,7 @@ function cms_rich_editor(string $attrs, string $value, int $rows = 18): string
         ['heading', 'Heading', 'Heading'],
         ['list', 'Bullet list', 'List'],
         ['quote', 'Pull quote', 'Quote'],
-        ['image', 'Picture from the Media Library', 'Picture'],
+        ['image', 'Add a picture: upload one, or choose from the Media Library', 'Picture'],
         ['section', 'Highlighted section', 'Section'],
         ['button', 'Button', 'Button'],
         ['more', 'Newsletter "read more" point', 'Read more'],
@@ -483,7 +483,7 @@ function cms_rich_editor(string $attrs, string $value, int $rows = 18): string
            . '<div><dt>- item</dt><dd>A bullet point (also * or •). Use 1. for numbered points.</dd></div>'
            . '<div><dt>[words](contact.php)</dt><dd>A link to a page on this site, or a full https:// address.</dd></div>'
            . '<div><dt>&gt; quote</dt><dd>A pull quote. Add a last line &gt; — Name for who said it.</dd></div>'
-           . '<div><dt>[[image …]]</dt><dd>A picture from the Media Library, with an optional caption after |.</dd></div>'
+           . '<div><dt>[[image …]]</dt><dd>A picture (uploaded, or from the Media Library), with an optional caption after |.</dd></div>'
            . '<div><dt>[[section green]] … [[/section]]</dt><dd>A highlighted block: peach, green, gold or white.</dd></div>'
            . '<div><dt>[[button Words | page]]</dt><dd>A button, for example [[button Book a consultation | book-consultation.php]].</dd></div>'
            . '<div><dt>[[more]]</dt><dd>Newsletters show the article up to this point, then a Read more button.</dd></div>'

@@ -83,34 +83,133 @@ document.querySelectorAll('form[data-confirm]').forEach((form) => {
     // A file dropped outside a drop zone must not replace the page and lose work.
     ['dragover', 'drop'].forEach((name) => window.addEventListener(name, (event) => event.preventDefault()));
 
-    // ---- Library picker ----
+    // ---- Picture chooser: upload a new picture (or drop one in), or pick from the library ----
+    // Called with { details: true } (the article editor), it then asks for a
+    // description and caption before the picture goes in.
+    const describeUrl = meta('media-describe-url');
     let picker = null;
     let pickerResolve = null;
+    let pickerOptions = {};
 
     function buildPicker() {
         const dialog = document.createElement('dialog');
         dialog.className = 'media-picker';
-        dialog.setAttribute('aria-label', 'Choose an image');
+        dialog.setAttribute('aria-labelledby', 'media-picker-title');
         dialog.innerHTML = `
             <div class="media-picker__head">
-                <h2 class="media-picker__title">Choose an image</h2>
+                <h2 class="media-picker__title" id="media-picker-title">Add a picture</h2>
                 <button type="button" class="admin-topbar__logout" data-close>Close</button>
             </div>
-            <div class="admin-field">
-                <label for="media-picker-search">Search</label>
-                <input id="media-picker-search" type="search" autocomplete="off">
+            <div class="media-picker__choose">
+                <div class="media-drop media-picker__drop"><label>
+                    <span class="media-drop__text">Drag a photo here, or <span class="media-drop__link">upload one from your computer</span></span>
+                    <span class="media-drop__hint">JPG, PNG, WebP or GIF, up to 10 MB. It is added to the Media Library too.</span>
+                    <input class="visually-hidden" type="file" accept="image/jpeg,image/png,image/webp,image/gif">
+                </label></div>
+                <p class="media-picker__or">Or choose one already in the Media Library</p>
+                <div class="admin-field">
+                    <label for="media-picker-search">Search the library</label>
+                    <input id="media-picker-search" type="search" autocomplete="off">
+                </div>
+                <p class="media-field__status" role="status"></p>
+                <ul class="media-grid media-grid--picker"></ul>
+                <button type="button" class="btn btn--outline btn--small" data-more hidden>Show more</button>
             </div>
-            <p class="media-field__status" role="status"></p>
-            <ul class="media-grid media-grid--picker"></ul>
-            <button type="button" class="btn btn--outline btn--small" data-more hidden>Show more</button>`;
+            <form class="media-picker__details" method="dialog" hidden>
+                <img class="media-picker__preview" alt="">
+                <div>
+                    <div class="admin-field">
+                        <label for="media-picker-alt">Describe the picture <span class="required" aria-hidden="true">*</span></label>
+                        <input id="media-picker-alt" type="text" maxlength="255" required aria-describedby="media-picker-alt-help">
+                        <p class="admin-help" id="media-picker-alt-help">For people who can't see it, and for search engines. For example: "A sunny reading corner with ferns on the windowsill".</p>
+                    </div>
+                    <div class="admin-field">
+                        <label for="media-picker-caption">Caption under the picture (optional)</label>
+                        <input id="media-picker-caption" type="text" maxlength="250">
+                    </div>
+                    <p class="media-field__status" role="status" data-details-status></p>
+                    <p class="admin-actions">
+                        <button type="submit" class="btn btn--primary">Add the picture</button>
+                        <button type="button" class="btn btn--outline" data-back>Choose another</button>
+                    </p>
+                </div>
+            </form>`;
         document.body.append(dialog);
 
+        const choose = dialog.querySelector('.media-picker__choose');
+        const details = dialog.querySelector('.media-picker__details');
         const grid = dialog.querySelector('.media-grid');
-        const status = dialog.querySelector('.media-field__status');
-        const search = dialog.querySelector('input');
+        const status = choose.querySelector('.media-field__status');
+        const search = dialog.querySelector('#media-picker-search');
         const more = dialog.querySelector('[data-more]');
+        const altInput = dialog.querySelector('#media-picker-alt');
+        const captionInput = dialog.querySelector('#media-picker-caption');
+        const detailsStatus = dialog.querySelector('[data-details-status]');
         let offset = 0;
         let requestNumber = 0;
+        let chosen = null;
+
+        function showChoose() {
+            chosen = null;
+            details.hidden = true;
+            choose.hidden = false;
+            dialog.querySelector('#media-picker-title').textContent = 'Add a picture';
+        }
+
+        /** A picture was picked or uploaded: finish, or ask for its details first. */
+        function picked(item) {
+            if (!pickerOptions.details) {
+                dialog.close();
+                pickerResolve?.(item);
+                return;
+            }
+            chosen = item;
+            choose.hidden = true;
+            details.hidden = false;
+            dialog.querySelector('#media-picker-title').textContent = 'Picture details';
+            details.querySelector('img').src = item.thumb || item.url;
+            altInput.value = item.alt || '';
+            // A description already in the library is used everywhere; it is changed on the Media Library screen.
+            altInput.readOnly = Boolean(item.alt);
+            dialog.querySelector('#media-picker-alt-help').textContent = item.alt
+                ? 'Already described in the Media Library, which is where it can be changed.'
+                : 'For people who can\x27t see it, and for search engines. For example: "A sunny reading corner with ferns on the windowsill".';
+            captionInput.value = item.caption || '';
+            detailsStatus.textContent = item.warning || '';
+            (altInput.value ? captionInput : altInput).focus();
+        }
+
+        details.addEventListener('submit', async (event) => {
+            event.preventDefault();
+            const alt = altInput.value.trim();
+            if (!alt) {
+                detailsStatus.textContent = 'Please describe the picture first.';
+                altInput.focus();
+                return;
+            }
+            // A picture without a description in the library gets this one, for use everywhere.
+            if (!chosen.alt && describeUrl) {
+                try {
+                    const body = new URLSearchParams({ csrf_token: csrf, path: chosen.path, alt });
+                    await fetch(describeUrl, { method: 'POST', body, credentials: 'same-origin' });
+                } catch (error) { /* the picture still goes in */ }
+            }
+            const item = { ...chosen, alt, caption: captionInput.value.trim() };
+            dialog.close();
+            pickerResolve?.(item);
+        });
+        dialog.querySelector('[data-back]').addEventListener('click', showChoose);
+
+        acceptFiles(dialog.querySelector('.media-picker__drop'), async (files) => {
+            if (files.length === 0) return;
+            status.textContent = `Uploading ${files[0].name}…`;
+            try {
+                picked(await uploadFile(files[0], pickerOptions.category || ''));
+                status.textContent = '';
+            } catch (error) {
+                status.textContent = error.message;
+            }
+        });
 
         async function load(reset) {
             const thisRequest = ++requestNumber;
@@ -138,10 +237,7 @@ document.querySelectorAll('form[data-confirm]').forEach((form) => {
                     name.className = 'media-card__name';
                     name.textContent = item.name;
                     button.append(frame, name);
-                    button.addEventListener('click', () => {
-                        dialog.close();
-                        pickerResolve?.(item);
-                    });
+                    button.addEventListener('click', () => picked(item));
                     const row = document.createElement('li');
                     row.className = 'media-card';
                     row.append(button);
@@ -165,19 +261,27 @@ document.querySelectorAll('form[data-confirm]').forEach((form) => {
         dialog.addEventListener('click', (event) => {
             if (event.target === dialog) dialog.close();
         });
+        // Closed without choosing: the caller gets nothing.
+        dialog.addEventListener('close', () => {
+            const resolve = pickerResolve;
+            pickerResolve = null;
+            setTimeout(() => resolve?.(null), 0);
+        });
 
-        return { dialog, search, load };
+        return { dialog, search, load, showChoose };
     }
 
-    function chooseFromLibrary() {
+    function chooseFromLibrary(options = {}) {
+        pickerOptions = options || {};
         picker ??= buildPicker();
+        picker.showChoose();
         picker.search.value = '';
         picker.load(true);
         picker.dialog.showModal();
         return new Promise((resolve) => { pickerResolve = resolve; });
     }
 
-    // Shared with the article editor below.
+    // Shared with the article editor (admin.js below and visual-editor.js).
     window.vtChooseImage = chooseFromLibrary;
 
     // ---- Image field on a form ----
@@ -377,11 +481,12 @@ document.querySelectorAll('form[data-confirm]').forEach((form) => {
                 if (!window.vtChooseImage) return;
                 const start = box.selectionStart;
                 const end = box.selectionEnd;
-                const item = await window.vtChooseImage();
+                const item = await window.vtChooseImage({ details: true, category: location.pathname.includes('blog-edit') ? 'Blog Posts' : '' });
                 if (!item) return;
                 box.focus();
                 box.setSelectionRange(start, end);
-                insertBlock('[[image ' + item.path + (item.caption ? ' | ' + item.caption : '') + ']]');
+                const caption = (item.caption || '').replace(/[|\]]/g, '');
+                insertBlock('[[image ' + item.path + (caption ? ' | ' + caption : '') + ']]');
             },
             preview: async () => {
                 if (previewButton.getAttribute('aria-pressed') === 'true') {

@@ -79,6 +79,7 @@ Stack: HTML5, CSS3, JavaScript, PHP 8, MariaDB, PHPMailer (installed with Compos
 │   ├── campaign-preview.php, campaign-send.php      Email preview (computer/phone/text); batch sending (JSON)
 │   ├── rich-preview.php                             Article editor's Preview button (JSON)
 │   ├── welcome-email.php                            Welcome email: wording, preview, test, on/off
+│   ├── media-describe.php                           Adds a picture's description from the article editor (JSON)
 │   ├── history.php                                  History and undo for any edited record
 │   ├── blogs.php, blog-edit.php                     Blog posts: list, write, edit (blog-create.php redirects)
 │   ├── blog-categories.php, blog-category-edit.php  Blog categories
