@@ -1175,7 +1175,72 @@ label {
 .content-document h2 { margin-top: var(--space-xl); }
 .content-document h2:first-child { margin-top: 0; }
 .content-document ul { margin: 0 0 var(--space-md); padding-left: 1.25rem; }
-.collaborator-logo { max-height: 72px; width: auto; margin-bottom: var(--space-md); }
+/* Collaborator cards: a round flag sitting on the top edge, the country, a
+   photo (or a whole logo), the name, role and contact details with icons,
+   and a "Learn more" button. */
+.collab-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 4.5rem 2rem;
+    padding-top: 3.5rem;
+}
+.collab-card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    padding: 2rem 1.75rem 2rem;
+    background: var(--color-white);
+    border: 1px solid var(--color-peach-mid);
+}
+.collab-card--flag { padding-top: 4.25rem; }
+.collab-card__flag {
+    position: absolute;
+    top: -56px;
+    left: 50%;
+    width: 112px;
+    height: 112px;
+    transform: translateX(-50%);
+    border: 3px solid var(--color-white);
+    border-radius: 50%;
+    box-shadow: 0 0 0 1px var(--color-peach-mid), 0 6px 16px rgba(36, 58, 57, 0.12);
+    background: var(--color-white);
+    object-fit: cover;
+}
+.collab-card__country {
+    margin: 0 0 1.25rem;
+    text-align: center;
+    font-family: var(--font-display);
+    font-size: 1.875rem;
+    line-height: 1.1;
+    color: var(--color-primary);
+}
+.collab-card__picture {
+    aspect-ratio: 4 / 3;
+    margin-bottom: 1.75rem;
+    overflow: hidden;
+    background: var(--color-peach-light);
+}
+.collab-card__picture img { width: 100%; height: 100%; object-fit: cover; }
+.collab-card__picture--logo { padding: 1.5rem; background: var(--color-white); border: 1px solid var(--color-border); }
+.collab-card__picture--logo img { object-fit: contain; }
+.collab-card__name {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    margin: 0 0 1rem;
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: 1.875rem;
+    line-height: 1.15;
+}
+.collab-card__name .icon,
+.collab-card__details .icon { flex: 0 0 auto; width: 1.25rem; height: 1.25rem; color: var(--color-primary); }
+.collab-card__details { display: grid; gap: 0.75rem; margin: 0 0 1.75rem; }
+.collab-card__details li { display: flex; gap: 1rem; align-items: center; color: var(--color-text-muted); font-weight: 300; font-size: 1.0625rem; }
+.collab-card__details a { color: inherit; text-decoration: none; overflow-wrap: anywhere; }
+.collab-card__details a:hover { color: var(--color-accent-text); text-decoration: underline; }
+.collab-card__about { margin: 0 0 1.5rem; color: var(--color-text-muted); font-size: 0.9375rem; }
+.collab-card__button { align-self: center; margin-top: auto; }
 .contact-layout { align-items: start; grid-template-columns: 1fr 1fr; }
 .contact-list { display: grid; gap: var(--space-md); margin: var(--space-lg) 0; }
 .contact-list li { display: flex; gap: 0.875rem; align-items: flex-start; }

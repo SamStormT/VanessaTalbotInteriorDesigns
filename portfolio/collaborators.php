@@ -4,6 +4,7 @@
  */
 require_once __DIR__ . '/../includes/config.php';
 require_once INCLUDES_PATH . '/content.php';
+require_once INCLUDES_PATH . '/countries.php';
 
 $sections      = site_sections('portfolio-collaborators');
 $header        = $sections['page-header'] ?? [];
@@ -32,19 +33,44 @@ require_once INCLUDES_PATH . '/header.php';
         <?= edit_block('portfolio-collaborators', 'list') ?>
         <div class="container">
 <?php if ($collaborators): ?>
-            <ul class="card-grid card-grid--3">
-<?php foreach ($collaborators as $person): ?>
-                <li class="card">
+            <ul class="collab-grid">
+<?php foreach ($collaborators as $person):
+    $id      = (int) ($person['CollaboratorID'] ?? 0);
+    $ed      = static fn(string $field): string => ed_record('collaborators', 'admin/collaborator-edit.php', $id, $field, 'collaborators.edit');
+    $country = country_names()[(string) ($person['Country'] ?? '')] ?? '';
+    $flag    = country_flag_url($person['Country'] ?? '');
+    $phone   = trim((string) ($person['Phone'] ?? ''));
+?>
+                <li class="collab-card<?= $flag !== '' ? ' collab-card--flag' : '' ?>">
+<?php if ($flag !== ''): ?>
+                    <img class="collab-card__flag" src="<?= e($flag) ?>" alt="" width="112" height="112"<?= $ed('Country') ?>>
+<?php endif; ?>
+<?php if ($country !== ''): ?>
+                    <p class="collab-card__country"<?= $ed('Country') ?>><?= e($country) ?></p>
+<?php endif; ?>
 <?php if (!empty($person['Logo'])): ?>
-                    <img class="collaborator-logo"<?= ed_record('collaborators', 'admin/collaborator-edit.php', (int) ($person['CollaboratorID'] ?? 0), 'Logo', 'collaborators.edit') ?> src="<?= e(image_url((string) $person['Logo'], 'thumb')) ?>" alt="<?= e($person['LogoAlt'] ?? '') ?>" loading="lazy">
+                    <div class="collab-card__picture<?= ($person['ImageFit'] ?? '') === 'Logo' ? ' collab-card__picture--logo' : '' ?>"<?= $ed('Logo') ?>>
+                        <img src="<?= e(image_url((string) $person['Logo'], 'web')) ?>"<?= image_srcset((string) $person['Logo'], '(max-width: 700px) 100vw, (max-width: 1100px) 50vw, 400px') ?> alt="<?= e($person['LogoAlt'] ?? '') ?>" loading="lazy">
+                    </div>
 <?php endif; ?>
-                    <h2 class="card__title"<?= ed_record('collaborators', 'admin/collaborator-edit.php', (int) ($person['CollaboratorID'] ?? 0), 'Name', 'collaborators.edit') ?>><?= e($person['Name']) ?></h2>
+                    <h2 class="collab-card__name"<?= $ed('Name') ?>><?= icon('person') ?><span><?= e($person['Name']) ?></span></h2>
+                    <ul class="collab-card__details">
 <?php if (!empty($person['RoleTitle'])): ?>
-                    <p class="card__meta"<?= ed_record('collaborators', 'admin/collaborator-edit.php', (int) ($person['CollaboratorID'] ?? 0), 'RoleTitle', 'collaborators.edit') ?>><?= e($person['RoleTitle']) ?></p>
+                        <li<?= $ed('RoleTitle') ?>><?= icon('brush') ?><span><?= e($person['RoleTitle']) ?></span></li>
 <?php endif; ?>
-                    <p<?= ed_record('collaborators', 'admin/collaborator-edit.php', (int) ($person['CollaboratorID'] ?? 0), 'Description', 'collaborators.edit') ?>><?= e($person['Description'] ?? '') ?></p>
+<?php if (!empty($person['Email'])): ?>
+<?php [$mailName, $mailDomain] = array_pad(explode('@', (string) $person['Email'], 2), 2, ''); ?>
+                        <li<?= $ed('Email') ?>><?= icon('mail') ?><span class="protected-email" data-name="<?= e(strrev($mailName)) ?>" data-domain="<?= e(strrev($mailDomain)) ?>"><?= e($mailName) ?> (at) <?= e($mailDomain) ?></span></li>
+<?php endif; ?>
+<?php if ($phone !== ''): ?>
+                        <li<?= $ed('Phone') ?>><?= icon('phone') ?><a href="tel:<?= e(preg_replace('/[^0-9+]/', '', $phone)) ?>"><?= e($phone) ?></a></li>
+<?php endif; ?>
+                    </ul>
+<?php if (!empty($person['Description'])): ?>
+                    <p class="collab-card__about"<?= $ed('Description') ?>><?= e($person['Description']) ?></p>
+<?php endif; ?>
 <?php if (!empty($person['WebsiteLink'])): ?>
-                    <a class="text-link" href="<?= e(content_url($person['WebsiteLink'])) ?>" rel="noopener"<?= ed_record('collaborators', 'admin/collaborator-edit.php', (int) ($person['CollaboratorID'] ?? 0), 'WebsiteLink', 'collaborators.edit') ?>>Visit website</a>
+                    <a class="btn btn--outline collab-card__button" href="<?= e(content_url($person['WebsiteLink'])) ?>" rel="noopener" aria-label="Learn more about <?= e($person['Name']) ?>"<?= $ed('WebsiteLink') ?>>Learn more</a>
 <?php endif; ?>
                 </li>
 <?php endforeach; ?>

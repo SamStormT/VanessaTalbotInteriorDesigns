@@ -238,7 +238,7 @@ Page keys follow `PageSections.PageKey`. Sections are listed in the admin area u
 | Portfolio categories | Projects | Project tiles | `PortfolioProjects` | By `PortfolioCategory` | `Title`, `Slug`, `Location`, `FeaturedImage` |
 | Single project | Whole page | Details and gallery | `PortfolioProjects`, `ProjectImages` | By `Slug` | Project fields; `ImagePath`, `AltText`, `Caption` |
 | Collaborators | Wording | Heading, intro, empty notice, closing | `PageSections` | `portfolio-collaborators/*` | Heading and button fields |
-| Collaborators | People | Cards | `Collaborators` | One row each | `Name`, `RoleTitle`, `Description`, `Logo`, `WebsiteLink` |
+| Collaborators | People | Cards (flag, country, picture, name, role, email, phone, "Learn more") | `Collaborators` | One row each | `Country` (flag code), `Logo` + `LogoAlt` + `ImageFit` (Photo or Logo), `Name`, `RoleTitle`, `Email`, `Phone`, `Description`, `WebsiteLink` (the button) |
 | Contact | Heading | Title and text | `PageSections` | `contact/page-header` | `Heading`, `Introduction` |
 | Contact | Details | Heading and text | `PageSections` | `contact/details` | Heading fields |
 | Contact | Details | Phone, email, social links | `WebsiteSettings` | Row 1 | `Phone`, `Email`, `Facebook`, `Instagram`, `LinkedIn`, `Pinterest` |

@@ -25,6 +25,7 @@ function icon(string $name, string $class = 'icon'): string
         'shield'  => '<path d="M12 3 4 6v6c0 4.5 3.4 8.3 8 9 4.6-.7 8-4.5 8-9V6l-8-3Z"/><path d="m9 12 2 2 4-4"/>',
         'check'   => '<path d="m5 12 5 5 9-10"/>',
         'pen'     => '<path d="M4 20h4L19 9l-4-4L4 16v4Z"/><path d="m13 7 4 4"/>',
+        'phone'   => '<rect x="7" y="2.5" width="10" height="19" rx="2"/><path d="M11 18h2"/>',
     ];
 
     $svg = $paths[$name] ?? '';

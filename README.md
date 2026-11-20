@@ -42,7 +42,7 @@ Signed-in staff can edit every piece of website wording without a developer.
 | Services | Each service's wording, inclusions, client types, image and visibility |
 | About Values, Qualifications | Individual values; qualifications, certifications, memberships and awards |
 | Portfolio Projects | Projects with gallery images; publishing requires client permission |
-| Collaborators, Testimonials | Publishing requires a recorded permission date |
+| Collaborators, Testimonials | Publishing requires a recorded permission date. Collaborators show as cards: a round country flag on the top edge, the country, a photo or logo, name, role, email, phone and a "Learn more" button (each part optional, each with an edit button for staff). Email addresses are kept out of the page source, so spam robots can't collect them; people still see a normal email link |
 | Speaking Engagements | Talks and events |
 | Legal Pages | Privacy Policy, Terms, Copyright |
 | Media Library | Every uploaded image, with search, preview, descriptions and captions |

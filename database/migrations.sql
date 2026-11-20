@@ -1489,3 +1489,18 @@ SELECT s.SectionID, 'where', 'Do you work outside South Africa?', 'Yes. Vanessa 
 FROM PageSections s WHERE s.PageKey = 'contact' AND s.SectionKey = 'faq' AND NOT EXISTS (SELECT 1 FROM SchemaMigrations WHERE MigrationName = '021_vanessa_questionnaire');
 
 INSERT IGNORE INTO SchemaMigrations (MigrationName) VALUES ('021_vanessa_questionnaire');
+
+-- --------------------------------------------------------------------------
+-- 022: Collaborator cards. The country (shown as a round flag and its name
+-- above the card), an email address and phone number (shown only when
+-- entered, and only once the person has agreed to be listed), and whether
+-- the picture is a photo (fills the frame) or a logo (shown whole).
+-- --------------------------------------------------------------------------
+ALTER TABLE Collaborators
+    ADD COLUMN IF NOT EXISTS Country VARCHAR(10) NULL COMMENT 'Flag code, for example za or gb-eng' AFTER RoleTitle,
+    ADD COLUMN IF NOT EXISTS Email VARCHAR(255) NULL AFTER WebsiteLink,
+    ADD COLUMN IF NOT EXISTS Phone VARCHAR(50) NULL AFTER Email,
+    ADD COLUMN IF NOT EXISTS ImageFit ENUM('Photo','Logo') NOT NULL DEFAULT 'Photo' AFTER LogoAlt;
+
+INSERT IGNORE INTO SchemaMigrations (MigrationName) VALUES ('022_collaborator_cards');
+

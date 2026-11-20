@@ -98,6 +98,7 @@ Stack: HTML5, CSS3, JavaScript, PHP 8, MariaDB, PHPMailer (installed with Compos
 │   ├── config.php             Reads .env; constants, error handling, paths
 │   ├── functions.php          e(), url(), asset(), image_url(), is_active(), brand_logo(), link_is_safe()
 │   ├── icons.php              icon() inline SVG icons, botanical() decoration
+│   ├── countries.php          country_names() and country_flag_url(), for the collaborator cards
 │   ├── database.php           Central PDO connection and query helpers
 │   ├── auth.php               Sessions, sign-in, CSRF, activity log, admin_guard(), password resets
 │   ├── twofactor.php          Two-step sign-in: codes (RFC 6238), backup codes, the second sign-in step
@@ -142,6 +143,7 @@ Stack: HTML5, CSS3, JavaScript, PHP 8, MariaDB, PHPMailer (installed with Compos
 │   ├── js/visual-editor.js    The visual article editor
 │   ├── js/lib/qrcode.js       QR codes for two-step sign-in (qrcode-generator, MIT licence; not in a "vendor" folder, which .htaccess and Git exclude)
 │   ├── fonts/                 Open Sans, Gilda Display, Allison (.woff2, SIL Open Font License files alongside)
+│   ├── images/flags/          Round-crop country flags for collaborator cards (flag-icons 7.6.0, MIT licence in LICENSE-flag-icons.txt)
 │   └── images/                Icons, sharing picture, butterfly.svg (the logo's butterfly as a line icon: above each closing banner, and on the menu bar: on the first page of a visit, one butterfly per gap between menu names flutters around for 10 seconds, then lands in its gap, in the brand colours in turn; later pages show them landed. Created and flown by main.js into the empty `.nav-butterflies` box in navbar.php, styled in style.css. Phones and tablets: they flutter, then fade. Reduced motion: landed at once. No JavaScript: none shown); official logo files go here when supplied
 │
 ├── uploads/                   Created on first upload; ignored by Git; must survive deployments

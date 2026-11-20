@@ -382,3 +382,18 @@ document.querySelectorAll('[data-compare]').forEach((figure) => {
         fly();
     }
 })();
+
+
+// ---------------------------------------------------------------------------
+// Email addresses hidden from spam robots: the page holds the two halves
+// reversed, and the readable link is put together here. Without this script
+// people still see "name (at) domain".
+// ---------------------------------------------------------------------------
+document.querySelectorAll('.protected-email').forEach((holder) => {
+    const reverse = (text) => Array.from(text || '').reverse().join('');
+    const address = reverse(holder.dataset.name) + '@' + reverse(holder.dataset.domain);
+    const link = document.createElement('a');
+    link.href = 'mailto:' + address;
+    link.textContent = address;
+    holder.replaceChildren(link);
+});

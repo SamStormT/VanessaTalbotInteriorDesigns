@@ -14,6 +14,8 @@
 
 declare(strict_types=1);
 
+require_once __DIR__ . '/countries.php';
+
 function cms_modules(): array
 {
     $meta = [
@@ -354,12 +356,16 @@ function cms_modules(): array
             'publish_requires' => ['ConsentDate', 'Enter the date they agreed to be listed before publishing.'],
             'fields'     => [
                 'Name'         => ['label' => 'Name', 'type' => 'text', 'required' => true, 'max' => 200],
-                'Slug'         => ['label' => 'Web address', 'type' => 'slug', 'auto_from' => 'Name', 'max' => 200, 'help' => 'Leave blank to create one from the name.'],
-                'RoleTitle'    => ['label' => 'What they do', 'type' => 'text', 'max' => 150],
-                'Description'  => ['label' => 'Description', 'type' => 'textarea', 'max' => 5000],
-                'Logo'         => ['label' => 'Logo or photo', 'type' => 'image', 'alt_field' => 'LogoAlt', 'max' => 500],
+                'Slug'         => ['label' => 'Web address', 'type' => 'slug', 'auto_from' => 'Name', 'max' => 200, 'form' => false], // collaborators have no page of their own: made from the name
+                'RoleTitle'    => ['label' => 'What they do', 'type' => 'text', 'max' => 150, 'help' => 'For example: Interior Designer: Residential, or Landscaper.'],
+                'Country'      => ['label' => 'Country', 'type' => 'select', 'options' => array_keys(country_names()), 'option_labels' => country_names(), 'help' => 'Shown as a round flag and the country name at the top of their card.'],
+                'Description'  => ['label' => 'A few words about them', 'type' => 'textarea', 'max' => 1000, 'help' => 'Optional. One or two sentences, shown under their contact details.'],
+                'Logo'         => ['label' => 'Photo or logo', 'type' => 'image', 'alt_field' => 'LogoAlt', 'max' => 500],
                 'LogoAlt'      => ['label' => 'Image description (alt text)', 'type' => 'text', 'max' => 255],
-                'WebsiteLink'  => ['label' => 'Website', 'type' => 'url', 'max' => 500],
+                'ImageFit'     => ['label' => 'The picture is a', 'type' => 'select', 'required' => true, 'options' => ['Photo', 'Logo'], 'option_labels' => ['Photo' => 'Photo (fills the frame)', 'Logo' => 'Logo (shown whole, not cropped)']],
+                'WebsiteLink'  => ['label' => 'Their website', 'type' => 'url', 'max' => 500, 'help' => 'For example vtid.co.za. The "Learn more" button on their card opens it; leave empty for no button.'],
+                'Email'        => ['label' => 'Email address', 'type' => 'email', 'max' => 255, 'help' => 'Optional. Shown on the card (hidden from spam robots), so only with their agreement.'],
+                'Phone'        => ['label' => 'Phone number', 'type' => 'tel', 'max' => 50, 'help' => 'Optional. Shown on the card, so only with their agreement. For example +27 82 000 0000.'],
                 'ConsentDate'  => ['label' => 'Date they agreed to be listed', 'type' => 'date'],
                 'DisplayOrder' => ['label' => 'Display order', 'type' => 'int', 'help' => 'Lower numbers appear first.'],
                 'Status'       => ['label' => 'Status', 'type' => 'select', 'required' => true, 'options' => ['Draft', 'Published', 'Archived'], 'permission' => 'collaborators.publish'],

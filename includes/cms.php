@@ -97,6 +97,11 @@ function cms_validate(array $module, array $input, array $existing = []): array
             continue;
         }
 
+        // A website typed without https:// (vtid.co.za, www.vtid.co.za) gets it added.
+        if ($field['type'] === 'url' && !preg_match('#^[a-z][a-z0-9+.-]*:#i', $value) && preg_match('#^[a-z0-9-]+(\.[a-z0-9-]+)+([/?\#].*)?$#i', $value)) {
+            $value = 'https://' . $value;
+        }
+
         if (isset($field['max']) && mb_strlen($value) > $field['max']) {
             $errors[$name] = "$label can be at most {$field['max']} characters.";
         }
@@ -104,7 +109,7 @@ function cms_validate(array $module, array $input, array $existing = []): array
         $problem = match ($field['type']) {
             'email'  => filter_var($value, FILTER_VALIDATE_EMAIL) ? null : 'Enter a valid email address.',
             'tel'    => preg_match('/^\+?[0-9][0-9 ()-]{5,28}$/', $value) ? null : 'Enter a valid phone number.',
-            'url'    => preg_match('#^https?://[^\s<>"]+$#i', $value) && filter_var($value, FILTER_VALIDATE_URL) ? null : 'Enter a full web address starting with https://',
+            'url'    => preg_match('#^https?://[^\s<>"]+$#i', $value) && filter_var($value, FILTER_VALIDATE_URL) ? null : 'Enter a website, for example vtid.co.za or https://vtid.co.za',
             'link'   => link_is_safe($value) ? null : 'Enter a page such as contact.php, or a full address starting with https://',
             'image'  => $value === (string) ($existing[$name] ?? '') || (int) db_value('SELECT COUNT(*) FROM MediaLibrary WHERE FilePath = ?', [$value]) > 0 ? null : 'Please upload an image or choose one from the library.',
             'slug'   => preg_match('/^[a-z0-9]+(-[a-z0-9]+)*$/', $value) ? null : 'Use lower-case letters, numbers and single hyphens only.',
