@@ -137,12 +137,12 @@ Stack: HTML5, CSS3, JavaScript, PHP 8, MariaDB, PHPMailer (installed with Compos
 │   ├── css/style.css          Brand tokens (CSS variables), public layout and components
 │   ├── css/admin.css          Admin layout, forms, Media Library and drop zones
 │   ├── css/responsive.css     Breakpoints at 1100px (menu), 1024px, 768px and 600px
-│   ├── js/main.js             Mobile menu; contact form checks; newsletter sign-up in the background
+│   ├── js/main.js             Mobile menu; contact form checks; newsletter sign-up in the background; the menu-bar butterflies (fly, then land)
 │   ├── js/admin.js            Admin sidebar, delete confirmation, drag and drop, picture chooser, previews, account
 │   ├── js/visual-editor.js    The visual article editor
 │   ├── js/lib/qrcode.js       QR codes for two-step sign-in (qrcode-generator, MIT licence; not in a "vendor" folder, which .htaccess and Git exclude)
 │   ├── fonts/                 Open Sans, Gilda Display, Allison (.woff2, SIL Open Font License files alongside)
-│   └── images/                Icons, sharing picture, butterfly.svg (the logo's butterfly as a line icon, above each closing banner); official logo files go here when supplied
+│   └── images/                Icons, sharing picture, butterfly.svg (the logo's butterfly as a line icon: above each closing banner, and on the menu bar: on the first page of a visit, one butterfly per gap between menu names flutters around for 10 seconds, then lands in its gap, in the brand colours in turn; later pages show them landed. Created and flown by main.js into the empty `.nav-butterflies` box in navbar.php, styled in style.css. Phones and tablets: they flutter, then fade. Reduced motion: landed at once. No JavaScript: none shown); official logo files go here when supplied
 │
 ├── uploads/                   Created on first upload; ignored by Git; must survive deployments
 │   ├── media/YYYY/MM/         Public images: name.jpg (main), name-web.jpg, name-thumb.jpg

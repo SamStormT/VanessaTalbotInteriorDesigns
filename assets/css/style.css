@@ -428,6 +428,50 @@ label {
 
 .primary-nav__list { display: flex; align-items: center; gap: 1.75rem; }
 .primary-nav__item { position: relative; }
+
+/* Butterflies from the logo on the menu bar, in the brand colours. On the first
+   page of a visit they flutter around for 10 seconds, then each lands in a gap
+   between two menu names (assets/js/main.js works out where). Decoration only:
+   hidden from screen readers and never in the way of a click. */
+.nav-butterflies { position: absolute; inset: 0; overflow: hidden; pointer-events: none; z-index: 0; }
+.site-header__inner { position: relative; z-index: 1; }
+.nav-butterfly {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 20px;
+    height: 24px;
+}
+.nav-butterfly::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: var(--color-forest-green);
+    -webkit-mask: url('../images/butterfly.svg') center / contain no-repeat;
+    mask: url('../images/butterfly.svg') center / contain no-repeat;
+    transform-origin: 60% 50%;
+}
+.nav-butterfly--gold::before  { background: var(--color-golden-yellow); }
+.nav-butterfly--brown::before { background: var(--color-earthy-gold); }
+.nav-butterfly--peach::before { background: var(--color-soft-peach); }
+.nav-butterflies.is-flying .nav-butterfly::before { animation: vt-flap 2.8s ease-in-out infinite; }
+.nav-butterflies.is-flying .nav-butterfly:nth-child(2n)::before { animation-duration: 3.2s; }
+.nav-butterflies.is-flying .nav-butterfly:nth-child(3n)::before { animation-duration: 2.5s; }
+/* Landed: a little smaller, so each fits its gap; wings still. */
+.nav-butterflies.is-landed .nav-butterfly { transform: scale(0.8); }
+@keyframes vt-flap {
+    0%, 100% { transform: scaleX(1); }
+    50%      { transform: scaleX(0.7); }
+}
+/* Phones and tablets: the menu is behind the button, so there is nowhere to
+   land; they flutter, then fade away. Hidden while the phone menu is open. */
+@media (max-width: 1100px) {
+    .nav-butterflies.is-landed { display: none; }
+}
+.site-header:has(.primary-nav.is-open) .nav-butterflies { display: none; }
+@media (prefers-reduced-motion: reduce) {
+    .nav-butterfly, .nav-butterfly::before { animation: none !important; }
+}
 .primary-nav__link {
     display: inline-block;
     padding-block: 0.625rem;

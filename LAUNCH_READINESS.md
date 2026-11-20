@@ -60,11 +60,11 @@ Everything below can be changed in the admin area. Page Sections are listed by p
 
 | Where in admin | What to review or replace |
 |---|---|
-| Homepage Content | Hero wording, hero image, introduction image |
-| About Content | Her real story, portrait, speaking topics |
-| Page Sections: About | Journey steps, philosophy, "coming soon" notices |
-| About Values | The five value descriptions |
-| Qualifications | Add real qualifications and memberships (none exist yet) |
+| Homepage Content | Hero image and introduction image (the hero wording is now hers) |
+| About Content | Check her story and short bio (drafted from the questionnaire); portrait; speaking topics |
+| Page Sections: About | Check the mission and vision block and the journey steps (from the questionnaire) |
+| About Values | Check the one-line descriptions of her eleven values |
+| Qualifications | Add the institution and year to each qualification and membership |
 | Services | All six: descriptions, "What's included", "Ideal for", images. Remove store wording from Photography |
 | Page Sections: service pages | "How it works" steps, specialised services, closing text |
 | Portfolio Projects | Add real projects, with client permission and gallery images |

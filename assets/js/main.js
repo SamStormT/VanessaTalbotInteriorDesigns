@@ -283,3 +283,102 @@ document.querySelectorAll('[data-compare]').forEach((figure) => {
     range.addEventListener('input', set);
     set();
 });
+
+
+// ---------------------------------------------------------------------------
+// Butterflies on the menu bar. On the first page of a visit they flutter
+// around the bar for 10 seconds, then each one lands in the gap between two
+// menu names. Later pages show them already landed. Visitors whose device
+// asks for reduced motion see them landed straight away. On phones and
+// tablets (menu behind the button) they flutter, then fade away.
+// ---------------------------------------------------------------------------
+(() => {
+    const header = document.querySelector('.site-header');
+    const box = header && header.querySelector('.nav-butterflies');
+    const items = header ? Array.from(header.querySelectorAll('.primary-nav__item')) : [];
+    if (!box || items.length < 2) return;
+
+    const FLIGHT_MS = 10000;
+    const colours = ['green', 'gold', 'brown', 'peach'];
+    const isDesktop = () => window.matchMedia('(min-width: 1101px)').matches;
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    let landedBefore = false;
+    try { landedBefore = sessionStorage.getItem('vt-butterflies') === 'landed'; } catch (e) { /* storage blocked */ }
+
+    const flies = items.slice(1).map((item, i) => {
+        const butterfly = document.createElement('span');
+        butterfly.className = 'nav-butterfly nav-butterfly--' + colours[i % colours.length];
+        box.appendChild(butterfly);
+        return butterfly;
+    });
+
+    // Where each butterfly lands: centred in the gap before each menu item after the first.
+    const spot = (i) => {
+        const base = header.getBoundingClientRect();
+        const before = items[i].getBoundingClientRect();
+        const after = items[i + 1].getBoundingClientRect();
+        return {
+            x: (before.right + after.left) / 2 - base.left - flies[i].offsetWidth / 2,
+            y: after.top + after.height / 2 - base.top - flies[i].offsetHeight / 2,
+        };
+    };
+    const place = () => {
+        if (!isDesktop()) return;
+        flies.forEach((butterfly, i) => {
+            const s = spot(i);
+            butterfly.style.left = s.x + 'px';
+            butterfly.style.top = s.y + 'px';
+        });
+    };
+    const land = () => {
+        box.classList.remove('is-flying');
+        box.classList.add('is-landed');
+        place();
+    };
+    window.addEventListener('resize', place);
+
+    if (landedBefore || reduceMotion || typeof box.animate !== 'function') {
+        land();
+        return;
+    }
+
+    const fly = () => {
+        try { sessionStorage.setItem('vt-butterflies', 'landed'); } catch (e) { /* storage blocked */ }
+        const desktop = isDesktop();
+        const width = header.clientWidth;
+        const height = header.clientHeight;
+        const random = (min, max) => min + Math.random() * (max - min);
+        place();
+        box.classList.add('is-flying');
+
+        const flights = flies.map((butterfly, i) => {
+            // On phones there is no landing spot: start somewhere in the right half.
+            if (!desktop) {
+                butterfly.style.left = random(width * 0.45, width * 0.75) + 'px';
+                butterfly.style.top = random(4, height - 28) + 'px';
+            }
+            const home = { x: parseFloat(butterfly.style.left) || 0, y: parseFloat(butterfly.style.top) || 0 };
+            // A slow, gentle path near its landing spot (a few turns, short
+            // distances, little tilt), as offsets from where it will land.
+            const reach = Math.min(160, width * 0.15);
+            const frames = [];
+            for (let step = 0; step < 3; step++) {
+                const x = Math.min(Math.max(home.x + random(-reach, reach), 0), width - 24) - home.x;
+                const y = random(2, height - 26) - home.y;
+                frames.push({ transform: `translate(${x}px, ${y}px) rotate(${random(-6, 6)}deg)`, opacity: 1 });
+            }
+            frames.push(desktop
+                ? { transform: 'translate(0px, 0px) rotate(0deg) scale(0.8)', opacity: 1 }
+                : { transform: frames[2].transform, opacity: 0 });
+            return butterfly.animate(frames, { duration: FLIGHT_MS + i * 120, easing: 'ease-in-out' }).finished;
+        });
+        Promise.all(flights).then(land, land);
+    };
+
+    // Wait for the fonts, so the gaps are measured where they will finally be.
+    if (document.fonts && document.fonts.ready) {
+        document.fonts.ready.then(fly, fly);
+    } else {
+        fly();
+    }
+})();

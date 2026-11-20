@@ -57,4 +57,5 @@ $navItems = [
             </ul>
         </nav>
     </div>
+    <div class="nav-butterflies" aria-hidden="true"></div><!-- filled by assets/js/main.js -->
 </header>
