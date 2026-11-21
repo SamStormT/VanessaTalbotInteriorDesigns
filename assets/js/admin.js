@@ -284,6 +284,19 @@ document.querySelectorAll('form[data-confirm]').forEach((form) => {
     // Shared with the article editor (admin.js below and visual-editor.js).
     window.vtChooseImage = chooseFromLibrary;
 
+    // ---- Adjust position and zoom (assets/js/photo-adjust.js) ----
+    function adjustFraming(path, statusElement, shape) {
+        window.vtAdjustPhoto?.(path, { shape, report: (message) => { if (statusElement) statusElement.textContent = message; } });
+    }
+
+    document.querySelectorAll('[data-adjust-path]').forEach((button) => {
+        const status = document.createElement('p');
+        status.className = 'media-field__status';
+        status.setAttribute('role', 'status');
+        button.after(status);
+        button.addEventListener('click', () => adjustFraming(button.dataset.adjustPath, status));
+    });
+
     // ---- Image field on a form ----
     document.querySelectorAll('[data-media-field]').forEach((field) => {
         const value = field.querySelector('[data-media-value]');
@@ -304,6 +317,14 @@ document.querySelectorAll('form[data-confirm]').forEach((form) => {
             status.textContent = (item.warning ? item.warning + ' ' : '') + (alt && !alt.value
                 ? 'Added. Please describe the image below, then save.'
                 : 'Added. Remember to save.');
+            if (window.vtAdjustPhoto) {
+                const offer = document.createElement('button');
+                offer.type = 'button';
+                offer.className = 'media-field__offer';
+                offer.textContent = 'Adjust how it sits in the frame';
+                offer.addEventListener('click', () => adjustFraming(item.path, status, field.dataset.frameShape));
+                status.append(' ', offer);
+            }
         }
 
         acceptFiles(field.querySelector('.media-drop'), async (files) => {
@@ -320,6 +341,10 @@ document.querySelectorAll('form[data-confirm]').forEach((form) => {
             const item = await chooseFromLibrary();
             if (item) show(item);
         });
+
+        const adjust = field.querySelector('[data-media-adjust]');
+        adjust?.addEventListener('click', () => adjustFraming(value.value, status, field.dataset.frameShape));
+        new MutationObserver(() => { if (adjust) adjust.hidden = remove.hidden; }).observe(remove, { attributes: true, attributeFilter: ['hidden'] });
 
         remove.addEventListener('click', () => {
             value.value = '';

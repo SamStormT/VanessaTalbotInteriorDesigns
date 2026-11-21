@@ -50,7 +50,7 @@ require_once INCLUDES_PATH . '/header.php';
 <?php endif; ?>
 <?php if (!empty($person['Logo'])): ?>
                     <div class="collab-card__picture<?= ($person['ImageFit'] ?? '') === 'Logo' ? ' collab-card__picture--logo' : '' ?>"<?= $ed('Logo') ?>>
-                        <img src="<?= e(image_url((string) $person['Logo'], 'web')) ?>"<?= image_srcset((string) $person['Logo'], '(max-width: 700px) 100vw, (max-width: 1100px) 50vw, 400px') ?> alt="<?= e($person['LogoAlt'] ?? '') ?>" loading="lazy">
+                        <img src="<?= e(image_url((string) $person['Logo'], 'web')) ?>"<?= image_srcset((string) $person['Logo'], '(max-width: 700px) 100vw, (max-width: 1100px) 50vw, 400px') ?> alt="<?= e($person['LogoAlt'] ?? '') ?>" loading="lazy"<?= ($person['ImageFit'] ?? '') === 'Logo' ? '' : image_framing((string) $person['Logo'], 'card') ?>>
                     </div>
 <?php endif; ?>
                     <h2 class="collab-card__name"<?= $ed('Name') ?>><?= icon('person') ?><span><?= e($person['Name']) ?></span></h2>

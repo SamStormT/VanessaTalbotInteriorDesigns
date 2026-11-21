@@ -2,7 +2,7 @@
 
 Every visible content block on the Home, About and Services pages, and the database record that holds it.
 
-Home, About, Services and the footer now **read from the database**. All wording is still draft until Vanessa confirms it (`CONTENT_REQUIREMENTS.md`, section 8). If the database can't be reached, the pages show the snapshot in `includes/content-fallback.php`.
+Home, About, Services and the footer now **read from the database**. The website speaks as "I" (Vanessa's decision, migration 024); search descriptions keep her name. All wording is still draft until Vanessa confirms it (`CONTENT_REQUIREMENTS.md`, section 8). If the database can't be reached, the pages show the snapshot in `includes/content-fallback.php`.
 
 **Reading the Record column**
 

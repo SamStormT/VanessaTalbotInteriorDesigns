@@ -43,6 +43,7 @@ Signed-in staff can edit every piece of website wording without a developer.
 | About Values, Qualifications | Individual values; qualifications, certifications, memberships and awards |
 | Portfolio Projects | Projects with gallery images; publishing requires client permission |
 | Collaborators, Testimonials | Publishing requires a recorded permission date. Collaborators show as cards: a round country flag on the top edge, the country, a photo or logo, name, role, email, phone and a "Learn more" button (each part optional, each with an edit button for staff). Email addresses are kept out of the page source, so spam robots can't collect them; people still see a normal email link |
+| Photo position and zoom | Any photo can be moved within its frame and zoomed in (100% to 300%), straight from the website ("Adjust photo"), from any image field or the Media Library; it applies wherever the photo is used, and warns when a zoom would look blurry |
 | Speaking Engagements | Talks and events |
 | Legal Pages | Privacy Policy, Terms, Copyright |
 | Media Library | Every uploaded image, with search, preview, descriptions and captions |

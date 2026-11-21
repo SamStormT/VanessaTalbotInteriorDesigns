@@ -668,3 +668,7 @@ fieldset.admin-panel > .admin-panel__title + * { clear: both; }
 .help-contents ol { columns: 2 18rem; margin: 0; padding-left: 1.25rem; }
 .help-topic ol, .help-topic ul { display: grid; gap: 0.4rem; padding-left: 1.25rem; }
 .help-topic { scroll-margin-top: 1rem; }
+
+/* The Media Library picture with its "Adjust position and zoom" button. */
+.media-detail__picture { display: grid; gap: 0.75rem; align-content: start; justify-items: start; }
+.media-field__offer { padding: 0; border: 0; background: none; color: var(--color-accent-text); font: inherit; text-decoration: underline; cursor: pointer; }

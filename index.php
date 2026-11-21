@@ -67,7 +67,7 @@ $tileTones  = ['green', 'gold', 'peach'];
     </section>
 <?php endif; ?>
 
-    <!-- Introduction to Vanessa -->
+    <!-- Introduction: Hello, I'm Vanessa -->
 <?= hidden_block('home', 'introduction', $sections) ?>
 <?php if ($section = $sections['introduction'] ?? null): ?>
     <section class="section"<?= content_labelled($section, 'intro-title') ?>>
@@ -82,7 +82,7 @@ $tileTones  = ['green', 'gold', 'peach'];
                 <?= content_paragraphs($section['Introduction'], 'lead', ed_section($section, 'Introduction')) ?>
                 <?= content_paragraphs($section['Body'], '', ed_section($section, 'Body')) ?>
 <?php if ($section['items']): ?>
-                <ul class="pillars" aria-label="The three foundations of Vanessa's work">
+                <ul class="pillars" aria-label="The three foundations of my work">
 <?php foreach ($section['items'] as $item): ?>
                     <li class="pillar"<?= ed_item($item, 'Title') ?>><?= icon((string) $item['Icon']) ?><span><strong><?= e($item['Title']) ?></strong> <?= e($item['Text']) ?></span></li>
 <?php endforeach; ?>
@@ -238,7 +238,7 @@ $tileTones  = ['green', 'gold', 'peach'];
         <div class="container cta-banner__inner">
             <?= content_heading($section, 'contact-cta-title') ?>
             <?= content_paragraphs($section['Introduction'], '', ed_section($section, 'Introduction')) ?>
-            <ul class="tag-list tag-list--centred" aria-label="Who Vanessa works with">
+            <ul class="tag-list tag-list--centred" aria-label="Who I work with">
 <?php foreach ($section['items'] as $item): ?>
                 <li<?= ed_item($item, 'Title') ?>><?= e($item['Title']) ?></li>
 <?php endforeach; ?>

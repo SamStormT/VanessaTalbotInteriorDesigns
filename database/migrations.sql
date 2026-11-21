@@ -1504,3 +1504,270 @@ ALTER TABLE Collaborators
 
 INSERT IGNORE INTO SchemaMigrations (MigrationName) VALUES ('022_collaborator_cards');
 
+-- --------------------------------------------------------------------------
+-- 023: Photo position and zoom. Each Media Library picture remembers which
+-- part of it should sit in the middle of a frame (FocusX and FocusY, as a
+-- percentage across and down) and how far to zoom in (1.00 = as it is, up
+-- to 3.00; the admin never goes below 1, so a photo always fills its frame). Every frame that shows the
+-- picture follows these. The defaults change nothing.
+-- --------------------------------------------------------------------------
+ALTER TABLE MediaLibrary
+    ADD COLUMN IF NOT EXISTS FocusX TINYINT UNSIGNED NOT NULL DEFAULT 50 COMMENT 'Percent across: 0 left, 100 right',
+    ADD COLUMN IF NOT EXISTS FocusY TINYINT UNSIGNED NOT NULL DEFAULT 50 COMMENT 'Percent down: 0 top, 100 bottom',
+    ADD COLUMN IF NOT EXISTS Zoom DECIMAL(3,2) NOT NULL DEFAULT 1.00 COMMENT '1.00 to 3.00';
+
+INSERT IGNORE INTO SchemaMigrations (MigrationName) VALUES ('023_photo_framing');
+
+-- --------------------------------------------------------------------------
+-- 024: Vanessa writes as "I" (her decision, November 2026). The wording on
+-- the pages changes from "Vanessa" and "she" to "I", "me" and "my". Search
+-- titles and descriptions, the short bio under articles, the Privacy Policy
+-- and her name in Website Settings stay as they are: search results and
+-- legal text read better with her name. Runs once, and only changes wording
+-- that is still the original, so anything edited in the admin is kept.
+-- --------------------------------------------------------------------------
+UPDATE `AboutContent` SET `Biography` = 'I was born in the UK but have lived my whole life in Africa, first in Zimbabwe and then in South Africa. A free-rein childhood of climbing trees, fetching tadpoles from rivers and building forts made me a child of nature, and nature is still where I am happiest, whether hiking or simply sitting outdoors. It is also where my love of colour and design began: in the colours and patterns nature shows in every season.\n\nCuriosity led me first to science, and eventually to design. Vanessa Talbot Interior Designs brings my studies, my experience and my love of nature together, to create spaces that are beautiful, meaningful and good for the people in them.'
+WHERE AboutID = 1 AND `Biography` = 'Vanessa Talbot was born in the UK but has lived her whole life in Africa, first in Zimbabwe and then in South Africa. A free-rein childhood of climbing trees, fetching tadpoles from rivers and building forts made her a child of nature, and nature is still where she is happiest, whether hiking or simply sitting outdoors. It is also where her love of colour and design began: in the colours and patterns nature shows in every season.\n\nCuriosity led her first to science, and eventually to design. Vanessa Talbot Interior Designs brings her studies, her experience and her love of nature together, to create spaces that are beautiful, meaningful and good for the people in them.'
+  AND NOT EXISTS (SELECT 1 FROM SchemaMigrations WHERE MigrationName = '024_first_person');
+
+UPDATE `AboutContent` SET `Qualifications` = 'My practice is built on my background in science and interior design, and an ongoing commitment to learning.'
+WHERE AboutID = 1 AND `Qualifications` = 'Vanessa\'s practice is built on her background in science and interior design, and an ongoing commitment to learning.'
+  AND NOT EXISTS (SELECT 1 FROM SchemaMigrations WHERE MigrationName = '024_first_person');
+
+UPDATE `Services` SET `FullDescription` = 'Reconnect your spaces with nature through biophilic design, integrating natural elements to create healthier, calmer and more restorative living or working spaces for improved well-being.\n\nDrawing on research into how natural light, greenery, texture, water and views affect the way we feel and function, I design spaces that calm the mind, lift energy and support everyday well-being. Biophilic design can be brought into a new or existing space at many budget levels.'
+WHERE Slug = 'biophilic-design' AND `FullDescription` = 'Reconnect your spaces with nature through biophilic design, integrating natural elements to create healthier, calmer and more restorative living or working spaces for improved well-being.\n\nDrawing on research into how natural light, greenery, texture, water and views affect the way we feel and function, Vanessa designs spaces that calm the mind, lift energy and support everyday well-being. Biophilic design can be brought into a new or existing space at many budget levels.'
+  AND NOT EXISTS (SELECT 1 FROM SchemaMigrations WHERE MigrationName = '024_first_person');
+
+UPDATE `Services` SET `FullDescription` = 'I combine an understanding of how colour affects mood and perception with a designer\'s eye for harmony and balance. Whether a space needs to soothe, energise, welcome or inspire, the palette is built around the people who use it and what they need it to do.'
+WHERE Slug = 'colour-psychology' AND `FullDescription` = 'Vanessa combines an understanding of how colour affects mood and perception with a designer\'s eye for harmony and balance. Whether a space needs to soothe, energise, welcome or inspire, the palette is built around the people who use it and what they need it to do.'
+  AND NOT EXISTS (SELECT 1 FROM SchemaMigrations WHERE MigrationName = '024_first_person');
+
+UPDATE `Services` SET `Lead` = 'Photography is where my eye for detail and love of the natural world meet.'
+WHERE Slug = 'photography-services' AND `Lead` = 'Photography is where Vanessa\'s eye for detail and love of the natural world meet.'
+  AND NOT EXISTS (SELECT 1 FROM SchemaMigrations WHERE MigrationName = '024_first_person');
+
+UPDATE `Services` SET `FullDescription` = 'From botanical detail and natural landscapes to finished interiors, my photography is about noticing: the way light falls, the pattern in a leaf, the mood of a room. Selected images are available as prints through the photography store, bringing a piece of nature into your own space.'
+WHERE Slug = 'photography-services' AND `FullDescription` = 'From botanical detail and natural landscapes to finished interiors, Vanessa\'s photography is about noticing: the way light falls, the pattern in a leaf, the mood of a room. Selected images are available as prints through the photography store, bringing a piece of nature into your own space.'
+  AND NOT EXISTS (SELECT 1 FROM SchemaMigrations WHERE MigrationName = '024_first_person');
+
+UPDATE `Services` SET `FullDescription` = 'I speak on the science and the art of designing with nature: why our surroundings matter so much to our wellbeing, and what anyone can do about it. Talks are tailored to the audience, whether a conference, a corporate wellness day, a community group or an industry event.'
+WHERE Slug = 'speaking-engagements' AND `FullDescription` = 'Vanessa speaks on the science and the art of designing with nature: why our surroundings matter so much to our wellbeing, and what anyone can do about it. Talks are tailored to the audience, whether a conference, a corporate wellness day, a community group or an industry event.'
+  AND NOT EXISTS (SELECT 1 FROM SchemaMigrations WHERE MigrationName = '024_first_person');
+
+UPDATE `Services` SET `FullDescription` = 'My workshops turn the principles of biophilic design and colour & design psychology into practical, enjoyable experiences. Participants explore how their surroundings affect them, then work through simple, achievable changes. Sessions suit teams, wellness programmes, retail events and community groups.'
+WHERE Slug = 'workshops' AND `FullDescription` = 'Vanessa\'s workshops turn the principles of biophilic design and colour & design psychology into practical, enjoyable experiences. Participants explore how their surroundings affect them, then work through simple, achievable changes. Sessions suit teams, wellness programmes, retail events and community groups.'
+  AND NOT EXISTS (SELECT 1 FROM SchemaMigrations WHERE MigrationName = '024_first_person');
+
+UPDATE `PageSections` SET `Eyebrow` = 'Hello, I\'m Vanessa'
+WHERE PageKey = 'home' AND SectionKey = 'introduction' AND `Eyebrow` = 'Meet Vanessa'
+  AND NOT EXISTS (SELECT 1 FROM SchemaMigrations WHERE MigrationName = '024_first_person');
+
+UPDATE `PageSections` SET `Introduction` = 'I bring together a background in science and a passion for interior design to create spaces that do more than look beautiful. They help people feel well.'
+WHERE PageKey = 'home' AND SectionKey = 'introduction' AND `Introduction` = 'Vanessa Talbot brings together a background in science and a passion for interior design to create spaces that do more than look beautiful. They help people feel well.'
+  AND NOT EXISTS (SELECT 1 FROM SchemaMigrations WHERE MigrationName = '024_first_person');
+
+UPDATE `PageSections` SET `Body` = 'My knowledge of biophilic design and colour & design psychology, backed by thirty years in science, means every choice is made for a reason. I listen to your vision for your space and its colours, and transform it into something tangible, natural and sustainable.'
+WHERE PageKey = 'home' AND SectionKey = 'introduction' AND `Body` = 'Her knowledge of biophilic design and colour & design psychology, backed by thirty years in science, means every choice is made for a reason. Vanessa listens to your vision for your space and its colours, and transforms it into something tangible, natural and sustainable.'
+  AND NOT EXISTS (SELECT 1 FROM SchemaMigrations WHERE MigrationName = '024_first_person');
+
+UPDATE `PageSections` SET `ButtonText` = 'Read my story'
+WHERE PageKey = 'home' AND SectionKey = 'introduction' AND `ButtonText` = 'Read Vanessa\'s story'
+  AND NOT EXISTS (SELECT 1 FROM SchemaMigrations WHERE MigrationName = '024_first_person');
+
+UPDATE `PageSections` SET `Introduction` = 'Explore my work across biophilic interiors, colour-led design and photography.'
+WHERE PageKey = 'home' AND SectionKey = 'portfolio' AND `Introduction` = 'Explore Vanessa\'s work across biophilic interiors, colour-led design and photography.'
+  AND NOT EXISTS (SELECT 1 FROM SchemaMigrations WHERE MigrationName = '024_first_person');
+
+UPDATE `PageSections` SET `Introduction` = 'I\'ll be sharing practical ideas on biophilic design, the psychology of colour, nature-centred wellbeing and the stories behind my photography. Join the newsletter below to be the first to read them.'
+WHERE PageKey = 'home' AND SectionKey = 'blog-empty' AND `Introduction` = 'Vanessa will be sharing practical ideas on biophilic design, the psychology of colour, nature-centred wellbeing and the stories behind her photography. Join the newsletter below to be the first to read them.'
+  AND NOT EXISTS (SELECT 1 FROM SchemaMigrations WHERE MigrationName = '024_first_person');
+
+UPDATE `PageSections` SET `Introduction` = 'Whether it\'s your home, your workspace, a wellness centre, a boutique or an event, I would love to hear what you have in mind.'
+WHERE PageKey = 'home' AND SectionKey = 'contact-cta' AND `Introduction` = 'Whether it\'s your home, your workspace, a wellness centre, a boutique or an event, Vanessa would love to hear what you have in mind.'
+  AND NOT EXISTS (SELECT 1 FROM SchemaMigrations WHERE MigrationName = '024_first_person');
+
+UPDATE `PageSections` SET `Heading` = 'About me'
+WHERE PageKey = 'about' AND SectionKey = 'page-header' AND `Heading` = 'About Vanessa'
+  AND NOT EXISTS (SELECT 1 FROM SchemaMigrations WHERE MigrationName = '024_first_person');
+
+UPDATE `PageSections` SET `Eyebrow` = 'My story'
+WHERE PageKey = 'about' AND SectionKey = 'story' AND `Eyebrow` = 'Vanessa\'s story'
+  AND NOT EXISTS (SELECT 1 FROM SchemaMigrations WHERE MigrationName = '024_first_person');
+
+UPDATE `PageSections` SET `Introduction` = 'My path into design is what makes my approach different. I don\'t see science and creativity as opposites. To me, they are two ways of understanding the same world.'
+WHERE PageKey = 'about' AND SectionKey = 'journey' AND `Introduction` = 'Vanessa\'s path into design is what makes her approach different. She doesn\'t see science and creativity as opposites. To her, they are two ways of understanding the same world.'
+  AND NOT EXISTS (SELECT 1 FROM SchemaMigrations WHERE MigrationName = '024_first_person');
+
+UPDATE `PageSections` SET `Introduction` = 'Biophilia is our innate connection to nature. My work starts from the belief that this connection is not a luxury. It is essential to how we rest, focus and feel.'
+WHERE PageKey = 'about' AND SectionKey = 'philosophy' AND `Introduction` = 'Biophilia is our innate connection to nature. Vanessa\'s work starts from the belief that this connection is not a luxury. It is essential to how we rest, focus and feel.'
+  AND NOT EXISTS (SELECT 1 FROM SchemaMigrations WHERE MigrationName = '024_first_person');
+
+UPDATE `PageSections` SET `Introduction` = 'A complete list of my qualifications, professional memberships and accreditations will be published here shortly. For details in the meantime, please get in touch.'
+WHERE PageKey = 'about' AND SectionKey = 'qualifications-notice' AND `Introduction` = 'A complete list of Vanessa\'s qualifications, professional memberships and accreditations will be published here shortly. For details in the meantime, please get in touch.'
+  AND NOT EXISTS (SELECT 1 FROM SchemaMigrations WHERE MigrationName = '024_first_person');
+
+UPDATE `PageSections` SET `Introduction` = 'I speak to audiences about why our surroundings matter so much, and how anyone can bring more nature, colour and calm into the places they live and work.'
+WHERE PageKey = 'about' AND SectionKey = 'speaking' AND `Introduction` = 'Vanessa speaks to audiences about why our surroundings matter so much, and how anyone can bring more nature, colour and calm into the places they live and work.'
+  AND NOT EXISTS (SELECT 1 FROM SchemaMigrations WHERE MigrationName = '024_first_person');
+
+UPDATE `PageSections` SET `SecondaryButtonText` = 'Invite me to speak'
+WHERE PageKey = 'about' AND SectionKey = 'speaking' AND `SecondaryButtonText` = 'Invite Vanessa to speak'
+  AND NOT EXISTS (SELECT 1 FROM SchemaMigrations WHERE MigrationName = '024_first_person');
+
+UPDATE `PageSections` SET `Introduction` = 'Start with a conversation. Tell me about your space, how you use it and how you\'d like it to feel.'
+WHERE PageKey = 'about' AND SectionKey = 'closing' AND `Introduction` = 'Start with a conversation. Tell Vanessa about your space, how you use it and how you\'d like it to feel.'
+  AND NOT EXISTS (SELECT 1 FROM SchemaMigrations WHERE MigrationName = '024_first_person');
+
+UPDATE `PageSections` SET `Heading` = 'Why I do this work'
+WHERE PageKey = 'about' AND SectionKey = 'mission' AND `Heading` = 'Why Vanessa does this work'
+  AND NOT EXISTS (SELECT 1 FROM SchemaMigrations WHERE MigrationName = '024_first_person');
+
+UPDATE `PageSections` SET `Introduction` = 'I believe everyone has the basic human right to live and work in spaces that connect them to nature. The benefits of biophilic design go far beyond aesthetics: they improve physical and mental health, boost cognition and encourage better stewardship of the environment.'
+WHERE PageKey = 'about' AND SectionKey = 'mission' AND `Introduction` = 'Vanessa believes everyone has the basic human right to live and work in spaces that connect them to nature. The benefits of biophilic design go far beyond aesthetics: they improve physical and mental health, boost cognition and encourage better stewardship of the environment.'
+  AND NOT EXISTS (SELECT 1 FROM SchemaMigrations WHERE MigrationName = '024_first_person');
+
+UPDATE `PageSections` SET `Introduction` = 'A consultation is the perfect first step. I\'ll help you understand your space and recommend the approach that suits you best.'
+WHERE PageKey = 'services' AND SectionKey = 'closing' AND `Introduction` = 'A consultation is the perfect first step. Vanessa will help you understand your space and recommend the approach that suits you best.'
+  AND NOT EXISTS (SELECT 1 FROM SchemaMigrations WHERE MigrationName = '024_first_person');
+
+UPDATE `PageSections` SET `ButtonText` = 'Get in touch'
+WHERE PageKey = 'global' AND SectionKey = 'footer' AND `ButtonText` = 'Contact Vanessa'
+  AND NOT EXISTS (SELECT 1 FROM SchemaMigrations WHERE MigrationName = '024_first_person');
+
+UPDATE `PageSections` SET `Introduction` = 'Tell me about your space and how you would like it to feel.'
+WHERE PageKey = 'service-biophilic-design' AND SectionKey = 'closing' AND `Introduction` = 'Tell Vanessa about your space and how you would like it to feel.'
+  AND NOT EXISTS (SELECT 1 FROM SchemaMigrations WHERE MigrationName = '024_first_person');
+
+UPDATE `PageSections` SET `Introduction` = 'Tell me what the space is for and how you would like it to feel.'
+WHERE PageKey = 'service-colour-psychology' AND SectionKey = 'closing' AND `Introduction` = 'Tell Vanessa what the space is for and how you would like it to feel.'
+  AND NOT EXISTS (SELECT 1 FROM SchemaMigrations WHERE MigrationName = '024_first_person');
+
+UPDATE `PageSections` SET `Heading` = 'Talk to me about photography'
+WHERE PageKey = 'service-photography-services' AND SectionKey = 'closing' AND `Heading` = 'Talk to Vanessa about photography'
+  AND NOT EXISTS (SELECT 1 FROM SchemaMigrations WHERE MigrationName = '024_first_person');
+
+UPDATE `PageSections` SET `Introduction` = 'Tell me about your group and what you would like them to take away.'
+WHERE PageKey = 'service-workshops' AND SectionKey = 'closing' AND `Introduction` = 'Tell Vanessa about your group and what you would like them to take away.'
+  AND NOT EXISTS (SELECT 1 FROM SchemaMigrations WHERE MigrationName = '024_first_person');
+
+UPDATE `PageSections` SET `Heading` = 'Invite me to speak'
+WHERE PageKey = 'service-speaking-engagements' AND SectionKey = 'closing' AND `Heading` = 'Invite Vanessa to speak'
+  AND NOT EXISTS (SELECT 1 FROM SchemaMigrations WHERE MigrationName = '024_first_person');
+
+UPDATE `PageSections` SET `Introduction` = 'Tell me about your space and I\'ll arrange a time with you.'
+WHERE PageKey = 'service-consultations' AND SectionKey = 'closing' AND `Introduction` = 'Tell Vanessa about your space and we will arrange a time.'
+  AND NOT EXISTS (SELECT 1 FROM SchemaMigrations WHERE MigrationName = '024_first_person');
+
+UPDATE `PageSections` SET `Introduction` = 'Explore my work across biophilic interiors, colour-led design and photography.'
+WHERE PageKey = 'portfolio' AND SectionKey = 'page-header' AND `Introduction` = 'Explore Vanessa\'s work across biophilic interiors, colour-led design and photography.'
+  AND NOT EXISTS (SELECT 1 FROM SchemaMigrations WHERE MigrationName = '024_first_person');
+
+UPDATE `PageSections` SET `Introduction` = 'Tell me about your home, workspace or event, and how you would like it to feel.'
+WHERE PageKey = 'portfolio' AND SectionKey = 'closing' AND `Introduction` = 'Tell Vanessa about your home, workspace or event, and how you would like it to feel.'
+  AND NOT EXISTS (SELECT 1 FROM SchemaMigrations WHERE MigrationName = '024_first_person');
+
+UPDATE `PageSections` SET `Introduction` = 'My project stories are being prepared and will appear here soon.'
+WHERE PageKey = 'portfolio-biophilic-interior-design' AND SectionKey = 'empty' AND `Introduction` = 'Vanessa\'s project stories are being prepared and will appear here soon.'
+  AND NOT EXISTS (SELECT 1 FROM SchemaMigrations WHERE MigrationName = '024_first_person');
+
+UPDATE `PageSections` SET `Introduction` = 'Tell me about your home, workspace or event, and how you would like it to feel.'
+WHERE PageKey = 'portfolio-biophilic-interior-design' AND SectionKey = 'closing' AND `Introduction` = 'Tell Vanessa about your home, workspace or event, and how you would like it to feel.'
+  AND NOT EXISTS (SELECT 1 FROM SchemaMigrations WHERE MigrationName = '024_first_person');
+
+UPDATE `PageSections` SET `Introduction` = 'My project stories are being prepared and will appear here soon.'
+WHERE PageKey = 'portfolio-colour-psychology' AND SectionKey = 'empty' AND `Introduction` = 'Vanessa\'s project stories are being prepared and will appear here soon.'
+  AND NOT EXISTS (SELECT 1 FROM SchemaMigrations WHERE MigrationName = '024_first_person');
+
+UPDATE `PageSections` SET `Introduction` = 'Tell me about your home, workspace or event, and how you would like it to feel.'
+WHERE PageKey = 'portfolio-colour-psychology' AND SectionKey = 'closing' AND `Introduction` = 'Tell Vanessa about your home, workspace or event, and how you would like it to feel.'
+  AND NOT EXISTS (SELECT 1 FROM SchemaMigrations WHERE MigrationName = '024_first_person');
+
+UPDATE `PageSections` SET `Introduction` = 'Nature, botanical detail and interiors seen through my lens.'
+WHERE PageKey = 'portfolio-photography-gallery' AND SectionKey = 'page-header' AND `Introduction` = 'Nature, botanical detail and interiors seen through Vanessa\'s lens.'
+  AND NOT EXISTS (SELECT 1 FROM SchemaMigrations WHERE MigrationName = '024_first_person');
+
+UPDATE `PageSections` SET `Introduction` = 'A selection of my photographs will appear here soon.'
+WHERE PageKey = 'portfolio-photography-gallery' AND SectionKey = 'empty' AND `Introduction` = 'A selection of Vanessa\'s photographs will appear here soon.'
+  AND NOT EXISTS (SELECT 1 FROM SchemaMigrations WHERE MigrationName = '024_first_person');
+
+UPDATE `PageSections` SET `Introduction` = 'Tell me about your home, workspace or event, and how you would like it to feel.'
+WHERE PageKey = 'portfolio-photography-gallery' AND SectionKey = 'closing' AND `Introduction` = 'Tell Vanessa about your home, workspace or event, and how you would like it to feel.'
+  AND NOT EXISTS (SELECT 1 FROM SchemaMigrations WHERE MigrationName = '024_first_person');
+
+UPDATE `PageSections` SET `Introduction` = 'The people and businesses I work alongside.'
+WHERE PageKey = 'portfolio-collaborators' AND SectionKey = 'page-header' AND `Introduction` = 'The people and businesses Vanessa works alongside.'
+  AND NOT EXISTS (SELECT 1 FROM SchemaMigrations WHERE MigrationName = '024_first_person');
+
+UPDATE `PageSections` SET `Introduction` = 'The people and businesses I work with will be introduced here soon.'
+WHERE PageKey = 'portfolio-collaborators' AND SectionKey = 'empty' AND `Introduction` = 'The people and businesses Vanessa works with will be introduced here soon.'
+  AND NOT EXISTS (SELECT 1 FROM SchemaMigrations WHERE MigrationName = '024_first_person');
+
+UPDATE `PageSections` SET `Introduction` = 'I would be glad to hear from makers, suppliers and fellow creatives.'
+WHERE PageKey = 'portfolio-collaborators' AND SectionKey = 'closing' AND `Introduction` = 'Vanessa would be glad to hear from makers, suppliers and fellow creatives.'
+  AND NOT EXISTS (SELECT 1 FROM SchemaMigrations WHERE MigrationName = '024_first_person');
+
+UPDATE `PageSections` SET `Introduction` = 'Whether it\'s your home, your workspace, a wellness centre, a boutique or an event, I would love to hear what you have in mind.'
+WHERE PageKey = 'contact' AND SectionKey = 'page-header' AND `Introduction` = 'Whether it\'s your home, your workspace, a wellness centre, a boutique or an event, Vanessa would love to hear what you have in mind.'
+  AND NOT EXISTS (SELECT 1 FROM SchemaMigrations WHERE MigrationName = '024_first_person');
+
+UPDATE `PageSections` SET `Heading` = 'Where I am based'
+WHERE PageKey = 'contact' AND SectionKey = 'location' AND `Heading` = 'Where Vanessa is based'
+  AND NOT EXISTS (SELECT 1 FROM SchemaMigrations WHERE MigrationName = '024_first_person');
+
+UPDATE `PageSections` SET `Introduction` = 'I\'ll be sharing practical ideas on biophilic design, the psychology of colour, nature-centred wellbeing and the stories behind my photography. Join the newsletter below to be the first to read them.'
+WHERE PageKey = 'blog' AND SectionKey = 'empty' AND `Introduction` = 'Vanessa will be sharing practical ideas on biophilic design, the psychology of colour, nature-centred wellbeing and the stories behind her photography. Join the newsletter below to be the first to read them.'
+  AND NOT EXISTS (SELECT 1 FROM SchemaMigrations WHERE MigrationName = '024_first_person');
+
+UPDATE `PageSectionItems` SET `Text` = 'Nature, botanical detail and interiors seen through my lens.'
+WHERE ItemKey = 'photography-gallery' AND SectionID = (SELECT SectionID FROM PageSections WHERE PageKey = 'home' AND SectionKey = 'portfolio') AND `Text` = 'Nature, botanical detail and interiors seen through Vanessa\'s lens.'
+  AND NOT EXISTS (SELECT 1 FROM SchemaMigrations WHERE MigrationName = '024_first_person');
+
+UPDATE `PageSectionItems` SET `Text` = 'I studied analytical chemistry and spent thirty years running an environmental testing laboratory, where I achieved SANAS accreditation to ISO 17025 and became director of the laboratory and the company. Science taught me to observe carefully, ask questions and look for evidence.'
+WHERE ItemKey = 'science' AND SectionID = (SELECT SectionID FROM PageSections WHERE PageKey = 'about' AND SectionKey = 'journey') AND `Text` = 'Vanessa studied analytical chemistry and spent thirty years running an environmental testing laboratory, where she achieved SANAS accreditation to ISO 17025 and became director of the laboratory and the company. Science taught her to observe carefully, ask questions and look for evidence.'
+  AND NOT EXISTS (SELECT 1 FROM SchemaMigrations WHERE MigrationName = '024_first_person');
+
+UPDATE `PageSectionItems` SET `Text` = 'Personal tragedy led me to let go of the reins and try my wings at something that would fulfil me and feed my creative soul. The more I researched interior design, the more I saw that science and design are intertwined.'
+WHERE ItemKey = 'design' AND SectionID = (SELECT SectionID FROM PageSections WHERE PageKey = 'about' AND SectionKey = 'journey') AND `Text` = 'Personal tragedy led her to let go of the reins and try her wings at something that would fulfil her and feed her creative soul. The more she researched interior design, the more she saw that science and design are intertwined.'
+  AND NOT EXISTS (SELECT 1 FROM SchemaMigrations WHERE MigrationName = '024_first_person');
+
+UPDATE `PageSectionItems` SET `Text` = 'A lifelong connection to nature showed me the way: a career as a biophilic designer, bringing together interior design, colour & design psychology and biophilic & well-being design.'
+WHERE ItemKey = 'nature' AND SectionID = (SELECT SectionID FROM PageSections WHERE PageKey = 'about' AND SectionKey = 'journey') AND `Text` = 'A lifelong connection to nature showed her the way: a career as a biophilic designer, bringing together interior design, colour & design psychology and biophilic & well-being design.'
+  AND NOT EXISTS (SELECT 1 FROM SchemaMigrations WHERE MigrationName = '024_first_person');
+
+UPDATE `PageSectionItems` SET `Text` = 'I work with homes, workspaces, health and wellness centres, boutiques, and events and functions.'
+WHERE ItemKey = 'who' AND SectionID = (SELECT SectionID FROM PageSections WHERE PageKey = 'contact' AND SectionKey = 'faq') AND `Text` = 'Vanessa works with homes, workspaces, health and wellness centres, boutiques, and events and functions.'
+  AND NOT EXISTS (SELECT 1 FROM SchemaMigrations WHERE MigrationName = '024_first_person');
+
+UPDATE `PageSectionItems` SET `Text` = 'Yes. I offer event layouts, table settings and décor for private and business functions.'
+WHERE ItemKey = 'events' AND SectionID = (SELECT SectionID FROM PageSections WHERE PageKey = 'contact' AND SectionKey = 'faq') AND `Text` = 'Yes. Vanessa offers event layouts, table settings and décor for private and business functions.'
+  AND NOT EXISTS (SELECT 1 FROM SchemaMigrations WHERE MigrationName = '024_first_person');
+
+UPDATE `PageSectionItems` SET `Text` = 'AI can suggest ideas, but it can\'t stand in your space, see how the light moves through it, or understand how you live and what you need the space to do. I combine biophilic design and colour & design psychology with a background in science, and turn your vision into something tangible, natural and sustainable.'
+WHERE ItemKey = 'ai' AND SectionID = (SELECT SectionID FROM PageSections WHERE PageKey = 'contact' AND SectionKey = 'faq') AND `Text` = 'AI can suggest ideas, but it can\'t stand in your space, see how the light moves through it, or understand how you live and what you need the space to do. Vanessa combines biophilic design and colour & design psychology with a background in science, and turns your vision into something tangible, natural and sustainable.'
+  AND NOT EXISTS (SELECT 1 FROM SchemaMigrations WHERE MigrationName = '024_first_person');
+
+UPDATE `PageSectionItems` SET `Text` = 'Yes. I work in person in Pietermaritzburg and the KwaZulu-Natal Midlands, online across South Africa, and across Africa, including Kenya, and further afield by arrangement, with travel costs covered by the client.'
+WHERE ItemKey = 'where' AND SectionID = (SELECT SectionID FROM PageSections WHERE PageKey = 'contact' AND SectionKey = 'faq') AND `Text` = 'Yes. Vanessa works in person in Pietermaritzburg and the KwaZulu-Natal Midlands, online across South Africa, and across Africa, including Kenya, and further afield by arrangement, with travel costs covered by the client.'
+  AND NOT EXISTS (SELECT 1 FROM SchemaMigrations WHERE MigrationName = '024_first_person');
+
+UPDATE `PageSectionItems` SET `Text` = 'I study light, colour, layout and your connection to the outdoors, and look for opportunities.'
+WHERE ItemKey = 'explore' AND SectionID = (SELECT SectionID FROM PageSections WHERE PageKey = 'services' AND SectionKey = 'process') AND `Text` = 'Vanessa studies light, colour, layout and your connection to the outdoors, and looks for opportunities.'
+  AND NOT EXISTS (SELECT 1 FROM SchemaMigrations WHERE MigrationName = '024_first_person');
+
+UPDATE `PageSectionItems` SET `Text` = 'Whether you implement the plan yourself or with my support, your space begins to transform.'
+WHERE ItemKey = 'bring-to-life' AND SectionID = (SELECT SectionID FROM PageSections WHERE PageKey = 'services' AND SectionKey = 'process') AND `Text` = 'Whether you implement the plan yourself or with Vanessa\'s support, your space begins to transform.'
+  AND NOT EXISTS (SELECT 1 FROM SchemaMigrations WHERE MigrationName = '024_first_person');
+
+UPDATE `PageSectionItems` SET `Text` = 'Tell me a little about your space, how you use it and what is not working.'
+WHERE ItemKey = 'before' AND SectionID = (SELECT SectionID FROM PageSections WHERE PageKey = 'service-consultations' AND SectionKey = 'approach') AND `Text` = 'Tell Vanessa a little about your space, how you use it and what is not working.'
+  AND NOT EXISTS (SELECT 1 FROM SchemaMigrations WHERE MigrationName = '024_first_person');
+
+UPDATE `PageSectionItems` SET `Text` = 'Nature, botanical detail and interiors seen through my lens.'
+WHERE ItemKey = 'photography' AND SectionID = (SELECT SectionID FROM PageSections WHERE PageKey = 'portfolio' AND SectionKey = 'categories') AND `Text` = 'Nature, botanical detail and interiors seen through Vanessa\'s lens.'
+  AND NOT EXISTS (SELECT 1 FROM SchemaMigrations WHERE MigrationName = '024_first_person');
+
+UPDATE `PageSectionItems` SET `Text` = 'The people and businesses I work alongside.'
+WHERE ItemKey = 'collaborators' AND SectionID = (SELECT SectionID FROM PageSections WHERE PageKey = 'portfolio' AND SectionKey = 'categories') AND `Text` = 'The people and businesses Vanessa works alongside.'
+  AND NOT EXISTS (SELECT 1 FROM SchemaMigrations WHERE MigrationName = '024_first_person');
+
+INSERT IGNORE INTO SchemaMigrations (MigrationName) VALUES ('024_first_person');

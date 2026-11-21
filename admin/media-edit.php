@@ -46,7 +46,13 @@ require_once INCLUDES_PATH . '/header.php';
     <div class="admin-toolbar"><?= cms_last_edited($row) ?><?= cms_history_link($module, (int) $row[$module['key']]) ?></div>
 
     <section class="admin-panel media-detail">
-        <img class="media-detail__image" src="<?= e(image_url($row['FilePath'], 'web')) ?>" alt="<?= e($row['AltText'] ?? '') ?>">
+        <div class="media-detail__picture">
+            <img class="media-detail__image" src="<?= e(image_url($row['FilePath'], 'web')) ?>" alt="<?= e($row['AltText'] ?? '') ?>">
+<?php if (can('media.edit')): ?>
+            <button class="btn btn--outline btn--small" type="button" data-adjust-path="<?= e($row['FilePath']) ?>">Adjust position and zoom</button>
+            <p class="admin-help">Choose which part of the photo shows in the website's frames, and zoom in or out. It applies everywhere this photo is used.</p>
+<?php endif; ?>
+        </div>
         <dl class="admin-fields">
 <?php if (!empty($row['OriginalPath'])): ?>
             <div><dt>Original upload</dt><dd><?= (int) $row['OriginalWidth'] ?> × <?= (int) $row['OriginalHeight'] ?> pixels, <?= e(media_format_bytes((int) $row['OriginalFileSize'])) ?> <span class="admin-muted">(kept privately)</span></dd></div>

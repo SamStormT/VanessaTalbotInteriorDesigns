@@ -1,0 +1,57 @@
+/* ==========================================================================
+   Adjust position and zoom (assets/js/photo-adjust.js). Loaded on admin
+   screens and, for signed-in staff, on the website, so it does not rely on
+   admin.css.
+   ========================================================================== */
+.frame-adjust {
+    width: min(920px, calc(100vw - 2rem));
+    max-height: calc(100vh - 2rem);
+    padding: 1.5rem;
+    overflow-y: auto;
+    border: 0;
+    border-top: 3px solid var(--color-primary);
+    background: var(--color-white);
+    color: var(--color-text);
+    box-shadow: 0 20px 50px rgba(36, 58, 57, 0.25);
+    font-family: var(--font-body);
+}
+.frame-adjust::backdrop { background: rgba(36, 58, 57, 0.45); }
+.frame-adjust [hidden] { display: none !important; }
+.frame-adjust__head { display: flex; align-items: center; justify-content: space-between; gap: 1rem; margin-bottom: 0.75rem; }
+.frame-adjust__title { margin: 0; font-family: var(--font-subheading); font-size: 1.125rem; font-weight: 600; letter-spacing: 0; text-transform: none; }
+.frame-adjust__close { padding: 0; border: 0; background: none; color: var(--color-accent-text); font: inherit; font-size: 0.875rem; text-decoration: underline; cursor: pointer; }
+.frame-adjust__help,
+.frame-adjust__note { margin: 0; font-size: 0.875rem; color: var(--color-text-muted); }
+.frame-adjust__previews { display: grid; grid-template-columns: 0.8fr 1fr 1.6fr; gap: 1rem; align-items: end; margin: 1rem 0; }
+.frame-adjust__previews figure { margin: 0; }
+.frame-adjust__previews figcaption { display: grid; gap: 0.25rem; margin-top: 0.375rem; font-size: 0.8125rem; color: var(--color-text-muted); text-align: center; }
+.frame-adjust__here { display: none; justify-self: center; padding: 0.1rem 0.55rem; border-radius: 999px; background: var(--color-golden-yellow); color: var(--color-primary); font-weight: 700; font-size: 0.75rem; }
+.frame-adjust figure.is-here .frame-adjust__here { display: inline-block; }
+.frame-adjust figure.is-here .frame-adjust__frame { outline: 3px solid var(--color-golden-yellow); outline-offset: 3px; }
+.frame-adjust__blur { color: #9a3412; font-weight: 600; }
+.frame-adjust__frame { position: relative; overflow: hidden; background: var(--color-peach-light); border: 1px solid var(--color-border); cursor: grab; touch-action: none; }
+.frame-adjust__frame:active { cursor: grabbing; }
+.frame-adjust__frame:focus-visible { outline: 3px solid var(--color-focus); outline-offset: 3px; }
+.frame-adjust__frame--tall { aspect-ratio: 3 / 4; border-radius: 999px 999px 0 0; }
+.frame-adjust__frame--card { aspect-ratio: 4 / 3; }
+.frame-adjust__frame--wide { aspect-ratio: 16 / 7; }
+.frame-adjust__frame img {
+    position: absolute; inset: 0; width: 100%; height: 100%;
+    object-fit: cover; object-position: var(--fx, 50%) var(--fy, 50%);
+    transform: scale(var(--zoom, 1)); transform-origin: var(--fx, 50%) var(--fy, 50%);
+    pointer-events: none; user-select: none;
+}
+.frame-adjust__field { display: grid; gap: 0.375rem; margin-bottom: 0.75rem; }
+.frame-adjust__field label { font-weight: 600; font-size: 0.9375rem; }
+.frame-adjust__field input[type="range"] { width: 100%; }
+.frame-adjust__status { margin: 0 0 0.75rem; font-size: 0.8125rem; font-weight: 600; color: var(--color-primary); }
+.frame-adjust__status:empty { display: none; }
+.frame-adjust__buttons { display: flex; flex-wrap: wrap; gap: 0.75rem; }
+@media (max-width: 700px) {
+    .frame-adjust { padding: 1rem; }
+    .frame-adjust__previews { grid-template-columns: 1fr 1fr; }
+    .frame-adjust__previews figure:last-child { grid-column: 1 / -1; }
+}
+
+/* On the website: the "Adjust photo" button over a framed photo (staff only). */
+button.edit-chip--adjust { border: 0; cursor: pointer; }

@@ -507,7 +507,8 @@ function cms_render_image_control(string $name, array $field, string $value, str
     $hidden  = $value === '' ? ' hidden' : '';
 
     return '<div class="admin-field" id="row-' . e($name) . '"><span class="admin-field__label" id="' . e($id) . '-label">' . e($field['label']) . '</span>'
-         . '<div class="media-field" data-media-field data-category="' . e($GLOBALS['cms_form_title'] ?? '') . '"' . $targets . '>'
+         . '<div class="media-field" data-media-field data-category="' . e($GLOBALS['cms_form_title'] ?? '') . '"' . $targets
+         . (empty($field['frame']) ? '' : ' data-frame-shape="' . e($field['frame']) . '"') . '>'
          . '<input type="hidden" name="' . e($name) . '" value="' . e($value) . '" data-media-value>'
          . '<div class="media-field__preview"' . $hidden . '><img src="' . ($value === '' ? '' : e(image_url($value, 'thumb'))) . '" alt=""></div>'
          . '<div class="media-field__controls"><div class="media-drop"><label>'
@@ -515,6 +516,7 @@ function cms_render_image_control(string $name, array $field, string $value, str
          . '<span class="media-drop__hint">JPG, PNG, WebP or GIF, up to ' . (int) (MEDIA_MAX_BYTES / 1048576) . ' MB</span>'
          . '<input class="visually-hidden" type="file" accept="image/jpeg,image/png,image/webp,image/gif" aria-labelledby="' . e($id) . '-label"></label></div>'
          . '<div class="media-field__buttons"><button class="btn btn--outline btn--small" type="button" data-media-library>Choose from library</button>'
+         . '<button class="btn btn--outline btn--small" type="button" data-media-adjust' . $hidden . '>Adjust position and zoom</button>'
          . '<button class="admin-delete__button" type="button" data-media-remove' . $hidden . '>Remove image</button></div></div>'
          . '<p class="media-field__status" role="status"></p></div>'
          . '<noscript><p class="admin-error">Images need JavaScript to be switched on.</p></noscript>'

@@ -27,6 +27,7 @@ function content_fetch(string $key, callable $query): mixed
             }
         } catch (Throwable $error) {
             $databaseDown = true;
+            $GLOBALS['vt_content_database_down'] = true; // so image_framing() doesn't try again
             error_log('Public content unavailable, using fallback: ' . $error->getMessage());
         }
     }
@@ -272,6 +273,43 @@ function content_section_header(array $section, string $id, ?string $intro = nul
 }
 
 /** Image frame: the photo if one is set, otherwise the decorative artwork. */
+/**
+ * How a photo sits in its frames, as set in the Media Library ("Adjust
+ * position and zoom"): an inline style with --fx, --fy and --zoom, or '' when
+ * it is centred at normal size (or the database can't be reached). The CSS
+ * for each kind of frame decides how to use them.
+ */
+function image_framing(?string $path, string $shape = ''): string
+{
+    static $adjusted = null, $staff = null;
+    $path = trim((string) $path);
+    if ($path === '') {
+        return '';
+    }
+    // Signed-in staff who may edit pictures get an "Adjust photo" button on it (photo-adjust.js).
+    $staff ??= function_exists('staff_viewer') && ($viewer = staff_viewer()) !== null && role_can($viewer['Role'], 'media.edit');
+    $marker = $staff && $shape !== '' ? ' data-adjust-photo="' . e($path) . '" data-adjust-shape="' . e($shape) . '"' : '';
+    if ($adjusted === null) {
+        $adjusted = [];
+        if (!empty($GLOBALS['vt_content_database_down'])) {
+            return '';
+        }
+        try {
+            foreach (db_all('SELECT FilePath, FocusX, FocusY, Zoom FROM MediaLibrary WHERE FocusX <> 50 OR FocusY <> 50 OR Zoom <> 1') as $row) {
+                $adjusted[$row['FilePath']] = $row;
+            }
+        } catch (Throwable $error) {
+            // Before migration 023, or with the database down: photos stay centred.
+        }
+    }
+    $row = $adjusted[$path] ?? null;
+    if ($row === null) {
+        return $marker;
+    }
+    $zoom = rtrim(rtrim(number_format(max(1.0, (float) $row['Zoom']), 2, '.', ''), '0'), '.');
+    return ' style="--fx: ' . (int) $row['FocusX'] . '%; --fy: ' . (int) $row['FocusY'] . '%; --zoom: ' . $zoom . '"' . $marker;
+}
+
 function content_frame(string $class, ?string $image, ?string $alt, string $decoration, string $size = 'web', string $edit = ''): string
 {
     if (trim((string) $image) === '') {
@@ -280,7 +318,7 @@ function content_frame(string $class, ?string $image, ?string $alt, string $deco
     }
     $safe = link_is_safe((string) $image);
     $src  = $safe ? image_url((string) $image, $size) : '#';
-    return '<div class="' . e($class) . '"' . $edit . '><img src="' . e($src) . '"' . ($safe ? image_srcset((string) $image) : '') . ' alt="' . e($alt) . '"' . ($size === 'full' ? '' : ' loading="lazy"') . '></div>';
+    return '<div class="' . e($class) . '"' . $edit . '><img src="' . e($src) . '"' . ($safe ? image_srcset((string) $image) : '') . ' alt="' . e($alt) . '"' . ($size === 'full' ? '' : ' loading="lazy"') . image_framing((string) $image, preg_match('/arch|portrait/', $class) ? 'tall' : 'card') . '></div>';
 }
 
 /**
@@ -297,7 +335,7 @@ function content_hero_open(array $header, string $edit = ''): string
              . ($at !== '' ? '<span class="page-hero__image-spot"' . $at . '>' . botanical('botanical page-hero__botanical') . '</span>' : botanical('botanical page-hero__botanical'));
     }
     return '<section class="page-hero page-hero--image" aria-labelledby="page-title">' . $edit
-         . '<img class="page-hero__image" src="' . e(image_url($image, 'full')) . '"' . image_srcset($image, '100vw') . ' alt="' . e($header['ImageAlt'] ?? '') . '"' . $at . '>';
+         . '<img class="page-hero__image" src="' . e(image_url($image, 'full')) . '"' . image_srcset($image, '100vw') . ' alt="' . e($header['ImageAlt'] ?? '') . '"' . $at . image_framing($image, 'wide') . '>';
 }
 
 /**
@@ -458,7 +496,7 @@ function content_testimonial(array $t): string
     return '<figure class="testimonial">'
          . '<blockquote class="testimonial__quote"' . ed_record('testimonials', 'admin/testimonial-edit.php', $id, 'Testimonial', 'testimonials.edit') . '>' . content_paragraphs((string) $t['Testimonial']) . '</blockquote>'
          . '<figcaption class="testimonial__by">'
-         . ($photo !== '' && link_is_safe($photo) ? '<img class="testimonial__photo" src="' . e(image_url($photo, 'thumb')) . '" alt="' . e($t['PhotoAlt'] ?? '') . '" width="56" height="56" loading="lazy"' . ed_record('testimonials', 'admin/testimonial-edit.php', $id, 'Photo', 'testimonials.edit') . '>' : '')
+         . ($photo !== '' && link_is_safe($photo) ? '<img class="testimonial__photo" src="' . e(image_url($photo, 'thumb')) . '" alt="' . e($t['PhotoAlt'] ?? '') . '" width="56" height="56" loading="lazy"' . image_framing($photo) . ed_record('testimonials', 'admin/testimonial-edit.php', $id, 'Photo', 'testimonials.edit') . '>' : '')
          . '<span><strong' . ed_record('testimonials', 'admin/testimonial-edit.php', $id, 'Name', 'testimonials.edit') . '>' . e($t['Name']) . '</strong>'
          . ($who ? '<span class="testimonial__detail">' . e(implode(', ', $who)) . '</span>' : '') . '</span>'
          . '</figcaption></figure>';

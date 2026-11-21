@@ -87,6 +87,7 @@ Stack: HTML5, CSS3, JavaScript, PHP 8, MariaDB, PHPMailer (installed with Compos
 │   ├── rich-preview.php                             Article editor's Preview button (JSON)
 │   ├── welcome-email.php                            Welcome email: wording, preview, test, on/off
 │   ├── media-describe.php                           Adds a picture's description from the article editor (JSON)
+│   ├── media-framing.php                            A picture's position and zoom in its frames: read and save (JSON)
 │   ├── search-health.php                            Search health: search wording, picture descriptions, articles, set-up
 │   ├── history.php                                  History and undo for any edited record
 │   ├── blogs.php, blog-edit.php                     Blog posts: list, write, edit (blog-create.php redirects)
@@ -141,6 +142,8 @@ Stack: HTML5, CSS3, JavaScript, PHP 8, MariaDB, PHPMailer (installed with Compos
 │   ├── js/main.js             Mobile menu; contact form checks; newsletter sign-up in the background; the menu-bar butterflies (fly, then land)
 │   ├── js/admin.js            Admin sidebar, delete confirmation, drag and drop, picture chooser, previews, account
 │   ├── js/visual-editor.js    The visual article editor
+│   ├── js/photo-adjust.js     Adjust position and zoom: the window, and the "Adjust photo" button on the website for staff
+│   ├── css/photo-adjust.css   Its styles (admin screens and, for staff, the website)
 │   ├── js/lib/qrcode.js       QR codes for two-step sign-in (qrcode-generator, MIT licence; not in a "vendor" folder, which .htaccess and Git exclude)
 │   ├── fonts/                 Open Sans, Gilda Display, Allison (.woff2, SIL Open Font License files alongside)
 │   ├── images/flags/          Round-crop country flags for collaborator cards (flag-icons 7.6.0, MIT licence in LICENSE-flag-icons.txt)

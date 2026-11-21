@@ -76,6 +76,10 @@ if ($layout !== 'admin' && function_exists('site_search_settings')) {
     <meta name="media-upload-url" content="<?= e(url('admin/media-upload.php')) ?>">
     <meta name="media-list-url" content="<?= e(url('admin/media-list.php')) ?>">
     <meta name="media-describe-url" content="<?= e(url('admin/media-describe.php')) ?>">
+    <meta name="media-framing-url" content="<?= e(url('admin/media-framing.php')) ?>">
+<?php elseif ($staff && role_can($staff['Role'], 'media.edit')): ?>
+    <meta name="csrf-token" content="<?= e(csrf_token()) ?>">
+    <meta name="media-framing-url" content="<?= e(url('admin/media-framing.php')) ?>">
 <?php endif; ?>
 <?php if ($layout === 'admin' || !empty($noindex)): ?>
     <meta name="robots" content="noindex, nofollow">
@@ -136,6 +140,9 @@ if ($layout !== 'admin' && function_exists('site_search_settings')) {
     <link rel="stylesheet" href="<?= e(asset('css/admin.css')) ?>">
 <?php endif; ?>
     <link rel="stylesheet" href="<?= e(asset('css/responsive.css')) ?>">
+<?php if ($layout === 'admin' || ($staff && role_can($staff['Role'], 'media.edit'))): ?>
+    <link rel="stylesheet" href="<?= e(asset('css/photo-adjust.css')) ?>">
+<?php endif; ?>
 </head>
 <body class="layout-<?= e($layout) ?><?= $staff ? ' is-staff' : '' ?>">
 <a class="skip-link" href="#main-content">Skip to content</a>

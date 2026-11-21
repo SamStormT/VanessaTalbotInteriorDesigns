@@ -42,6 +42,7 @@ require_once INCLUDES_PATH . '/header.php';
             <li>The right screen opens with the cursor in that exact box. Make the change.</li>
             <li>Choose <strong>Save and return to the page</strong> to see the result straight away.</li>
         </ol>
+        <p><strong>To move a photo in its frame or zoom in</strong>: on the website, move the mouse over the photo and click <strong>Adjust photo</strong> (top right of the photo). Drag the photo until the part you want shows, zoom with the slider, the mouse wheel or two fingers, and choose <strong>Save</strong>: the page changes straight away. The frame you came from is marked <em>On this page</em>, and a note warns if the photo would look blurry at that zoom. It applies everywhere that photo is used. The same tool is next to every picture in the admin forms and in the <?= $helpLink('admin/media-library.php', 'Media Library') ?>.</p>
         <p>Dashed strips that say <em>Hidden from visitors</em> are parts of the page that are switched off or empty. Only you can see them; click <strong>Edit and publish</strong> to fill them in. <?= $helpLink('admin/pages.php', 'Pages (what is where)') ?> lists every part of every page.</p>
     </section>
 

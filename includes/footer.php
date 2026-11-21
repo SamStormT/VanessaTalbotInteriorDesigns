@@ -13,6 +13,7 @@ if ($layout !== 'admin') {
 if ($layout === 'admin'): ?>
 </div><!-- /.admin-main -->
 </div><!-- /.admin-shell -->
+<script src="<?= e(asset('js/photo-adjust.js')) ?>" defer></script>
 <script src="<?= e(asset('js/admin.js')) ?>" defer></script>
 <script src="<?= e(asset('js/visual-editor.js')) ?>" defer></script>
 <?php else: ?>
@@ -28,7 +29,7 @@ if ($layout === 'admin'): ?>
         <nav class="site-footer__col" aria-labelledby="footer-explore">
             <h2 id="footer-explore" class="site-footer__heading">Explore</h2>
             <ul>
-                <li><a href="<?= e(url('about.php')) ?>">About Vanessa</a></li>
+                <li><a href="<?= e(url('about.php')) ?>">About me</a></li>
                 <li><a href="<?= e(url('portfolio.php')) ?>">Portfolio</a></li>
                 <li><a href="<?= e(url('portfolio/photography-gallery.php')) ?>">Photography</a></li>
                 <li><a href="<?= e(url('services/speaking-engagements.php')) ?>">Speaking</a></li>
@@ -87,6 +88,9 @@ if (!empty($GLOBALS['vt_breadcrumbs']) && count($GLOBALS['vt_breadcrumbs']) > 1 
 }
 ?>
 <script src="<?= e(asset('js/main.js')) ?>" defer></script>
+<?php if (!empty($staff) && role_can($staff['Role'], 'media.edit')): ?>
+<script src="<?= e(asset('js/photo-adjust.js')) ?>" defer></script>
+<?php endif; ?>
 <?php endif; ?>
 </body>
 </html>

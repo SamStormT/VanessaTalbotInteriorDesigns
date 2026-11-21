@@ -267,7 +267,7 @@ function blog_author_box(array $post): string
     $title    = trim((string) ($search['OwnerTitle'] ?? ''));
     $first    = explode(' ', $owner)[0];
     return '<aside class="author-box" aria-labelledby="author-title">'
-         . ($portrait !== '' && link_is_safe($portrait) ? '<img class="author-box__photo" src="' . e(image_url($portrait, 'thumb')) . '" alt="' . e($about['PortraitImageAlt'] ?? $owner) . '" width="96" height="96" loading="lazy"' . ed_about('PortraitImage') . '>' : '')
+         . ($portrait !== '' && link_is_safe($portrait) ? '<img class="author-box__photo" src="' . e(image_url($portrait, 'thumb')) . '" alt="' . e($about['PortraitImageAlt'] ?? $owner) . '" width="96" height="96" loading="lazy"' . image_framing($portrait) . ed_about('PortraitImage') . '>' : '')
          . '<div class="author-box__text"><p class="author-box__label">About the author</p>'
          . '<h2 class="author-box__name" id="author-title"' . ed_setting('OwnerName') . '>' . e($owner) . '</h2>'
          . ($title !== '' ? '<p class="author-box__title"' . ed_setting('OwnerTitle') . '>' . e($title) . '</p>' : '')

@@ -639,6 +639,21 @@ label {
     pointer-events: none;
 }
 .art-frame > img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+
+/* Photo position and zoom, set per photo in the Media Library (--fx, --fy,
+   --zoom on the img; see image_framing()). The frame keeps the chosen point
+   in view; zooming in keeps that point still. Zoom is 1 to 3, so the photo
+   always fills its frame. */
+.art-frame > img,
+.page-hero__image,
+.collab-card__picture:not(.collab-card__picture--logo) img {
+    object-position: var(--fx, 50%) var(--fy, 50%);
+    transform: scale(var(--zoom, 1));
+    transform-origin: var(--fx, 50%) var(--fy, 50%);
+}
+/* Small round photos: position only. */
+.testimonial__photo,
+.author-box__photo { object-position: var(--fx, 50%) var(--fy, 50%); }
 .art-frame__icon { width: 26%; height: auto; max-width: 96px; stroke-width: 1.1; }
 .art-frame__botanical { width: 50%; height: 80%; color: var(--color-earthy-gold); opacity: 0.75; }
 

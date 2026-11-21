@@ -232,8 +232,9 @@ For each platform, give the **full link** (for example `https://www.instagram.co
 - [ ] 🟢 Website address: is **vanessatalbotinteriordesigns.co.za** registered, and is it the domain we'll launch on? (Xneelo keeps the domain; the hosting company is still to be decided.)
 - [ ] ⚪ Business hours, or "by appointment only"
 - [x] ⚪ Your title on the site: **Interior Designer – Biophilic & Well-being** (Website Settings → Designer's job title)
-- [ ] 🟢 **Email: three different addresses.** The questionnaire cover says vanessa@talbot.co.za, its contact section says vanessa@vanessatalbotinteriordesigns.co.za, and the business card says vanessa@vanessatalbot.co.za. Please confirm which one is current; that one goes in Website Settings → Email
-- [ ] 🟢 **Second domain vtid.co.za:** if it is registered, it should send visitors on to the main website address (a permanent redirect set up at the host), so there aren't two copies of the site
+- [x] 🟢 **Email address.** **Decided (21 Nov 2026): vanessa@vtid.co.za.** It goes in Website Settings → Email (and "Send contact form messages to", if enquiries should go there too); it is not stored in the code. Older addresses (vanessa@talbot.co.za, vanessa@vanessatalbot.co.za on the business card, vanessa@vanessatalbotinteriordesigns.co.za) are no longer used on the website
+- [x] 🟢 **Voice.** **Decided (21 Nov 2026): the website speaks as "I"** ("I'd love to hear…", "my story"), not "Vanessa". Applied by migration 024. Search descriptions, the short bio under articles and the Privacy Policy keep her name, because search results and legal text read better that way. New wording added in the admin should also use "I"
+- [ ] 🟢 **Second domain vtid.co.za:** it is registered (it is now her email domain). Decide which address the website uses: vanessatalbotinteriordesigns.co.za or vtid.co.za. The other should send visitors on to it (a permanent redirect at the host), so there aren't two copies of the site
 
 ### 7.2 Business and legal
 
